@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Room_Type));
             dgvRoomType = new DataGridView();
             btn_updateRate = new Panel();
+            textBox1 = new TextBox();
             ((System.ComponentModel.ISupportInitialize)dgvRoomType).BeginInit();
             SuspendLayout();
             // 
@@ -52,6 +53,14 @@
             btn_updateRate.TabIndex = 5;
             btn_updateRate.Click += btn_updateRate_Click;
             // 
+            // textBox1
+            // 
+            textBox1.BorderStyle = BorderStyle.None;
+            textBox1.Location = new Point(178, 236);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(1092, 20);
+            textBox1.TabIndex = 6;
+            // 
             // Room_Type
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -59,6 +68,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(textBox1);
             Controls.Add(btn_updateRate);
             Controls.Add(dgvRoomType);
             Name = "Room_Type";
@@ -66,11 +76,13 @@
             Load += Room_Type_Load;
             ((System.ComponentModel.ISupportInitialize)dgvRoomType).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         private DataGridView dgvRoomType;
         private Panel btn_updateRate;
+        private TextBox textBox1;
     }
 }

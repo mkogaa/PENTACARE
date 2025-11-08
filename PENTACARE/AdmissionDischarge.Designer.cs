@@ -37,7 +37,7 @@
             // panel1
             // 
             panel1.BackColor = Color.Transparent;
-            panel1.Location = new Point(1533, 884);
+            panel1.Location = new Point(1535, 873);
             panel1.Name = "panel1";
             panel1.Size = new Size(247, 75);
             panel1.TabIndex = 0;

@@ -95,7 +95,67 @@ namespace PentaCare
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
+            string searchValue = textBox1.Text.Trim(); // value typed by user
 
+            dataGridView1.Size = new Size(1463, 351);
+            dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView1.ScrollBars = ScrollBars.Both;
+
+            dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.RowHeadersVisible = false;
+            dataGridView1.EnableHeadersVisualStyles = false;
+            dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.DarkBlue;
+            dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+
+            string dbconnect = "server=127.0.0.1; database=pentacare; uid=root;";
+            using (MySqlConnection conn = new MySqlConnection(dbconnect))
+            {
+                try
+                {
+                    conn.Open();
+
+                    string query = "SELECT p.PatientID, p.Name, p.Gender, r.Room_No, d.Doctor_Name, p.Status, p.Admission_Date " +
+                                   "FROM patient AS p " +
+                                   "LEFT JOIN room AS r ON p.RoomID = r.RoomID " +
+                                   "LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID " +
+                                   "WHERE p.PatientID LIKE @search OR p.Name LIKE @search";
+
+                    using (MySqlCommand sqlcmd = new MySqlCommand(query, conn))
+                    {
+                        sqlcmd.Parameters.AddWithValue("@search", "%" + searchValue + "%");
+
+                        MySqlDataAdapter sqlDA = new MySqlDataAdapter(sqlcmd);
+                        DataSet sqlDS = new DataSet();
+                        sqlDA.Fill(sqlDS, "recordsfetch");
+
+                        dataGridView1.DataSource = sqlDS;
+                        dataGridView1.DataMember = "recordsfetch";
+
+                        if (!dataGridView1.Columns.Contains("Action"))
+                        {
+                            DataGridViewButtonColumn btn = new DataGridViewButtonColumn();
+                            btn.Name = "Action";
+                            btn.HeaderText = "Action";
+                            btn.Text = "View Lab Result";
+                            btn.UseColumnTextForButtonValue = true;
+                            dataGridView1.Columns.Add(btn);
+                            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
+                        }
+
+                        if (dataGridView1.Columns.Contains("Gender"))
+                        {
+                            dataGridView1.Columns["Gender"].Visible = false;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
+                }
+            }
         }
 
         private void addPatient_Click(object sender, EventArgs e)

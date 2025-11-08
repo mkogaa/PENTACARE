@@ -301,7 +301,42 @@ namespace PentaCare
         }
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
+            docRecords.Size = new Size(689, 297);
+            docRecords.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            docRecords.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            docRecords.ScrollBars = ScrollBars.Both;
 
+            string dbconnect = "server=127.0.0.1; database=pentacare; uid=root;";
+            MySqlConnection conn = new MySqlConnection(dbconnect);
+            MySqlCommand sqlcmd = new MySqlCommand();
+            MySqlDataAdapter sqlDA = new MySqlDataAdapter();
+            DataSet sqlDS = new DataSet();
+
+            string searchValue = searchTxt.Text.Trim();
+
+            conn.Open();
+
+            // 👇 Filter by Doctor_Name or Specialty (case-insensitive)
+            sqlcmd.CommandText =
+                $"SELECT DoctorID, Doctor_Name, Specialty, Contact_No " +
+                $"FROM doctor " +
+                $"WHERE Doctor_Name LIKE '%{searchValue}%' OR Specialty LIKE '%{searchValue}%' OR DoctorID LIKE '%{searchValue}%'";
+
+            sqlcmd.CommandType = CommandType.Text;
+            sqlcmd.Connection = conn;
+
+            sqlDA.SelectCommand = sqlcmd;
+            sqlDA.Fill(sqlDS, "recordsfetch");
+
+            docRecords.DataSource = sqlDS;
+            docRecords.DataMember = "recordsfetch";
+
+            if (docRecords.Rows.Count == 0 || (docRecords.Rows.Count == 1 && docRecords.Rows[0].IsNewRow))
+            {
+                MessageBox.Show("No records found.");
+            }
+
+            conn.Close();
         }
 
         private void btnSearch_Click(object sender, EventArgs e)

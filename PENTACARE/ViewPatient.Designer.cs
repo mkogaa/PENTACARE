@@ -40,7 +40,7 @@
             // backBtn
             // 
             backBtn.BackColor = Color.Transparent;
-            backBtn.Location = new Point(1448, 890);
+            backBtn.Location = new Point(1454, 830);
             backBtn.Name = "backBtn";
             backBtn.Size = new Size(233, 80);
             backBtn.TabIndex = 0;
@@ -51,7 +51,7 @@
             pName.AutoSize = true;
             pName.BackColor = Color.Transparent;
             pName.Font = new Font("Segoe UI", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pName.Location = new Point(996, 288);
+            pName.Location = new Point(996, 273);
             pName.Name = "pName";
             pName.Size = new Size(119, 54);
             pName.TabIndex = 1;
@@ -62,7 +62,7 @@
             pDoc.AutoSize = true;
             pDoc.BackColor = Color.Transparent;
             pDoc.Font = new Font("Segoe UI", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pDoc.Location = new Point(874, 382);
+            pDoc.Location = new Point(871, 362);
             pDoc.Name = "pDoc";
             pDoc.Size = new Size(119, 54);
             pDoc.TabIndex = 2;
@@ -73,7 +73,7 @@
             pDiag.AutoSize = true;
             pDiag.BackColor = Color.Transparent;
             pDiag.Font = new Font("Segoe UI", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pDiag.Location = new Point(921, 469);
+            pDiag.Location = new Point(924, 447);
             pDiag.Name = "pDiag";
             pDiag.Size = new Size(119, 54);
             pDiag.TabIndex = 3;
@@ -84,7 +84,7 @@
             pMed.AutoSize = true;
             pMed.BackColor = Color.Transparent;
             pMed.Font = new Font("Segoe UI", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pMed.Location = new Point(1161, 561);
+            pMed.Location = new Point(1160, 535);
             pMed.Name = "pMed";
             pMed.Size = new Size(119, 54);
             pMed.TabIndex = 4;
@@ -95,7 +95,7 @@
             pNotes.AutoSize = true;
             pNotes.BackColor = Color.Transparent;
             pNotes.Font = new Font("Segoe UI", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pNotes.Location = new Point(1066, 646);
+            pNotes.Location = new Point(1078, 618);
             pNotes.Name = "pNotes";
             pNotes.Size = new Size(119, 54);
             pNotes.TabIndex = 5;

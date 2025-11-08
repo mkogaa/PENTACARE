@@ -46,11 +46,12 @@ namespace PENTACARE
             using (MySqlConnection sqlconn = new MySqlConnection(dbconnect))
             {
                 string query = "SELECT RoomID as 'Room ID', " +
-                                "Room_No as 'Room Number', " +
-                                "Room_Type as 'Room Type', " +
-                                "Room_Rate as 'Room Rate', " +
-                                "Status as 'Status' " +
-                                "FROM room";
+                               "Room_No as 'Room Number', " +
+                               "Room_Type as 'Room Type', " +
+                               "Room_Rate as 'Room Rate', " +
+                               "Bed as 'Bed', " +
+                               "Status as 'Status' " +
+                               "FROM room";
 
                 MySqlCommand cmd = new MySqlCommand(query, sqlconn);
                 MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
@@ -100,16 +101,28 @@ namespace PENTACARE
             string roomRate = row.Cells["Room Rate"].Value?.ToString() ?? "";
             string status = row.Cells["Status"].Value?.ToString() ?? "";
 
-            if (status.Equals("Available", StringComparison.OrdinalIgnoreCase))
+            string dbconnect = "server=127.0.0.1; database=pentacare; username=root; password=;";
+            using (MySqlConnection sqlconn = new MySqlConnection(dbconnect))
             {
-                AssignRoom assignForm = new AssignRoom(roomID, roomType, roomRate);
-                assignForm.Show();
-                this.Hide();
-            }
-            else
-            {
-                MessageBox.Show("This room is not available for assignment.",
-                                "Room Not Available", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                sqlconn.Open();
+
+                string bedQuery = "SELECT COUNT(*) FROM bed WHERE RoomID = @RoomID AND Status = 'Available'";
+                using (MySqlCommand cmd = new MySqlCommand(bedQuery, sqlconn))
+                {
+                    cmd.Parameters.AddWithValue("@RoomID", roomID);
+                    int availableBeds = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    if (availableBeds > 0)
+                    {
+                        AssignRoom assignForm = new AssignRoom(roomID, roomType, roomRate);
+                        assignForm.Show();
+                        this.Hide();
+                    }
+                    else
+                    {
+                        MessageBox.Show("No available beds in this room.", "Room Full", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
             }
         }
 
@@ -124,20 +137,12 @@ namespace PENTACARE
             {
                 DataGridViewRow row = dgvRoom.Rows[e.RowIndex];
 
-                string status = row.Cells["Status"].Value?.ToString() ?? "";
+                int roomID = Convert.ToInt32(row.Cells["Room ID"].Value);
+                string roomType = row.Cells["Room Type"].Value?.ToString() ?? "";
 
-                if (status.Equals("Occupied", StringComparison.OrdinalIgnoreCase))
-                {
-
-                    int roomID = Convert.ToInt32(row.Cells["Room ID"].Value);
-                    View_RoomRec viewForm = new View_RoomRec(roomID, this);
-                    this.Hide();
-                    viewForm.Show();
-                }
-                else
-                {
-                    MessageBox.Show("This room is not occupied.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                View_RoomRec viewForm = new View_RoomRec(roomID, this);
+                this.Hide();
+                viewForm.Show();
             }
         }
 
@@ -151,7 +156,7 @@ namespace PENTACARE
             string dbconnect = "server=127.0.0.1; database=pentacare; username=root; password=;";
             MySqlConnection conn = new MySqlConnection(dbconnect);
 
-            // Search by RoomID, Room_No, or Room_Type
+            
             string query = "SELECT RoomID AS 'Room ID', Room_No AS 'Room Number', Room_Type AS 'Room Type', Room_Rate AS 'Room Rate', Status AS 'Status' " +
                            "FROM room WHERE RoomID LIKE '%" + txt_searchRoom.Text + "%' " +
                            "OR Room_No LIKE '%" + txt_searchRoom.Text + "%' " +
@@ -177,6 +182,7 @@ namespace PENTACARE
                              "Room_No AS 'Room Number', " +
                              "Room_Type AS 'Room Type', " +
                              "Room_Rate AS 'Room Rate', " +
+                             "Bed AS 'Bed', " +
                              "Status AS 'Status' " +
                              "FROM room WHERE 1";
 

@@ -28,6 +28,8 @@ namespace PentaCare
             doctorName = dname;
             roomNo = room;
 
+            this.WindowState = FormWindowState.Maximized;
+
 
 
             //dataGridView1.Size = new Size(1463, 351);

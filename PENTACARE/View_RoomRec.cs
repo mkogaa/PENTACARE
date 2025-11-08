@@ -37,7 +37,8 @@ namespace PENTACARE
             using (MySqlConnection conn = new MySqlConnection(dbconnect))
             {
                 string query = @"SELECT r.Room_No AS 'RoomNumber', 
-                                r.Room_Type AS 'RoomType', 
+                                r.Room_Type AS 'RoomType',
+                                r.Status AS 'RoomStatus',
                                 p.Name AS 'PatientName', 
                                 p.Age, 
                                 p.Gender, 
@@ -59,6 +60,7 @@ namespace PENTACARE
                         {
                             lblRoomNo.Text = reader["RoomNumber"].ToString();
                             lblType.Text = reader["RoomType"].ToString();
+                            lblStatus.Text = reader["RoomStatus"].ToString();
                             lblPatient.Text = reader["PatientName"].ToString();
                             lblAge.Text = reader["Age"].ToString();
                             lblGender.Text = reader["Gender"].ToString();

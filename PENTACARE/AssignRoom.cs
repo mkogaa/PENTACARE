@@ -70,6 +70,13 @@ namespace PENTACARE
                 return;
             }
 
+            if (cb_bed.SelectedValue == null)
+            {
+                MessageBox.Show("Please select an available bed.", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int bedID = Convert.ToInt32(cb_bed.SelectedValue);
             string dbconnect = "server=127.0.0.1; database=pentacare; username=root; password=;";
 
             using (MySqlConnection sqlconn = new MySqlConnection(dbconnect))
@@ -83,7 +90,6 @@ namespace PENTACARE
                     {
                         checkCmd.Parameters.AddWithValue("@PatientID", txt_patientID.Text);
                         int count = Convert.ToInt32(checkCmd.ExecuteScalar());
-
                         if (count > 0)
                         {
                             MessageBox.Show("This patient is already assigned to a room.", "Assignment Blocked", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -91,30 +97,21 @@ namespace PENTACARE
                         }
                     }
 
-                    string query = @"INSERT INTO room_assign 
-                            (PatientID, RoomID, Room_Type, Room_Fee, Admission_Date, Expected_Discharge, Remarks, Status)
-                             VALUES (@PatientID, @RoomID, @RoomType, @RoomFee, @AdmissionDate, @ExpectedDischarge, @Remarks, @Status)";
-
-                    using (MySqlCommand cmd = new MySqlCommand(query, sqlconn))
+                    string insertQuery = @"INSERT INTO room_assign 
+                                   (PatientID, RoomID, BedID, Room_Type, Room_Fee, Admission_Date, Expected_Discharge, Remarks, Status)
+                                   VALUES (@PatientID, @RoomID, @BedID, @RoomType, @RoomFee, @AdmissionDate, @ExpectedDischarge, @Remarks, @Status)";
+                    using (MySqlCommand insertCmd = new MySqlCommand(insertQuery, sqlconn))
                     {
-                        cmd.Parameters.AddWithValue("@PatientID", txt_patientID.Text);
-                        cmd.Parameters.AddWithValue("@RoomID", selectedRoomID);
-                        cmd.Parameters.AddWithValue("@RoomType", txt_roomType.Text);
-                        cmd.Parameters.AddWithValue("@RoomFee", txt_roomRate.Text);
-                        cmd.Parameters.AddWithValue("@AdmissionDate", dtp_AD.Value);
-                        cmd.Parameters.AddWithValue("@ExpectedDischarge", dtp_ED.Value);
-                        cmd.Parameters.AddWithValue("@Remarks", txt_Remarks.Text);
-                        cmd.Parameters.AddWithValue("@Status", "Occupied");
-
-                        cmd.ExecuteNonQuery();
-                    }
-
-                    string updateRoom = "UPDATE room SET PatientID = @PatientID, Status = 'Occupied' WHERE RoomID = @RoomID";
-                    using (MySqlCommand updateRoomCmd = new MySqlCommand(updateRoom, sqlconn))
-                    {
-                        updateRoomCmd.Parameters.AddWithValue("@PatientID", txt_patientID.Text);
-                        updateRoomCmd.Parameters.AddWithValue("@RoomID", selectedRoomID);
-                        updateRoomCmd.ExecuteNonQuery();
+                        insertCmd.Parameters.AddWithValue("@PatientID", txt_patientID.Text);
+                        insertCmd.Parameters.AddWithValue("@RoomID", selectedRoomID);
+                        insertCmd.Parameters.AddWithValue("@BedID", bedID);
+                        insertCmd.Parameters.AddWithValue("@RoomType", txt_roomType.Text);
+                        insertCmd.Parameters.AddWithValue("@RoomFee", txt_roomRate.Text);
+                        insertCmd.Parameters.AddWithValue("@AdmissionDate", dtp_AD.Value);
+                        insertCmd.Parameters.AddWithValue("@ExpectedDischarge", dtp_ED.Value);
+                        insertCmd.Parameters.AddWithValue("@Remarks", txt_Remarks.Text);
+                        insertCmd.Parameters.AddWithValue("@Status", "Occupied");
+                        insertCmd.ExecuteNonQuery();
                     }
 
                     string updatePatient = "UPDATE patient SET RoomID = @RoomID, Status = 'Admitted' WHERE PatientID = @PatientID";
@@ -125,9 +122,31 @@ namespace PENTACARE
                         updatePatientCmd.ExecuteNonQuery();
                     }
 
-                    MessageBox.Show("Patient successfully assigned! Room status updated to Occupied.",
-                                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    string updateBed = "UPDATE bed SET Status = 'Occupied' WHERE BedID = @BedID";
+                    using (MySqlCommand updateBedCmd = new MySqlCommand(updateBed, sqlconn))
+                    {
+                        updateBedCmd.Parameters.AddWithValue("@BedID", bedID);
+                        updateBedCmd.ExecuteNonQuery();
+                    }
 
+                    string checkBedsQuery = "SELECT COUNT(*) FROM bed WHERE RoomID = @RoomID AND Status = 'Available'";
+                    int availableBeds;
+                    using (MySqlCommand checkBedsCmd = new MySqlCommand(checkBedsQuery, sqlconn))
+                    {
+                        checkBedsCmd.Parameters.AddWithValue("@RoomID", selectedRoomID);
+                        availableBeds = Convert.ToInt32(checkBedsCmd.ExecuteScalar());
+                    }
+
+                    string roomStatus = availableBeds == 0 ? "Occupied" : "Available";
+                    string updateRoom = "UPDATE room SET Status = @Status WHERE RoomID = @RoomID";
+                    using (MySqlCommand updateRoomCmd = new MySqlCommand(updateRoom, sqlconn))
+                    {
+                        updateRoomCmd.Parameters.AddWithValue("@Status", roomStatus);
+                        updateRoomCmd.Parameters.AddWithValue("@RoomID", selectedRoomID);
+                        updateRoomCmd.ExecuteNonQuery();
+                    }
+
+                    MessageBox.Show($"Patient successfully assigned! {availableBeds} bed(s) remaining in this room.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     this.Hide();
                     Room_Management rm = new Room_Management();
@@ -139,6 +158,8 @@ namespace PENTACARE
                 }
             }
         }
+
+
 
         private void btn_assign_Paint(object sender, PaintEventArgs e)
         {
@@ -160,5 +181,39 @@ namespace PENTACARE
             rm.Show();
             this.Hide();
         }
+
+        private void AssignRoom_Load(object sender, EventArgs e)
+        {
+            LoadAvailableBeds();
+        }
+
+        private void LoadAvailableBeds()
+        {
+            string dbconnect = "server=127.0.0.1; database=pentacare; username=root; password=;";
+            using (MySqlConnection sqlconn = new MySqlConnection(dbconnect))
+            {
+                try
+                {
+                    sqlconn.Open();
+                    string query = "SELECT BedID, Bed_No FROM bed WHERE RoomID = @RoomID AND Status = 'Available'";
+                    using (MySqlCommand cmd = new MySqlCommand(query, sqlconn))
+                    {
+                        cmd.Parameters.AddWithValue("@RoomID", selectedRoomID);
+                        MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        adapter.Fill(dt);
+
+                        cb_bed.DataSource = dt;
+                        cb_bed.DisplayMember = "Bed_No";
+                        cb_bed.ValueMember = "BedID";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error loading available beds: " + ex.Message);
+                }
+            }
+        }
+
     }
 }

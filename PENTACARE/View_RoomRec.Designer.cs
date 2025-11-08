@@ -36,6 +36,7 @@
             lblGender = new Label();
             lblAD = new Label();
             btn_backk = new Panel();
+            lblStatus = new Label();
             SuspendLayout();
             // 
             // lblRoomNo
@@ -119,6 +120,18 @@
             btn_backk.TabIndex = 6;
             btn_backk.Click += btn_backk_Click;
             // 
+            // lblStatus
+            // 
+            lblStatus.AutoSize = true;
+            lblStatus.BackColor = Color.Transparent;
+            lblStatus.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblStatus.ForeColor = Color.Black;
+            lblStatus.Location = new Point(826, 368);
+            lblStatus.Name = "lblStatus";
+            lblStatus.Size = new Size(70, 28);
+            lblStatus.TabIndex = 7;
+            lblStatus.Text = "label2";
+            // 
             // View_RoomRec
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -126,6 +139,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(lblStatus);
             Controls.Add(btn_backk);
             Controls.Add(lblAD);
             Controls.Add(lblGender);
@@ -149,5 +163,6 @@
         private Label lblGender;
         private Label lblAD;
         private Panel btn_backk;
+        private Label lblStatus;
     }
 }

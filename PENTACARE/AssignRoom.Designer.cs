@@ -39,18 +39,19 @@
             btn_assign = new Panel();
             btn_clear = new Panel();
             btn_back = new Panel();
+            cb_bed = new ComboBox();
             SuspendLayout();
             // 
             // dtp_AD
             // 
-            dtp_AD.Location = new Point(665, 619);
+            dtp_AD.Location = new Point(668, 664);
             dtp_AD.Name = "dtp_AD";
             dtp_AD.Size = new Size(381, 27);
             dtp_AD.TabIndex = 0;
             // 
             // dtp_ED
             // 
-            dtp_ED.Location = new Point(665, 683);
+            dtp_ED.Location = new Point(668, 728);
             dtp_ED.Name = "dtp_ED";
             dtp_ED.Size = new Size(381, 27);
             dtp_ED.TabIndex = 1;
@@ -119,6 +120,14 @@
             btn_back.TabIndex = 8;
             btn_back.Click += btn_back_Click;
             // 
+            // cb_bed
+            // 
+            cb_bed.FormattingEnabled = true;
+            cb_bed.Location = new Point(501, 565);
+            cb_bed.Name = "cb_bed";
+            cb_bed.Size = new Size(335, 28);
+            cb_bed.TabIndex = 9;
+            // 
             // AssignRoom
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -126,6 +135,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(cb_bed);
             Controls.Add(btn_back);
             Controls.Add(btn_clear);
             Controls.Add(btn_assign);
@@ -138,6 +148,7 @@
             Controls.Add(dtp_AD);
             Name = "AssignRoom";
             Text = "AssignRoom";
+            Load += AssignRoom_Load;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -155,5 +166,6 @@
         private Panel btn_clear;
         private Panel panel2;
         private Panel btn_back;
+        private ComboBox cb_bed;
     }
 }

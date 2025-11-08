@@ -34,6 +34,7 @@
             txt_Rate = new TextBox();
             cb_RoomType = new ComboBox();
             cb_Status = new ComboBox();
+            txt_beds = new TextBox();
             SuspendLayout();
             // 
             // btn_addRoom
@@ -56,7 +57,7 @@
             // txt_Rate
             // 
             txt_Rate.BackColor = Color.LightSteelBlue;
-            txt_Rate.Location = new Point(970, 501);
+            txt_Rate.Location = new Point(970, 469);
             txt_Rate.Name = "txt_Rate";
             txt_Rate.Size = new Size(557, 27);
             txt_Rate.TabIndex = 4;
@@ -69,15 +70,24 @@
             cb_RoomType.Name = "cb_RoomType";
             cb_RoomType.Size = new Size(557, 28);
             cb_RoomType.TabIndex = 6;
+            cb_RoomType.SelectedIndexChanged += cb_RoomType_SelectedIndexChanged;
             // 
             // cb_Status
             // 
             cb_Status.FormattingEnabled = true;
             cb_Status.Items.AddRange(new object[] { "Available", "Under Maintenance" });
-            cb_Status.Location = new Point(970, 594);
+            cb_Status.Location = new Point(970, 549);
             cb_Status.Name = "cb_Status";
             cb_Status.Size = new Size(557, 28);
             cb_Status.TabIndex = 7;
+            // 
+            // txt_beds
+            // 
+            txt_beds.BackColor = Color.LightSteelBlue;
+            txt_beds.Location = new Point(970, 632);
+            txt_beds.Name = "txt_beds";
+            txt_beds.Size = new Size(557, 27);
+            txt_beds.TabIndex = 8;
             // 
             // AddRoom
             // 
@@ -86,6 +96,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(txt_beds);
             Controls.Add(cb_Status);
             Controls.Add(cb_RoomType);
             Controls.Add(txt_Rate);
@@ -105,5 +116,6 @@
         private TextBox txt_Rate;
         private ComboBox cb_RoomType;
         private ComboBox cb_Status;
+        private TextBox txt_beds;
     }
 }

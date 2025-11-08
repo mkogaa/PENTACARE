@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using PENTACARE.Properties;
+
 
 namespace PentaCare
 {
@@ -18,6 +20,9 @@ namespace PentaCare
         public AddDoctors()
         {
             InitializeComponent();
+
+
+
 
             this.WindowState = FormWindowState.Maximized;
         }
@@ -29,7 +34,26 @@ namespace PentaCare
             string contact = docContact.Text;
             string email = docEmail.Text;
 
+            if ((name == null || name == "") && (specialty == null || specialty == "") &&
+                (contact == null || contact == "") && (email == null || email == ""))
+            {
+                MessageBox.Show("No doctors added!");
+                return;
+            }
 
+            if (name == null || name == "" || specialty == null || specialty == "" ||
+                contact == null || contact == "" || email == null || email == "")
+            {
+                MessageBox.Show("Please complete all fields!");
+                return;
+            }
+
+            if (!long.TryParse(docContact.Text, out long phoneNumber) || docContact.Text.Length != 11)
+            {
+                MessageBox.Show("Phone number must be exactly 11 digits and contain numbers only.",
+                    "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             string dbconnect = "server= 127.0.0.1; database=pentacare; uid=root; ";
             MySqlConnection conn = new MySqlConnection(dbconnect);
@@ -64,6 +88,11 @@ namespace PentaCare
             DoctorandRecords doctorandRecords = new DoctorandRecords();
             doctorandRecords.Show();
             this.Hide();
+        }
+
+        private void AddDoctors_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

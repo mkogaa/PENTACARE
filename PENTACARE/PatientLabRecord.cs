@@ -18,18 +18,21 @@ namespace PentaCare
         private string patientName;
         private string doctorName;
         private string roomNo;
+        private string doctorSpecialty;
 
 
-        public PatientLabRecord(string id, string name, string dname, string room)
+        public PatientLabRecord(string id, string name, string dname, string room, string specialty)
         {
             InitializeComponent();
             patientID = id;
             patientName = name;
             doctorName = dname;
             roomNo = room;
+            doctorSpecialty = specialty;
 
             this.WindowState = FormWindowState.Maximized;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.doctorSpecialty = doctorSpecialty;
 
 
 
@@ -78,6 +81,7 @@ namespace PentaCare
             pName.Text = patientName;
             doc.Text = doctorName;
             room.Text = roomNo;
+            lblSpecialty.Text = doctorSpecialty;
             //nagkakabaliktad hindi k alam bakit 
         }
 
@@ -94,11 +98,6 @@ namespace PentaCare
 
         
 
-        private void viewbtn_Click(object sender, EventArgs e)
-        {
-            View view = new View(patientID, patientName, doctorName, roomNo);
-            view.Show();
-            this.Hide();
-        }
+       
     }
 }

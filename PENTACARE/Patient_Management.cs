@@ -44,7 +44,7 @@ namespace PentaCare
 
             conn.Open();
 
-            sqlcmd.CommandText = "SELECT p.PatientID, p.Name, p.Gender, r.Room_No, d.Doctor_Name, p.Status, p.Admission_Date " +
+            sqlcmd.CommandText = "SELECT p.PatientID, p.Name, p.Gender, r.Room_No, d.Doctor_Name, d.Specialty, p.Status, p.Admission_Date " +
                      "FROM patient AS p " +
                      "LEFT JOIN room AS r ON p.RoomID = r.RoomID " +
                      "LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID";
@@ -79,10 +79,11 @@ namespace PentaCare
                 string patientName = row.Cells["Name"].Value.ToString();
                 string roomNo = row.Cells["Room_No"].Value.ToString();
                 string doctorName = row.Cells["Doctor_Name"].Value.ToString();
+                string doctorSpecialty = row.Cells["Specialty"].Value.ToString();
 
 
                 // Open new form and pass data
-                PatientLabRecord labForm = new PatientLabRecord(patientID, patientName, roomNo, doctorName);
+                PatientLabRecord labForm = new PatientLabRecord(patientID, patientName, roomNo, doctorName, doctorSpecialty);
                 labForm.Show();  // Or .ShowDialog() if you want it modal
                 this.Hide();
             }

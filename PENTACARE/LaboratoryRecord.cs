@@ -66,7 +66,7 @@ namespace USERS_WINDOW
             {
                 con.Open();
                 string query = @"SELECT 
-                                    CONCAT(p.First_Name, ' ', p.Last_Name) AS Name, 
+                                    Name, 
                                     IFNULL(r.Room_No, 'N/A') AS Room_No, 
                                     IFNULL(d.Doctor_Name, 'N/A') AS Doctor_Name, 
                                     IFNULL(d.Specialty, 'N/A') AS Specialty

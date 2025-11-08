@@ -34,6 +34,7 @@
             room = new Label();
             doc = new Label();
             textBox1 = new TextBox();
+            lblSpecialty = new Label();
             SuspendLayout();
             // 
             // panel1
@@ -89,6 +90,17 @@
             textBox1.Size = new Size(655, 36);
             textBox1.TabIndex = 5;
             // 
+            // lblSpecialty
+            // 
+            lblSpecialty.AutoSize = true;
+            lblSpecialty.BackColor = Color.Transparent;
+            lblSpecialty.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblSpecialty.Location = new Point(1176, 266);
+            lblSpecialty.Name = "lblSpecialty";
+            lblSpecialty.Size = new Size(90, 41);
+            lblSpecialty.TabIndex = 6;
+            lblSpecialty.Text = "Value";
+            // 
             // PatientLabRecord
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -96,6 +108,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(lblSpecialty);
             Controls.Add(textBox1);
             Controls.Add(doc);
             Controls.Add(room);
@@ -115,5 +128,6 @@
         private Label room;
         private Label doc;
         private TextBox textBox1;
+        private Label lblSpecialty;
     }
 }

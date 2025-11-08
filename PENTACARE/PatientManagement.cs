@@ -32,17 +32,18 @@ namespace USERS_WINDOW
                 con.Open();
 
                 string query = @"SELECT 
-                                    PatientID AS 'Patient ID',
-                                    Name AS 'Full Name',
-                                    Age,
-                                    Gender,
-                                    Address,
-                                    Contact_No AS 'Contact No',
-                                    Admission_Date AS 'Admission Date',
-                                    Discharge_Date AS 'Discharge Date',
-                                    Status
-                                 FROM patient
-                                 WHERE 1=1";
+                    PatientID AS 'Patient ID',
+                    Name AS 'Full Name',
+                    Age,
+                    Gender,
+                    Address,
+                    Contact_No AS 'Contact No',
+                    CASE WHEN Admission_Date = '0000-00-00' THEN NULL ELSE Admission_Date END AS 'Admission Date',
+                    CASE WHEN Discharge_Date = '0000-00-00' THEN NULL ELSE Discharge_Date END AS 'Discharge Date',
+                    Status
+                 FROM patient
+                 WHERE 1=1";
+
 
 
                 if (!string.IsNullOrWhiteSpace(search))
@@ -63,6 +64,16 @@ namespace USERS_WINDOW
                 da = new MySqlDataAdapter(cmd);
                 dt = new DataTable();
                 da.Fill(dt);
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (row["Admission Date"] != DBNull.Value)
+                        row["Admission Date"] = Convert.ToDateTime(row["Admission Date"]).ToString("yyyy-MM-dd");
+
+                    if (row["Discharge Date"] != DBNull.Value)
+                        row["Discharge Date"] = Convert.ToDateTime(row["Discharge Date"]).ToString("yyyy-MM-dd");
+                }
+
                 dgv_patient.DataSource = dt;
             }
             catch (Exception ex)

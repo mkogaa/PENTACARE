@@ -23,6 +23,8 @@ namespace PENTACARE
             this.roomID = roomID;
 
             this.WindowState = FormWindowState.Maximized;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+
             this.parentForm = parentForm;
         }
 

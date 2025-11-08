@@ -13,6 +13,8 @@ namespace PentaCare
             InitializeComponent();
             dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             this.WindowState = FormWindowState.Maximized;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+
 
         }
 

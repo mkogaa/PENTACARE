@@ -18,6 +18,8 @@ namespace PentaCare
         {
             InitializeComponent();
             this.WindowState = FormWindowState.Maximized;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+
         }
 
         private void AddPatient_Load(object sender, EventArgs e)

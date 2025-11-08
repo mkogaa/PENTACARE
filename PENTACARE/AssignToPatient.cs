@@ -20,6 +20,8 @@ namespace PentaCare
             InitializeComponent();
 
             this.WindowState = FormWindowState.Maximized;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+
         }
 
         private void assignBtn_Click(object sender, EventArgs e)

@@ -19,6 +19,8 @@ namespace PENTACARE
             InitializeComponent();
 
             this.WindowState = FormWindowState.Maximized;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+
 
             dgvRoom.CellDoubleClick += dgvRoom_CellDoubleClick;
         }

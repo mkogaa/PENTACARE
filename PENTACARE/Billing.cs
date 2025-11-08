@@ -17,6 +17,8 @@ namespace PENTACARE
             InitializeComponent();
 
             this.WindowState = FormWindowState.Maximized;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+
         }
 
         private void Billing_Load(object sender, EventArgs e)

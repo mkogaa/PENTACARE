@@ -29,6 +29,8 @@ namespace PentaCare
             roomNo = room;
 
             this.WindowState = FormWindowState.Maximized;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+
 
 
 

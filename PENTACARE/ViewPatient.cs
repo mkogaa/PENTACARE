@@ -22,6 +22,8 @@ namespace PentaCare
             doctorName = dName;
 
             this.WindowState = FormWindowState.Maximized;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+
         }
 
         private void backBtn_Click(object sender, EventArgs e)

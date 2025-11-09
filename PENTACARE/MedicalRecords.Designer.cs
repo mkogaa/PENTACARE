@@ -34,7 +34,6 @@
             dgvRecords = new DataGridView();
             btnRefresh = new Button();
             btnClose = new Button();
-            btnAdd = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvRecords).BeginInit();
             SuspendLayout();
             // 
@@ -59,7 +58,6 @@
             txtFilter.Name = "txtFilter";
             txtFilter.Size = new Size(311, 35);
             txtFilter.TabIndex = 8;
-            txtFilter.SelectedIndexChanged += txtFilter_SelectedIndexChanged;
             // 
             // dgvRecords
             // 
@@ -80,9 +78,9 @@
             btnRefresh.FlatStyle = FlatStyle.Flat;
             btnRefresh.Font = new Font("Century Gothic", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnRefresh.ForeColor = SystemColors.ButtonFace;
-            btnRefresh.Location = new Point(1305, 924);
+            btnRefresh.Location = new Point(1427, 924);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(254, 58);
+            btnRefresh.Size = new Size(170, 58);
             btnRefresh.TabIndex = 7;
             btnRefresh.Text = "Refresh";
             btnRefresh.UseVisualStyleBackColor = false;
@@ -95,28 +93,13 @@
             btnClose.FlatStyle = FlatStyle.Flat;
             btnClose.Font = new Font("Century Gothic", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnClose.ForeColor = SystemColors.ButtonFace;
-            btnClose.Location = new Point(1596, 924);
+            btnClose.Location = new Point(1648, 921);
             btnClose.Name = "btnClose";
-            btnClose.Size = new Size(227, 48);
+            btnClose.Size = new Size(175, 61);
             btnClose.TabIndex = 8;
             btnClose.Text = "Close";
             btnClose.UseVisualStyleBackColor = false;
             btnClose.Click += btnClose_Click;
-            // 
-            // btnAdd
-            // 
-            btnAdd.BackColor = Color.Transparent;
-            btnAdd.FlatAppearance.BorderSize = 0;
-            btnAdd.FlatStyle = FlatStyle.Flat;
-            btnAdd.Font = new Font("Century Gothic", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnAdd.ForeColor = SystemColors.ButtonFace;
-            btnAdd.Location = new Point(94, 924);
-            btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(225, 58);
-            btnAdd.TabIndex = 9;
-            btnAdd.Text = "Add";
-            btnAdd.UseVisualStyleBackColor = false;
-            btnAdd.Click += btnAdd_Click;
             // 
             // MedicalRecords
             // 
@@ -126,13 +109,13 @@
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
             Controls.Add(txtFilter);
-            Controls.Add(btnAdd);
             Controls.Add(btnClose);
             Controls.Add(btnRefresh);
             Controls.Add(txtSearch);
             Controls.Add(dgvRecords);
             Name = "MedicalRecords";
-            Text = "Form2";
+            SizeGripStyle = SizeGripStyle.Show;
+            Text = "c";
             Load += MedicalRecords_Load;
             ((System.ComponentModel.ISupportInitialize)dgvRecords).EndInit();
             ResumeLayout(false);
@@ -146,6 +129,5 @@
         private DataGridView dgvRecords;
         private Button btnRefresh;
         private Button btnClose;
-        private Button btnAdd;
     }
 }

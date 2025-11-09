@@ -18,15 +18,26 @@ namespace USERS_WINDOW
 {
     public partial class MedicalRecords : Form
     {
+        private int doctorID;
+        private UserDashboard dashboardForm;
+
         public static class DBConnection
+
         {
             public static string connString = "server=localhost;user id=root;password=;database=pentacare;";
         }
 
-        public MedicalRecords()
+        public MedicalRecords(UserDashboard dashboard, int id)
         {
             InitializeComponent();
+
+            this.WindowState = FormWindowState.Maximized;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+
             InitializeDGV();
+            doctorID = id;
+            dashboardForm = dashboard;
+
             LoadRecords();
         }
 
@@ -48,43 +59,50 @@ namespace USERS_WINDOW
 
         private void LoadRecords()
         {
-            string query = @"SELECT m.RecordID, p.PatientID, p.Patient_Name, p.Age, p.Gender, 
-                             p.`Contact_No.`, p.`Address`, m.BP, m.HR, m.Temp, m.Allergies, m.Diagnosis, m.Treatment
-                             FROM patient_medrec p 
-                             LEFT JOIN medical_records m 
-                             ON p.PatientID = m.PatientID 
-                             AND m.RecordDate = (SELECT MAX(m2.RecordDate) FROM medical_records m2 WHERE m2.PatientID = p.PatientID)
-                             ORDER BY p.Patient_Name;";
-
-            using (MySqlConnection conn = new MySqlConnection(DBConnection.connString))
+            try
             {
-                conn.Open();
-                MySqlCommand cmd = new MySqlCommand(query, conn);
-                using (MySqlDataReader reader = cmd.ExecuteReader())
+                string query = @"SELECT p.PatientID, p.Name, p.Age, p.Gender, p.Contact_No, p.Address
+                 FROM patient p
+                 INNER JOIN doctor_patient dp ON p.PatientID = dp.PatientID
+                 WHERE dp.DoctorID = @DoctorID
+                 ORDER BY p.Name;";
+
+
+                using (MySqlConnection conn = new MySqlConnection(DBConnection.connString))
                 {
-                    dgvRecords.Rows.Clear();
-                    while (reader.Read())
+                    conn.Open();
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@DoctorID", doctorID);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        dgvRecords.Rows.Add(
-                            reader["RecordID"],
-                            reader["PatientID"],
-                            reader["Patient_Name"],
-                            reader["Age"],
-                            reader["Gender"],
-                            reader["Contact_No."],
-                            reader["Address"],
-                            reader["BP"],
-                            reader["HR"],
-                            reader["Temp"],
-                            reader["Allergies"],
-                            reader["Diagnosis"],
-                            reader["Treatment"],
-                            "View Details"
-                        );
+                        dgvRecords.Rows.Clear(); 
+
+                        while (reader.Read())
+                        {
+                            dgvRecords.Rows.Add(
+                                reader["PatientID"],
+                                reader["Name"],
+                                reader["Age"],
+                                reader["Gender"],
+                                reader["Contact_No"],
+                                reader["Address"],
+                                "View Details",
+                                "Add Record"  
+                            );
+                        }
                     }
                 }
+
+                dgvRecords.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                dgvRecords.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading patients: " + ex.Message);
             }
         }
+        
 
         private void InitializeDGV()
         {
@@ -94,20 +112,12 @@ namespace USERS_WINDOW
             dgvRecords.DefaultCellStyle.Font = new Font("Century Gothic", 8, FontStyle.Regular);
             dgvRecords.ColumnHeadersDefaultCellStyle.Font = new Font("Century Gothic", 10, FontStyle.Bold);
 
-
-            dgvRecords.Columns.Add("RecordID", "Record ID");
             dgvRecords.Columns.Add("PatientID", "Patient ID");
-            dgvRecords.Columns.Add("Patient_Name", "Name");
+            dgvRecords.Columns.Add("Name", "Name");
             dgvRecords.Columns.Add("Age", "Age");
             dgvRecords.Columns.Add("Gender", "Gender");
-            dgvRecords.Columns.Add("Contact_No.", "Contact");
+            dgvRecords.Columns.Add("Contact_No", "Contact");
             dgvRecords.Columns.Add("Address", "Address");
-            dgvRecords.Columns.Add("BP", "BP");
-            dgvRecords.Columns.Add("HR", "HR");
-            dgvRecords.Columns.Add("Temp", "Temp");
-            dgvRecords.Columns.Add("Allergies", "Allergies");
-            dgvRecords.Columns.Add("Diagnosis", "Diagnosis");
-            dgvRecords.Columns.Add("Treatment", "Treatment");
 
             DataGridViewButtonColumn viewDetailsColumn = new DataGridViewButtonColumn
             {
@@ -116,7 +126,6 @@ namespace USERS_WINDOW
                 UseColumnTextForButtonValue = true,
                 HeaderText = "Action"
             };
-
             dgvRecords.Columns.Add(viewDetailsColumn);
 
             DataGridViewButtonColumn addRecordColumn = new DataGridViewButtonColumn
@@ -142,119 +151,74 @@ namespace USERS_WINDOW
 
             dgvRecords.Columns["PatientID"].FillWeight = 70;
             dgvRecords.Columns["Age"].FillWeight = 60;
-            dgvRecords.Columns["Patient_Name"].FillWeight = 150;
-            dgvRecords.Columns["Diagnosis"].FillWeight = 140;
+            dgvRecords.Columns["Name"].FillWeight = 150;
             dgvRecords.Columns["Address"].FillWeight = 120;
             dgvRecords.Columns["Action"].FillWeight = 100;
             dgvRecords.Columns["AddRecord"].FillWeight = 100;
-
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            UserDashboard dashboard = new UserDashboard(0);
-            dashboard.Show();
-            this.Hide();
-        }
-
-        private void txtFilter_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
+            dashboardForm.Show();  // ✅ show the existing dashboard
+            this.Close();
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-
             string search = txtSearch.Text.Trim();
             string filter = txtFilter.SelectedItem?.ToString() ?? "Name";
 
-            if (string.IsNullOrEmpty(search))
+            try
             {
-                LoadRecords();
-                return;
-            }
-
-            string query = "";
-
-            if (filter == "Name")
-                query = @"SELECT p.PatientID, p.Patient_Name, p.Age, p.Gender, p.`Contact_No.`, p.`Address`, 
-                          m.Allergies, m.Diagnosis, m.Treatment
-                          FROM patient_medrec p 
-                          LEFT JOIN medical_records m ON p.PatientID = m.PatientID 
-                          AND m.RecordDate = (SELECT MAX(m2.RecordDate) FROM medical_records m2 WHERE m2.PatientID = p.PatientID)
-                          WHERE p.Patient_Name LIKE @search;";
-            else if (filter == "ID")
-                query = @"SELECT p.PatientID, p.Patient_Name, p.Age, p.Gender, p.`Contact_No.`, p.`Address`, 
-                          m.Allergies, m.Diagnosis, m.Treatment
-                          FROM patient_medrec p 
-                          LEFT JOIN medical_records m ON p.PatientID = m.PatientID
-                          AND m.RecordDate = (SELECT MAX(m2.RecordDate) FROM medical_records m2 WHERE m2.PatientID = p.PatientID)
-                          WHERE p.PatientID LIKE @search;";
-            else if (filter == "Age")
-                query = @"SELECT p.PatientID, p.Patient_Name, p.Age, p.Gender, p.`Contact_No.`, p.`Address`, 
-                          m.Allergies, m.Diagnosis, m.Treatment
-                          FROM patient_medrec p 
-                          LEFT JOIN medical_records m ON p.PatientID = m.PatientID
-                          AND m.RecordDate = (SELECT MAX(m2.RecordDate) FROM medical_records m2 WHERE m2.PatientID = p.PatientID)
-                          WHERE p.Age LIKE @search;";
-            else if (filter == "Address")
-                query = @"SELECT p.PatientID, p.Patient_Name, p.Age, p.Gender, p.`Contact_No.`, p.`Address`, 
-                          m.Allergies, m.Diagnosis, m.Treatment
-                          FROM patient_medrec p 
-                          LEFT JOIN medical_records m ON p.PatientID = m.PatientID
-                          AND m.RecordDate = (SELECT MAX(m2.RecordDate) FROM medical_records m2 WHERE m2.PatientID = p.PatientID)
-                          WHERE p.`Address` LIKE @search;";
-            else if (filter == "Diagnosis")
-                query = @"SELECT p.PatientID, p.Patient_Name, p.Age, p.Gender, p.`Contact_No.`, p.`Address`, 
-                          m.Allergies, m.Diagnosis, m.Treatment
-                          FROM patient_medrec p 
-                          LEFT JOIN medical_records m ON p.PatientID = m.PatientID
-                          AND m.RecordDate = (SELECT MAX(m2.RecordDate) FROM medical_records m2 WHERE m2.PatientID = p.PatientID)
-                          WHERE m.Diagnosis LIKE @search;";
-
-
-            using (MySqlConnection conn = new MySqlConnection(DBConnection.connString))
-            {
-                conn.Open();
-                MySqlCommand cmd = new MySqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@search", "%" + search + "%");
-
-                using (MySqlDataReader reader = cmd.ExecuteReader())
+                using (MySqlConnection conn = new MySqlConnection(DBConnection.connString))
                 {
-                    dgvRecords.Rows.Clear();
-                    while (reader.Read())
+                    conn.Open();
+
+                    string query = @"SELECT p.PatientID, p.Name, p.Age, p.Gender, p.Contact_No, p.Address
+                             FROM patient p
+                             INNER JOIN doctor_patient dp ON p.PatientID = dp.PatientID
+                             WHERE dp.DoctorID = @DoctorID";
+
+                    if (!string.IsNullOrEmpty(search))
                     {
-                        dgvRecords.Rows.Add(
-                            DBNull.Value,
-                            reader["PatientID"],
-                            reader["Patient_Name"],
-                            reader["Age"],
-                            reader["Gender"],
-                            reader["Contact_No."],
-                            reader["Address"],
-                            DBNull.Value,
-                            DBNull.Value,
-                            DBNull.Value,
-                            reader["Allergies"],
-                            reader["Diagnosis"],
-                            reader["Treatment"],
-                            "View Details"
-                        );
+                        if (filter == "Name")
+                            query += " AND p.Name LIKE @search";
+                        else if (filter == "ID")
+                            query += " AND p.PatientID LIKE @search";
+                        else if (filter == "Age")
+                            query += " AND p.Age LIKE @search";
+                        else if (filter == "Address")
+                            query += " AND p.Address LIKE @search";
+                    }
+
+                    query += " ORDER BY p.Patient_Name;";
+
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@DoctorID", doctorID);
+                    cmd.Parameters.AddWithValue("@search", "%" + search + "%");
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        dgvRecords.Rows.Clear();
+                        while (reader.Read())
+                        {
+                            dgvRecords.Rows.Add(
+                                reader["PatientID"],
+                                reader["Name"],
+                                reader["Age"],
+                                reader["Gender"],
+                                reader["Contact_No"],
+                                reader["Address"],
+                                "View Details",
+                                "Add Record"
+                            );
+                        }
                     }
                 }
             }
-        }
-
-
-
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-            NewRecords newrecords = new NewRecords();
-            DialogResult result = newrecords.ShowDialog();
-
-            if (result == DialogResult.OK)
+            catch (Exception ex)
             {
-                LoadRecords();
+                MessageBox.Show("Error searching patients: " + ex.Message);
             }
         }
 
@@ -262,25 +226,43 @@ namespace USERS_WINDOW
         {
             if (e.RowIndex < 0) return;
 
+            int patientId = Convert.ToInt32(dgvRecords.Rows[e.RowIndex].Cells["PatientID"].Value);
+
             if (dgvRecords.Columns[e.ColumnIndex].Name == "Action")
             {
-                int patientId = Convert.ToInt32(dgvRecords.Rows[e.RowIndex].Cells["PatientID"].Value);
-                PatientMedicalRecord detailsForm = new PatientMedicalRecord(patientId);
-                detailsForm.ShowDialog();
-            }
+                using (MySqlConnection conn = new MySqlConnection(DBConnection.connString))
+                {
+                    conn.Open();
 
+                    string checkQuery = "SELECT COUNT(*) FROM medical_records WHERE PatientID = @id";
+                    MySqlCommand checkCmd = new MySqlCommand(checkQuery, conn);
+                    checkCmd.Parameters.AddWithValue("@id", patientId);
+
+                    int recordCount = Convert.ToInt32(checkCmd.ExecuteScalar());
+
+                    if (recordCount > 0)
+                    {
+                        PatientMedicalRecord detailsForm = new PatientMedicalRecord(this, patientId);
+                        detailsForm.ShowDialog();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Patient has no medical records yet. Please add a record first.",
+                                        "No Records", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
             else if (dgvRecords.Columns[e.ColumnIndex].Name == "AddRecord")
             {
-                int patientId = Convert.ToInt32(dgvRecords.Rows[e.RowIndex].Cells["PatientID"].Value);
-
-                string name = dgvRecords.Rows[e.RowIndex].Cells["Patient_Name"].Value.ToString();
+                string name = dgvRecords.Rows[e.RowIndex].Cells["Name"].Value.ToString();
                 string age = dgvRecords.Rows[e.RowIndex].Cells["Age"].Value.ToString();
                 string gender = dgvRecords.Rows[e.RowIndex].Cells["Gender"].Value.ToString();
-                string contact = dgvRecords.Rows[e.RowIndex].Cells["Contact_No."].Value.ToString();
+                string contact = dgvRecords.Rows[e.RowIndex].Cells["Contact_No"].Value.ToString();
                 string address = dgvRecords.Rows[e.RowIndex].Cells["Address"].Value.ToString();
 
-                NewRecords newRecordForm = new NewRecords(patientId, name, age, gender, contact, address);
+                NewRecords newRecordForm = new NewRecords(this, doctorID, patientId, name, age, gender, contact, address);
                 DialogResult result = newRecordForm.ShowDialog();
+
 
                 if (result == DialogResult.OK)
                 {

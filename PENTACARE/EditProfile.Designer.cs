@@ -147,6 +147,7 @@
             DoubleBuffered = true;
             Name = "EditProfile";
             Text = "Form1";
+            WindowState = FormWindowState.Maximized;
             Load += EditProfile_Load;
             ResumeLayout(false);
             PerformLayout();

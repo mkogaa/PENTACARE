@@ -44,7 +44,7 @@
             userEmail.BackColor = Color.White;
             userEmail.BorderStyle = BorderStyle.None;
             userEmail.Font = new Font("Century Gothic", 10.2F);
-            userEmail.Location = new Point(939, 647);
+            userEmail.Location = new Point(952, 622);
             userEmail.Name = "userEmail";
             userEmail.Size = new Size(615, 21);
             userEmail.TabIndex = 26;
@@ -54,7 +54,7 @@
             userSpecialty.BackColor = Color.White;
             userSpecialty.BorderStyle = BorderStyle.None;
             userSpecialty.Font = new Font("Century Gothic", 10.2F);
-            userSpecialty.Location = new Point(870, 534);
+            userSpecialty.Location = new Point(884, 509);
             userSpecialty.Name = "userSpecialty";
             userSpecialty.Size = new Size(683, 21);
             userSpecialty.TabIndex = 25;
@@ -64,7 +64,7 @@
             userContact.BackColor = Color.White;
             userContact.BorderStyle = BorderStyle.None;
             userContact.Font = new Font("Century Gothic", 10.2F);
-            userContact.Location = new Point(981, 592);
+            userContact.Location = new Point(995, 567);
             userContact.Name = "userContact";
             userContact.Size = new Size(572, 21);
             userContact.TabIndex = 24;
@@ -74,7 +74,7 @@
             userUN.BackColor = Color.White;
             userUN.BorderStyle = BorderStyle.None;
             userUN.Font = new Font("Century Gothic", 10.2F);
-            userUN.Location = new Point(887, 477);
+            userUN.Location = new Point(900, 455);
             userUN.Name = "userUN";
             userUN.Size = new Size(667, 21);
             userUN.TabIndex = 23;
@@ -84,7 +84,7 @@
             userID.BackColor = Color.White;
             userID.BorderStyle = BorderStyle.None;
             userID.Font = new Font("Century Gothic", 10.2F);
-            userID.Location = new Point(782, 422);
+            userID.Location = new Point(795, 406);
             userID.Name = "userID";
             userID.Size = new Size(772, 21);
             userID.TabIndex = 22;
@@ -94,7 +94,7 @@
             userName.BackColor = Color.White;
             userName.BorderStyle = BorderStyle.None;
             userName.Font = new Font("Century Gothic", 10.2F);
-            userName.Location = new Point(838, 365);
+            userName.Location = new Point(838, 352);
             userName.Name = "userName";
             userName.Size = new Size(715, 21);
             userName.TabIndex = 21;
@@ -106,7 +106,7 @@
             btnBack.FlatStyle = FlatStyle.Flat;
             btnBack.Font = new Font("Century Gothic", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnBack.ForeColor = SystemColors.ButtonFace;
-            btnBack.Location = new Point(1380, 740);
+            btnBack.Location = new Point(1390, 707);
             btnBack.Name = "btnBack";
             btnBack.Size = new Size(177, 53);
             btnBack.TabIndex = 20;
@@ -121,7 +121,7 @@
             btnEdit.FlatStyle = FlatStyle.Flat;
             btnEdit.Font = new Font("Century Gothic", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnEdit.ForeColor = SystemColors.ButtonFace;
-            btnEdit.Location = new Point(1157, 740);
+            btnEdit.Location = new Point(1169, 711);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(180, 57);
             btnEdit.TabIndex = 19;
@@ -147,6 +147,7 @@
             DoubleBuffered = true;
             Name = "UserInfo";
             Text = "Form1";
+            WindowState = FormWindowState.Maximized;
             Load += UserInfo_Load;
             ResumeLayout(false);
             PerformLayout();

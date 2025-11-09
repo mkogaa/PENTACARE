@@ -49,6 +49,7 @@
             txtTLT = new Label();
             txtTP = new Label();
             txtTMR = new Label();
+            btnRecords = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvDashboard).BeginInit();
             SuspendLayout();
             // 
@@ -67,7 +68,7 @@
             // 
             monthCalendar1.BackColor = Color.MidnightBlue;
             monthCalendar1.Font = new Font("Century Gothic", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            monthCalendar1.Location = new Point(1532, 262);
+            monthCalendar1.Location = new Point(1538, 235);
             monthCalendar1.Name = "monthCalendar1";
             monthCalendar1.TabIndex = 6;
             // 
@@ -82,7 +83,6 @@
             userName.Size = new Size(192, 27);
             userName.TabIndex = 0;
             userName.Text = "Nurse, Gumban!";
-            userName.Click += userName_Click;
             // 
             // dgvDashboard
             // 
@@ -105,7 +105,7 @@
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
             dgvDashboard.DefaultCellStyle = dataGridViewCellStyle2;
             dgvDashboard.GridColor = Color.DarkBlue;
-            dgvDashboard.Location = new Point(782, 579);
+            dgvDashboard.Location = new Point(800, 535);
             dgvDashboard.Name = "dgvDashboard";
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = SystemColors.Control;
@@ -126,9 +126,9 @@
             btnViewProfile.FlatStyle = FlatStyle.Flat;
             btnViewProfile.Font = new Font("Century Gothic", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnViewProfile.ForeColor = Color.MidnightBlue;
-            btnViewProfile.Location = new Point(287, 391);
+            btnViewProfile.Location = new Point(286, 278);
             btnViewProfile.Name = "btnViewProfile";
-            btnViewProfile.Size = new Size(362, 72);
+            btnViewProfile.Size = new Size(378, 80);
             btnViewProfile.TabIndex = 7;
             btnViewProfile.Text = "View Profile";
             btnViewProfile.UseVisualStyleBackColor = false;
@@ -140,9 +140,9 @@
             btnPatient.FlatStyle = FlatStyle.Flat;
             btnPatient.Font = new Font("Century Gothic", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnPatient.ForeColor = Color.MidnightBlue;
-            btnPatient.Location = new Point(286, 489);
+            btnPatient.Location = new Point(285, 378);
             btnPatient.Name = "btnPatient";
-            btnPatient.Size = new Size(363, 78);
+            btnPatient.Size = new Size(379, 78);
             btnPatient.TabIndex = 8;
             btnPatient.Text = "Patient Management";
             btnPatient.UseVisualStyleBackColor = false;
@@ -154,9 +154,9 @@
             btnMedRecords.FlatStyle = FlatStyle.Flat;
             btnMedRecords.Font = new Font("Century Gothic", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnMedRecords.ForeColor = Color.MidnightBlue;
-            btnMedRecords.Location = new Point(287, 589);
+            btnMedRecords.Location = new Point(285, 560);
             btnMedRecords.Name = "btnMedRecords";
-            btnMedRecords.Size = new Size(362, 81);
+            btnMedRecords.Size = new Size(379, 81);
             btnMedRecords.TabIndex = 9;
             btnMedRecords.Text = "Medical Records";
             btnMedRecords.UseVisualStyleBackColor = false;
@@ -168,9 +168,9 @@
             btnLab.FlatStyle = FlatStyle.Flat;
             btnLab.Font = new Font("Century Gothic", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnLab.ForeColor = Color.MidnightBlue;
-            btnLab.Location = new Point(287, 685);
+            btnLab.Location = new Point(285, 461);
             btnLab.Name = "btnLab";
-            btnLab.Size = new Size(362, 83);
+            btnLab.Size = new Size(379, 83);
             btnLab.TabIndex = 10;
             btnLab.Text = "Laboratory Management";
             btnLab.UseVisualStyleBackColor = false;
@@ -182,9 +182,9 @@
             btnLogout.FlatStyle = FlatStyle.Flat;
             btnLogout.Font = new Font("Century Gothic", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnLogout.ForeColor = Color.MidnightBlue;
-            btnLogout.Location = new Point(287, 790);
+            btnLogout.Location = new Point(287, 752);
             btnLogout.Name = "btnLogout";
-            btnLogout.Size = new Size(362, 82);
+            btnLogout.Size = new Size(377, 82);
             btnLogout.TabIndex = 11;
             btnLogout.Text = "Logout";
             btnLogout.UseVisualStyleBackColor = false;
@@ -209,11 +209,11 @@
             // 
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Hagrid Trial", 10.7999992F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Font = new Font("Microsoft Sans Serif", 10.7999992F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = SystemColors.ButtonFace;
-            label1.Location = new Point(1529, 192);
+            label1.Location = new Point(1553, 185);
             label1.Name = "label1";
-            label1.Size = new Size(264, 27);
+            label1.Size = new Size(241, 22);
             label1.TabIndex = 13;
             label1.Text = "_____________________";
             // 
@@ -223,7 +223,7 @@
             label2.BackColor = Color.Transparent;
             label2.Font = new Font("Century Gothic", 10.8F, FontStyle.Bold);
             label2.ForeColor = SystemColors.ButtonFace;
-            label2.Location = new Point(1564, 227);
+            label2.Location = new Point(1580, 207);
             label2.Name = "label2";
             label2.Size = new Size(190, 22);
             label2.TabIndex = 14;
@@ -247,7 +247,7 @@
             txtPLT.BackColor = Color.Transparent;
             txtPLT.Font = new Font("Century Gothic", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtPLT.ForeColor = Color.FromArgb(0, 22, 122);
-            txtPLT.Location = new Point(766, 103);
+            txtPLT.Location = new Point(768, 98);
             txtPLT.Name = "txtPLT";
             txtPLT.Size = new Size(86, 47);
             txtPLT.TabIndex = 16;
@@ -259,12 +259,11 @@
             txtTLT.BackColor = Color.Transparent;
             txtTLT.Font = new Font("Century Gothic", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtTLT.ForeColor = Color.FromArgb(0, 22, 122);
-            txtTLT.Location = new Point(1146, 101);
+            txtTLT.Location = new Point(1148, 96);
             txtTLT.Name = "txtTLT";
             txtTLT.Size = new Size(86, 47);
             txtTLT.TabIndex = 17;
             txtTLT.Text = "000";
-            txtTLT.Click += txtTLT_Click;
             // 
             // txtTP
             // 
@@ -272,7 +271,7 @@
             txtTP.BackColor = Color.Transparent;
             txtTP.Font = new Font("Century Gothic", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtTP.ForeColor = Color.FromArgb(0, 22, 122);
-            txtTP.Location = new Point(764, 262);
+            txtTP.Location = new Point(766, 257);
             txtTP.Name = "txtTP";
             txtTP.Size = new Size(86, 47);
             txtTP.TabIndex = 18;
@@ -284,19 +283,33 @@
             txtTMR.BackColor = Color.Transparent;
             txtTMR.Font = new Font("Century Gothic", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtTMR.ForeColor = Color.FromArgb(0, 22, 122);
-            txtTMR.Location = new Point(1146, 261);
+            txtTMR.Location = new Point(1148, 256);
             txtTMR.Name = "txtTMR";
             txtTMR.Size = new Size(86, 47);
             txtTMR.TabIndex = 19;
             txtTMR.Text = "000";
             // 
+            // btnRecords
+            // 
+            btnRecords.BackColor = Color.FromArgb(140, 193, 233);
+            btnRecords.FlatStyle = FlatStyle.Flat;
+            btnRecords.Font = new Font("Century Gothic", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnRecords.ForeColor = Color.MidnightBlue;
+            btnRecords.Location = new Point(287, 658);
+            btnRecords.Name = "btnRecords";
+            btnRecords.Size = new Size(377, 83);
+            btnRecords.TabIndex = 20;
+            btnRecords.Text = "Records";
+            btnRecords.UseVisualStyleBackColor = false;
+            btnRecords.Click += btnRecords_Click;
+            // 
             // UserDashboard
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
-            ClientSize = new Size(1902, 1055);
+            ClientSize = new Size(1902, 1033);
+            Controls.Add(btnRecords);
             Controls.Add(txtTMR);
             Controls.Add(txtTP);
             Controls.Add(txtTLT);
@@ -315,7 +328,9 @@
             Controls.Add(userName);
             Controls.Add(assignedP);
             Name = "UserDashboard";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "s";
+            WindowState = FormWindowState.Maximized;
             Load += UserDashboard_Load;
             ((System.ComponentModel.ISupportInitialize)dgvDashboard).EndInit();
             ResumeLayout(false);
@@ -341,5 +356,6 @@
         private Label label4;
         private Label txtTP;
         private Label txtTMR;
+        private Button btnRecords;
     }
 }

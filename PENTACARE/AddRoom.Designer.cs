@@ -35,6 +35,7 @@
             cb_RoomType = new ComboBox();
             cb_Status = new ComboBox();
             txt_beds = new TextBox();
+            btn_back = new Panel();
             SuspendLayout();
             // 
             // btn_addRoom
@@ -89,6 +90,15 @@
             txt_beds.Size = new Size(557, 27);
             txt_beds.TabIndex = 8;
             // 
+            // btn_back
+            // 
+            btn_back.BackColor = Color.Transparent;
+            btn_back.Location = new Point(1422, 826);
+            btn_back.Name = "btn_back";
+            btn_back.Size = new Size(256, 72);
+            btn_back.TabIndex = 1;
+            btn_back.Click += btn_back_Click;
+            // 
             // AddRoom
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -96,6 +106,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(btn_back);
             Controls.Add(txt_beds);
             Controls.Add(cb_Status);
             Controls.Add(cb_RoomType);
@@ -117,5 +128,6 @@
         private ComboBox cb_RoomType;
         private ComboBox cb_Status;
         private TextBox txt_beds;
+        private Panel btn_back;
     }
 }

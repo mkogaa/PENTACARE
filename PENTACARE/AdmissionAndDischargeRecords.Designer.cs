@@ -45,7 +45,7 @@
             cb_filter_roomtype.Font = new Font("Century Gothic", 20F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cb_filter_roomtype.FormattingEnabled = true;
             cb_filter_roomtype.Location = new Point(597, 287);
-            cb_filter_roomtype.Margin = new Padding(2, 2, 2, 2);
+            cb_filter_roomtype.Margin = new Padding(2);
             cb_filter_roomtype.Name = "cb_filter_roomtype";
             cb_filter_roomtype.Size = new Size(268, 48);
             cb_filter_roomtype.TabIndex = 0;
@@ -57,7 +57,7 @@
             cb_filter_status.Font = new Font("Century Gothic", 20F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cb_filter_status.FormattingEnabled = true;
             cb_filter_status.Location = new Point(1408, 287);
-            cb_filter_status.Margin = new Padding(2, 2, 2, 2);
+            cb_filter_status.Margin = new Padding(2);
             cb_filter_status.Name = "cb_filter_status";
             cb_filter_status.Size = new Size(268, 48);
             cb_filter_status.TabIndex = 1;
@@ -69,7 +69,7 @@
             dgv_personal.BackgroundColor = Color.White;
             dgv_personal.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv_personal.Location = new Point(127, 501);
-            dgv_personal.Margin = new Padding(2, 2, 2, 2);
+            dgv_personal.Margin = new Padding(2);
             dgv_personal.Name = "dgv_personal";
             dgv_personal.ReadOnly = true;
             dgv_personal.RowHeadersWidth = 62;
@@ -81,7 +81,7 @@
             // 
             btn_admission_exportreport.BackColor = Color.Transparent;
             btn_admission_exportreport.Location = new Point(127, 910);
-            btn_admission_exportreport.Margin = new Padding(2, 2, 2, 2);
+            btn_admission_exportreport.Margin = new Padding(2);
             btn_admission_exportreport.Name = "btn_admission_exportreport";
             btn_admission_exportreport.Size = new Size(331, 80);
             btn_admission_exportreport.TabIndex = 4;
@@ -91,7 +91,7 @@
             // 
             btn_admission_back.BackColor = Color.Transparent;
             btn_admission_back.Location = new Point(1577, 918);
-            btn_admission_back.Margin = new Padding(2, 2, 2, 2);
+            btn_admission_back.Margin = new Padding(2);
             btn_admission_back.Name = "btn_admission_back";
             btn_admission_back.Size = new Size(196, 72);
             btn_admission_back.TabIndex = 5;
@@ -104,7 +104,7 @@
             dgv_admission.BackgroundColor = Color.White;
             dgv_admission.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv_admission.Location = new Point(127, 742);
-            dgv_admission.Margin = new Padding(2, 2, 2, 2);
+            dgv_admission.Margin = new Padding(2);
             dgv_admission.Name = "dgv_admission";
             dgv_admission.ReadOnly = true;
             dgv_admission.RowHeadersWidth = 62;
@@ -124,7 +124,9 @@
             Controls.Add(dgv_personal);
             Controls.Add(cb_filter_status);
             Controls.Add(cb_filter_roomtype);
-            Margin = new Padding(2, 2, 2, 2);
+            Margin = new Padding(2);
+            MaximumSize = new Size(1920, 1080);
+            MinimumSize = new Size(1918, 1018);
             Name = "AdmissionAndDischargeRecords";
             WindowState = FormWindowState.Maximized;
             ((System.ComponentModel.ISupportInitialize)dgv_personal).EndInit();

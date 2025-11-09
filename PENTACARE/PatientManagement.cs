@@ -11,10 +11,15 @@ namespace USERS_WINDOW
         MySqlConnection con = new MySqlConnection("server=localhost;database=pentacare;username=root;password=;");
         MySqlDataAdapter da;
         DataTable dt;
+        private int doctorID;
+        private UserDashboard dashboardForm;
 
-        public PatientManagement()
+        public PatientManagement(UserDashboard dashboard, int loggedDoctorID)
         {
             InitializeComponent();
+
+            doctorID = loggedDoctorID;
+            dashboardForm = dashboard;
             InitializeFilter();
             StyleDataGridView();
             SetupPlaceholder();
@@ -23,62 +28,63 @@ namespace USERS_WINDOW
             txt_patient_search.TextChanged += txt_patient_search_TextChanged;
             cb_patient_filter.SelectedIndexChanged += cb_patient_filter_SelectedIndexChanged;
             btn_patient_back.Click += btn_patient_back_Click;
+
+            this.WindowState= FormWindowState.Maximized;
         }
 
-        private void LoadPatients(string search = "", string statusFilter = "")
+       
+        private void LoadPatients(string search = "", string genderFilter = "")
         {
             try
             {
                 con.Open();
 
-                string query = @"SELECT 
-                    PatientID AS 'Patient ID',
-                    Name AS 'Full Name',
-                    Age,
-                    Gender,
-                    Address,
-                    Contact_No AS 'Contact No',
-                    CASE WHEN Admission_Date = '0000-00-00' THEN NULL ELSE Admission_Date END AS 'Admission Date',
-                    CASE WHEN Discharge_Date = '0000-00-00' THEN NULL ELSE Discharge_Date END AS 'Discharge Date',
-                    Status
-                 FROM patient
-                 WHERE 1=1";
+                string query = @"
+              SELECT DISTINCT
+                  p.PatientID AS 'Patient ID',
+                  p.Name AS 'Full Name',
+                  p.Age,
+                  p.Gender,
+                  p.Address,
+                  p.Contact_No AS 'Contact No',
+                  DATE_FORMAT(NULLIF(p.Admission_Date, '0000-00-00'), '%Y-%m-%d') AS 'Admission Date',
+                  r.Room_No AS 'Room No'
+              FROM doctor_patient dp
+              JOIN patient p ON dp.PatientID = p.PatientID
+              LEFT JOIN room r ON p.RoomID = r.RoomID
+              WHERE dp.DoctorID = @DoctorID
+                AND p.Status = 'Admitted'";
 
 
+               
 
-                if (!string.IsNullOrWhiteSpace(search))
+                if (!string.IsNullOrWhiteSpace(search) && txt_patient_search.ForeColor != Color.Gray)
                 {
-                    query += " AND (PatientID LIKE @search OR Name LIKE @search)";
+                    query += " AND (p.PatientID LIKE @search OR p.Name LIKE @search)";
                 }
 
-
-                if (!string.IsNullOrEmpty(statusFilter) && statusFilter != "All")
+                if (!string.IsNullOrEmpty(genderFilter) && genderFilter != "All")
                 {
-                    query += " AND Status = @statusFilter";
+                    query += " AND p.Gender = @genderFilter";
                 }
+
+                query += " ORDER BY p.PatientID;";
 
                 MySqlCommand cmd = new MySqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@search", "%" + search + "%");
-                cmd.Parameters.AddWithValue("@statusFilter", statusFilter);
+                cmd.Parameters.AddWithValue("@genderFilter", genderFilter);
+                cmd.Parameters.AddWithValue("@DoctorID", doctorID);
 
                 da = new MySqlDataAdapter(cmd);
                 dt = new DataTable();
                 da.Fill(dt);
 
-                foreach (DataRow row in dt.Rows)
-                {
-                    if (row["Admission Date"] != DBNull.Value)
-                        row["Admission Date"] = Convert.ToDateTime(row["Admission Date"]).ToString("yyyy-MM-dd");
-
-                    if (row["Discharge Date"] != DBNull.Value)
-                        row["Discharge Date"] = Convert.ToDateTime(row["Discharge Date"]).ToString("yyyy-MM-dd");
-                }
-
                 dgv_patient.DataSource = dt;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error loading patient data:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error loading patient data:\n" + ex.Message,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -86,20 +92,23 @@ namespace USERS_WINDOW
             }
         }
 
+        
         private void txt_patient_search_TextChanged(object sender, EventArgs e)
         {
             string searchText = txt_patient_search.ForeColor == Color.Gray ? "" : txt_patient_search.Text.Trim();
-            string selectedStatus = cb_patient_filter.SelectedItem?.ToString() ?? "";
-            LoadPatients(searchText, selectedStatus);
+            string selectedGender = cb_patient_filter.SelectedItem?.ToString() ?? "";
+            LoadPatients(searchText, selectedGender);
         }
 
+        
         private void cb_patient_filter_SelectedIndexChanged(object sender, EventArgs e)
         {
             string searchText = txt_patient_search.ForeColor == Color.Gray ? "" : txt_patient_search.Text.Trim();
-            string selectedStatus = cb_patient_filter.SelectedItem?.ToString() ?? "";
-            LoadPatients(searchText, selectedStatus);
+            string selectedGender = cb_patient_filter.SelectedItem?.ToString() ?? "";
+            LoadPatients(searchText, selectedGender);
         }
 
+        
         private void StyleDataGridView()
         {
             dgv_patient.BorderStyle = BorderStyle.None;
@@ -130,6 +139,7 @@ namespace USERS_WINDOW
             dgv_patient.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
         }
 
+        
         private void SetupPlaceholder()
         {
             if (string.IsNullOrWhiteSpace(txt_patient_search.Text))
@@ -153,34 +163,37 @@ namespace USERS_WINDOW
                 {
                     txt_patient_search.Text = "Search by Name or Patient ID...";
                     txt_patient_search.ForeColor = Color.Gray;
+
+                    string selectedGender = cb_patient_filter.SelectedItem?.ToString() ?? "";
+                    LoadPatients("", selectedGender);
                 }
             };
         }
 
+        
         private void InitializeFilter()
         {
             cb_patient_filter.Items.Clear();
             cb_patient_filter.Items.Add("All");
-            cb_patient_filter.Items.Add("Admitted");
-            cb_patient_filter.Items.Add("Discharged");
+            cb_patient_filter.Items.Add("Male");
+            cb_patient_filter.Items.Add("Female");
             cb_patient_filter.SelectedIndex = 0;
         }
 
+        
         private void btn_patient_back_Click(object sender, EventArgs e)
         {
-            UserDashboard userdashboard = new UserDashboard(0);
-            userdashboard.Show();
+            dashboardForm.Show();  // ✅ show the existing dashboard
             this.Close();
         }
 
         private void PatientManagement_Load(object sender, EventArgs e)
         {
-
+            LoadPatients();
         }
 
         private void dgv_patient_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-
         }
     }
 }

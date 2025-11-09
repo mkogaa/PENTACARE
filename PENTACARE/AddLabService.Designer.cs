@@ -36,6 +36,8 @@
             cbCategory = new ComboBox();
             txt_ETime = new TextBox();
             btn_saveLab = new Panel();
+            cbStatus = new ComboBox();
+            btn_clear = new Panel();
             SuspendLayout();
             // 
             // btn_backS
@@ -50,7 +52,7 @@
             // txt_LabName
             // 
             txt_LabName.BackColor = Color.LightSteelBlue;
-            txt_LabName.Location = new Point(693, 370);
+            txt_LabName.Location = new Point(692, 338);
             txt_LabName.Name = "txt_LabName";
             txt_LabName.Size = new Size(852, 27);
             txt_LabName.TabIndex = 2;
@@ -58,7 +60,7 @@
             // txt_Description
             // 
             txt_Description.BackColor = Color.LightSteelBlue;
-            txt_Description.Location = new Point(693, 428);
+            txt_Description.Location = new Point(692, 396);
             txt_Description.Name = "txt_Description";
             txt_Description.Size = new Size(852, 27);
             txt_Description.TabIndex = 3;
@@ -66,7 +68,7 @@
             // txt_Fee
             // 
             txt_Fee.BackColor = Color.LightSteelBlue;
-            txt_Fee.Location = new Point(693, 484);
+            txt_Fee.Location = new Point(692, 452);
             txt_Fee.Name = "txt_Fee";
             txt_Fee.Size = new Size(852, 27);
             txt_Fee.TabIndex = 4;
@@ -75,7 +77,7 @@
             // 
             cbCategory.FormattingEnabled = true;
             cbCategory.Items.AddRange(new object[] { "Laboratory Test", "Imaging", "Cardiology" });
-            cbCategory.Location = new Point(693, 543);
+            cbCategory.Location = new Point(692, 511);
             cbCategory.Name = "cbCategory";
             cbCategory.Size = new Size(448, 28);
             cbCategory.TabIndex = 5;
@@ -83,7 +85,7 @@
             // txt_ETime
             // 
             txt_ETime.BackColor = Color.LightSteelBlue;
-            txt_ETime.Location = new Point(693, 600);
+            txt_ETime.Location = new Point(692, 568);
             txt_ETime.Name = "txt_ETime";
             txt_ETime.Size = new Size(852, 27);
             txt_ETime.TabIndex = 6;
@@ -98,6 +100,24 @@
             btn_saveLab.Click += btn_saveLab_Click;
             btn_saveLab.Paint += btn_saveLab_Paint;
             // 
+            // cbStatus
+            // 
+            cbStatus.FormattingEnabled = true;
+            cbStatus.Items.AddRange(new object[] { "Available", "Unavailable", "Under Maintenance" });
+            cbStatus.Location = new Point(692, 629);
+            cbStatus.Name = "cbStatus";
+            cbStatus.Size = new Size(448, 28);
+            cbStatus.TabIndex = 7;
+            // 
+            // btn_clear
+            // 
+            btn_clear.BackColor = Color.Transparent;
+            btn_clear.Location = new Point(393, 779);
+            btn_clear.Name = "btn_clear";
+            btn_clear.Size = new Size(155, 57);
+            btn_clear.TabIndex = 2;
+            btn_clear.Click += btn_clear_Click;
+            // 
             // AddLabService
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -105,6 +125,8 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(btn_clear);
+            Controls.Add(cbStatus);
             Controls.Add(btn_saveLab);
             Controls.Add(txt_ETime);
             Controls.Add(cbCategory);
@@ -127,5 +149,7 @@
         private ComboBox cbCategory;
         private TextBox txt_ETime;
         private Panel btn_saveLab;
+        private ComboBox cbStatus;
+        private Panel btn_clear;
     }
 }

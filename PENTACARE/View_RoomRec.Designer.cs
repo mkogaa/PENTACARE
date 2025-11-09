@@ -119,6 +119,7 @@
             btn_backk.Size = new Size(250, 72);
             btn_backk.TabIndex = 6;
             btn_backk.Click += btn_backk_Click;
+            btn_backk.Paint += btn_backk_Paint;
             // 
             // lblStatus
             // 

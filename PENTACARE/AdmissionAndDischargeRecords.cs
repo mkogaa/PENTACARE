@@ -68,10 +68,10 @@ namespace USERS_WINDOW
                 con.Open();
                 string query = @"SELECT 
                                     p.PatientID,
-                                    CONCAT(p.First_Name, ' ', p.Last_Name) AS Name,
+                                    p.Name AS `Name`,
                                     p.Age,
                                     p.Gender,
-                                    IFNULL(p.Address, 'N/A') AS Address,
+                                    IFNULL(p.Address, 'N/A') AS `Address`,
                                     IFNULL(p.Contact_No, 'N/A') AS `Contact Number`
                                  FROM patient p
                                  WHERE p.PatientID = @id;";
@@ -180,17 +180,15 @@ namespace USERS_WINDOW
 
         private void btn_admission_back_Click(object sender, EventArgs e)
         {
-            this.Close();
+            this.Hide();
         }
 
         private void dgv_personal_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-
         }
 
         private void cb_filter_roomtype_SelectedIndexChanged(object sender, EventArgs e)
         {
-
         }
     }
 }

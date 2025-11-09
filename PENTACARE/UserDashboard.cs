@@ -1,4 +1,5 @@
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
+using PENTACARE;
 using System.Data;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
@@ -9,6 +10,7 @@ namespace USERS_WINDOW
         private int patientID;
         private string loggedUser;
         private int doctorID;
+
 
         MySqlConnection con = new MySqlConnection("server=localhost;database=pentacare;username=root;password=;");
 
@@ -33,12 +35,12 @@ namespace USERS_WINDOW
                 MySqlCommand cmd = new MySqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@id", doctorID);
 
-                object result = cmd.ExecuteScalar(); 
+                object result = cmd.ExecuteScalar();
 
-                if (result != null) 
+                if (result != null)
                     userName.Text = result.ToString();
                 else
-                    userName.Text = "Doctor"; 
+                    userName.Text = "Doctor";
             }
             catch (Exception ex)
             {
@@ -77,9 +79,26 @@ namespace USERS_WINDOW
             {
                 con.Close();
             }
+            string recentQuery = @"
+                SELECT 
+                    p.PatientID, 
+                    p.Name, 
+                    p.Age, 
+                    p.Gender, 
+                    p.Contact_No, 
+                    p.DoctorID, 
+                    p.Admission_Date
+                FROM patient p
+                INNER JOIN doctor_patient dp ON p.PatientID = dp.PatientID
+                WHERE dp.DoctorID = @DoctorID
+                  AND p.Status = 'Admitted'
+                ORDER BY p.Admission_Date DESC
+                LIMIT 10";
 
-            string recentQuery = "SELECT PatientID, Name, Age, Gender, Contact_No, DoctorID, Admission_Date FROM patient ORDER BY Admission_Date DESC LIMIT 10";
+
             MySqlCommand cmdRecent = new MySqlCommand(recentQuery, con);
+            cmdRecent.Parameters.AddWithValue("@DoctorID", doctorID);
+
             MySqlDataAdapter da = new MySqlDataAdapter(cmdRecent);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -99,15 +118,13 @@ namespace USERS_WINDOW
             dgvDashboard.ColumnHeadersDefaultCellStyle.Font = new Font("Century Gothic", 10, FontStyle.Bold);
 
             if (dgvDashboard.Columns.Contains("PatientID")) dgvDashboard.Columns["PatientID"].FillWeight = 70;
-            if (dgvDashboard.Columns.Contains("First_Name")) dgvDashboard.Columns["Name"].FillWeight = 120;
+            if (dgvDashboard.Columns.Contains("Name")) dgvDashboard.Columns["Name"].FillWeight = 120;
             if (dgvDashboard.Columns.Contains("Age")) dgvDashboard.Columns["Age"].FillWeight = 50;
             if (dgvDashboard.Columns.Contains("Gender")) dgvDashboard.Columns["Gender"].FillWeight = 60;
             if (dgvDashboard.Columns.Contains("Contact_No")) dgvDashboard.Columns["Contact_No"].FillWeight = 100;
             if (dgvDashboard.Columns.Contains("DoctorID")) dgvDashboard.Columns["DoctorID"].FillWeight = 80;
             if (dgvDashboard.Columns.Contains("Admission_Date")) dgvDashboard.Columns["Admission_Date"].FillWeight = 100;
-
         }
-
 
         private void btnViewProfile_Click(object sender, EventArgs e)
         {
@@ -118,15 +135,15 @@ namespace USERS_WINDOW
 
         private void btnPatient_Click(object sender, EventArgs e)
         {
-            PatientManagement patientmanagement = new PatientManagement();
+            PatientManagement patientmanagement = new PatientManagement(this, doctorID);
             patientmanagement.Show();
             this.Hide();
         }
 
         private void btnMedRecords_Click(object sender, EventArgs e)
         {
-            MedicalRecords medicalrecords = new MedicalRecords();
-            medicalrecords.Show();
+            MedicalRecords medrec = new MedicalRecords(this, doctorID);
+            medrec.Show();
             this.Hide();
         }
 
@@ -137,40 +154,29 @@ namespace USERS_WINDOW
             this.Hide();
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void userName_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void dgvCurrentP_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             dgvDashboard.DefaultCellStyle.Font = new Font("Century Gothic", 8, FontStyle.Regular);
             dgvDashboard.ColumnHeadersDefaultCellStyle.Font = new Font("Century Gothic", 10, FontStyle.Bold);
-
         }
 
         private void btnLab_Click(object sender, EventArgs e)
         {
-            LaboratoryManagement labmanagement = new LaboratoryManagement();
+            LaboratoryManagement labmanagement = new LaboratoryManagement(doctorID);
             labmanagement.Show();
             this.Hide();
-        }
-
-
-
-        private void txtTLT_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void btn_Refresh_Click(object sender, EventArgs e)
         {
             LoadDashboardData();
+        }
+
+        private void btnRecords_Click(object sender, EventArgs e)
+        {
+            Records records = new Records(this,doctorID);
+            records.Show();
+            this.Hide();
         }
     }
 }

@@ -1,15 +1,18 @@
 ﻿using MySql.Data.MySqlClient;
+using System;
 using System.Data;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace USERS_WINDOW
 {
     public partial class AssignLaboratoryTest : Form
     {
         private int currentPatientID;
-        MySqlConnection con = new MySqlConnection("server=localhost;database=pentacare;username=root;password=;");
-        MySqlCommand cmd;
-        MySqlDataAdapter da;
-        DataTable dt;
+        private readonly MySqlConnection con = new MySqlConnection("server=localhost;database=pentacare;username=root;password=;");
+        private MySqlCommand cmd;
+        private MySqlDataAdapter da;
+        private DataTable dt;
 
         public AssignLaboratoryTest(int patientID)
         {
@@ -21,7 +24,6 @@ namespace USERS_WINDOW
             LoadPatientInfo();
         }
 
-
         private void SetupFormStyle()
         {
             this.BackColor = Color.White;
@@ -30,24 +32,25 @@ namespace USERS_WINDOW
             txt_assign_remarks.Font = new Font("Century Gothic", 12);
         }
 
-
         private void LoadPatientInfo()
         {
             try
             {
                 con.Open();
-                string query = @"SELECT 
-                                    CONCAT(p.First_Name, ' ', p.Last_Name) AS FullName,
-                                    IFNULL(r.Room_No, 'N/A') AS Room_No,
-                                    IFNULL(d.Doctor_Name, 'N/A') AS Doctor_Name,
-                                    IFNULL(d.Specialty, 'N/A') AS Specialty
-                                 FROM patient p
-                                 LEFT JOIN doctor d ON p.DoctorID = d.DoctorID
-                                 LEFT JOIN room r ON p.RoomID = r.RoomID
-                                 WHERE p.PatientID = @id;";
+                string query = @"
+                    SELECT 
+                        p.Name AS FullName,
+                        IFNULL(r.Room_No, 'N/A') AS Room_No,
+                        IFNULL(d.Doctor_Name, 'N/A') AS Doctor_Name,
+                        IFNULL(d.Specialty, 'N/A') AS Specialty
+                    FROM patient p
+                    LEFT JOIN doctor d ON p.DoctorID = d.DoctorID
+                    LEFT JOIN room r ON CAST(p.RoomID AS UNSIGNED) = r.RoomID
+                    WHERE p.PatientID = @id;";
 
                 cmd = new MySqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@id", currentPatientID);
+
                 MySqlDataReader reader = cmd.ExecuteReader();
 
                 if (reader.Read())
@@ -66,14 +69,16 @@ namespace USERS_WINDOW
                 }
 
                 reader.Close();
-                con.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error loading patient info: " + ex.Message);
             }
+            finally
+            {
+                con.Close();
+            }
         }
-
 
         private void LoadLabTests()
         {
@@ -95,8 +100,6 @@ namespace USERS_WINDOW
                 cb_labtest.DisplayMember = "Lab_Name";
                 cb_labtest.ValueMember = "LabID";
 
-                con.Close();
-
                 cb_labtest.SelectedIndexChanged += (s, e) =>
                 {
                     if (cb_labtest.SelectedIndex > 0)
@@ -117,13 +120,15 @@ namespace USERS_WINDOW
             {
                 MessageBox.Show("Error loading lab tests: " + ex.Message);
             }
+            finally
+            {
+                con.Close();
+            }
         }
-
-
 
         private void btn_assign_save_Click(object sender, EventArgs e)
         {
-            if (cb_labtest.SelectedValue == null)
+            if (cb_labtest.SelectedIndex == 0)
             {
                 MessageBox.Show("Please select a laboratory test.");
                 return;
@@ -137,7 +142,7 @@ namespace USERS_WINDOW
 
             if (string.IsNullOrWhiteSpace(txt_assign_remarks.Text))
             {
-                MessageBox.Show("Please enter result description.");
+                MessageBox.Show("Please enter remarks or test description.");
                 return;
             }
 
@@ -151,45 +156,41 @@ namespace USERS_WINDOW
                 cmd = new MySqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@patientID", currentPatientID);
                 cmd.Parameters.AddWithValue("@labID", cb_labtest.SelectedValue);
-                cmd.Parameters.AddWithValue("@doctorID", 1);
-                cmd.Parameters.AddWithValue("@dateOrdered", dtp_assign.Value);
+                cmd.Parameters.AddWithValue("@doctorID", 1); 
+                cmd.Parameters.AddWithValue("@dateOrdered", dtp_assign.Value.Date);
                 cmd.Parameters.AddWithValue("@fee", Convert.ToDecimal(txt_assign_fee.Text));
                 cmd.Parameters.AddWithValue("@result", txt_assign_remarks.Text);
 
                 cmd.ExecuteNonQuery();
-                con.Close();
 
                 MessageBox.Show("✅ Laboratory test assigned successfully!");
-
-
-                if (Application.OpenForms["LaboratoryRecord"] is LaboratoryRecord labRecord)
-                {
-                    labRecord.Invoke(new Action(() =>
-                    {
-                        labRecord.Refresh();
-                    }));
-                }
-
                 this.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error saving lab test: " + ex.Message);
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         private void btn_assign_clear_Click(object sender, EventArgs e)
         {
-            cb_labtest.SelectedIndex = -1;
+            cb_labtest.SelectedIndex = 0;
             txt_assign_fee.Clear();
             txt_assign_remarks.Clear();
             dtp_assign.Value = DateTime.Now;
         }
 
-
         private void btn_assign_back_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void AssignLaboratoryTest_Load(object sender, EventArgs e)
+        {
         }
     }
 }

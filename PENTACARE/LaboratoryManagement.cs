@@ -12,19 +12,22 @@ namespace USERS_WINDOW
         MySqlCommand cmd;
         MySqlDataAdapter da;
         DataTable dt;
+        private int doctorID;
 
-        public LaboratoryManagement()
+        public LaboratoryManagement(int loggedDoctorID)
         {
             InitializeComponent();
 
+            doctorID = loggedDoctorID;
 
             StyleDataGridView();
             SetupSearchBox();
             SetupFilterComboBox();
-            dgv_laboratory.CellContentClick += dgv_laboratory_CellContentClick;
-            LoadLaboratoryData();
-        }
 
+            dgv_laboratory.CellContentClick += dgv_laboratory_CellContentClick;
+
+            LoadLaboratoryData("", "Admitted", "All");
+        }
 
         private void StyleDataGridView()
         {
@@ -56,129 +59,128 @@ namespace USERS_WINDOW
             dgv_laboratory.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
         }
 
-
-        private void LoadLaboratoryData(string search = "", string statusFilter = "All")
+        private void LoadLaboratoryData(string search = "", string statusFilter = "Admitted", string genderFilter = "All")
         {
             try
             {
                 con.Open();
 
-                string query = @"SELECT 
-                                p.PatientID,
-                                p.Name AS PatientName,
-                                p.Gender,
-                                p.Age,
-                                IFNULL(r.Room_No, 'N/A') AS Room_No,
-                                IFNULL(p.Status, 'Admitted') AS Status,
-                                IFNULL(d.Doctor_Name, 'N/A') AS Doctor_Name,
-                                p.RoomID AS AdmissionID,
-                                p.Admission_Date
-                            FROM patient p
-                            LEFT JOIN room r ON p.RoomID = r.RoomID
-                            LEFT JOIN doctor d ON p.DoctorID = d.DoctorID
-                            WHERE (p.PatientID LIKE @search OR p.Name LIKE @search)";
+                string query = @"
+SELECT DISTINCT
+    p.PatientID AS PatientID,
+    p.Name AS FullName,
+    p.Age,
+    p.Gender,
+    p.Address,
+    p.Contact_No AS ContactNo,
+    DATE_FORMAT(NULLIF(p.Admission_Date, '0000-00-00'), '%Y-%m-%d') AS AdmissionDate,
+    IFNULL(r.Room_No, 'N/A') AS RoomNo,
+    p.Status
+FROM doctor_patient dp
+JOIN patient p ON dp.PatientID = p.PatientID
+LEFT JOIN room r ON p.RoomID = r.RoomID
+WHERE dp.DoctorID = @DoctorID
+  AND (p.PatientID LIKE @search OR p.Name LIKE @search)
+";
 
-                if (statusFilter != "All" && !string.IsNullOrEmpty(statusFilter))
-                    query += " AND Status = @status";
+                if (!string.IsNullOrEmpty(statusFilter) && statusFilter != "All")
+                    query += " AND p.Status = @status";
 
-                da = new MySqlDataAdapter(query, con);
+                if (!string.IsNullOrEmpty(genderFilter) && genderFilter != "All")
+                    query += " AND p.Gender = @gender";
+
+                MySqlDataAdapter da = new MySqlDataAdapter(query, con);
+                da.SelectCommand.Parameters.AddWithValue("@DoctorID", doctorID);
                 da.SelectCommand.Parameters.AddWithValue("@search", "%" + search + "%");
 
-                if (statusFilter != "All" && !string.IsNullOrEmpty(statusFilter))
+                if (!string.IsNullOrEmpty(statusFilter) && statusFilter != "All")
                     da.SelectCommand.Parameters.AddWithValue("@status", statusFilter);
 
-                dt = new DataTable();
+                if (!string.IsNullOrEmpty(genderFilter) && genderFilter != "All")
+                    da.SelectCommand.Parameters.AddWithValue("@gender", genderFilter);
+
+                DataTable dt = new DataTable();
                 da.Fill(dt);
 
                 dgv_laboratory.Columns.Clear();
                 dgv_laboratory.DataSource = dt;
 
-                DataGridViewButtonColumn btn = new DataGridViewButtonColumn();
-                btn.HeaderText = "Action";
-                btn.Name = "ViewResult";
-                btn.Text = "View Result";
-                btn.UseColumnTextForButtonValue = true;
-                btn.DefaultCellStyle.BackColor = Color.FromArgb(0, 102, 204);
-                btn.DefaultCellStyle.ForeColor = Color.White;
-                btn.DefaultCellStyle.Font = new Font("Century Gothic", 12, FontStyle.Bold);
+                // Add "View Result" button column
+                DataGridViewButtonColumn btn = new DataGridViewButtonColumn
+                {
+                    HeaderText = "Action",
+                    Name = "ViewResult",
+                    Text = "View Result",
+                    UseColumnTextForButtonValue = true,
+                    DefaultCellStyle = new DataGridViewCellStyle
+                    {
+                        BackColor = Color.FromArgb(0, 102, 204),
+                        ForeColor = Color.White,
+                        Font = new Font("Century Gothic", 12, FontStyle.Bold)
+                    }
+                };
                 dgv_laboratory.Columns.Add(btn);
-
-                con.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error loading data: " + ex.Message);
+            }
+            finally
+            {
                 con.Close();
             }
         }
-
 
         private void SetupFilterComboBox()
         {
             cb_laboratory.Items.Clear();
             cb_laboratory.Items.Add("All");
-            cb_laboratory.Items.Add("Admitted");
-            cb_laboratory.Items.Add("Discharged");
+            cb_laboratory.Items.Add("Male");
+            cb_laboratory.Items.Add("Female");
             cb_laboratory.SelectedIndex = 0;
-
 
             cb_laboratory.SelectedIndexChanged += (s, e) =>
             {
-                string selectedStatus = cb_laboratory.SelectedItem?.ToString() ?? "All";
+                string selectedGender = cb_laboratory.SelectedItem?.ToString() ?? "All";
                 string searchText = txt_laboratory_search.Text != "Search by Patient ID or Name"
                     ? txt_laboratory_search.Text
                     : "";
-                LoadLaboratoryData(searchText, selectedStatus);
+                LoadLaboratoryData(searchText, "Admitted", selectedGender);
             };
-        }
-
-        private void txt_laboratory_search_TextChanged(object sender, EventArgs e)
-        {
-            if (txt_laboratory_search.Text != "Search by Patient ID or Name")
-            {
-                string status = cb_laboratory.SelectedItem?.ToString() ?? "All";
-                LoadLaboratoryData(txt_laboratory_search.Text, status);
-            }
         }
 
         private void SetupSearchBox()
         {
             txt_laboratory_search.ForeColor = Color.Gray;
-            txt_laboratory_search.Font = new Font("Century Gothic", 20);
             txt_laboratory_search.Text = "Search by Patient ID or Name";
 
-            txt_laboratory_search.GotFocus += RemovePlaceholder;
-            txt_laboratory_search.LostFocus += AddPlaceholder;
-            txt_laboratory_search.TextChanged += txt_laboratory_search_TextChanged;
-        }
-
-        private void RemovePlaceholder(object sender, EventArgs e)
-        {
-            if (txt_laboratory_search.Text == "Search by Patient ID or Name")
+            txt_laboratory_search.GotFocus += (s, e) =>
             {
-                txt_laboratory_search.Text = "";
-                txt_laboratory_search.ForeColor = Color.Black;
-            }
-        }
+                if (txt_laboratory_search.Text == "Search by Patient ID or Name")
+                {
+                    txt_laboratory_search.Text = "";
+                    txt_laboratory_search.ForeColor = Color.Black;
+                }
+            };
 
-        private void AddPlaceholder(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(txt_laboratory_search.Text))
+            txt_laboratory_search.LostFocus += (s, e) =>
             {
-                txt_laboratory_search.Text = "Search by Patient ID or Name";
-                txt_laboratory_search.ForeColor = Color.Gray;
-            }
-        }
+                if (string.IsNullOrWhiteSpace(txt_laboratory_search.Text))
+                {
+                    txt_laboratory_search.Text = "Search by Patient ID or Name";
+                    txt_laboratory_search.ForeColor = Color.Gray;
+                }
+            };
 
-        private void txt_laboratory_search_TextChanged_1(object sender, EventArgs e)
-        {
-            if (txt_laboratory_search.Text != "Search by Patient ID or Name")
+            txt_laboratory_search.TextChanged += (s, e) =>
             {
-                string status = cb_laboratory.SelectedItem?.ToString() ?? "All";
-                LoadLaboratoryData(txt_laboratory_search.Text, status);
-            }
+                if (txt_laboratory_search.Text != "Search by Patient ID or Name")
+                {
+                    string gender = cb_laboratory.SelectedItem?.ToString() ?? "All";
+                    LoadLaboratoryData(txt_laboratory_search.Text, "Admitted", gender);
+                }
+            };
         }
-
 
         private void dgv_laboratory_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -196,7 +198,6 @@ namespace USERS_WINDOW
                 }
             }
         }
-
 
         private void btn_laboratory_discharge_Click(object sender, EventArgs e)
         {
@@ -222,27 +223,63 @@ namespace USERS_WINDOW
                 cmd = new MySqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@id", patientID);
                 cmd.ExecuteNonQuery();
-                con.Close();
 
                 MessageBox.Show("Patient successfully discharged.");
-                LoadLaboratoryData();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error discharging patient: " + ex.Message);
             }
+            finally
+            {
+                con.Close();
+                string gender = cb_laboratory.SelectedItem?.ToString() ?? "All";
+                LoadLaboratoryData("", "Admitted", gender);
+            }
         }
 
         private void btn_laboratory_back_Click(object sender, EventArgs e)
         {
-            UserDashboard dashboard = new UserDashboard(0);
+            UserDashboard dashboard = new UserDashboard(doctorID);
             dashboard.Show();
-            this.Close();
+            this.Hide();
         }
+
+        private void btn_record_assigntest_Click(object sender, EventArgs e)
+        {
+            if (dgv_laboratory.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please select a patient first.");
+                return;
+            }
+
+            int currentPatientID = Convert.ToInt32(dgv_laboratory.SelectedRows[0].Cells["PatientID"].Value);
+
+            AssignLaboratoryTest assignForm = new AssignLaboratoryTest(currentPatientID);
+            assignForm.FormClosed += (s, args) =>
+            {
+                string gender = cb_laboratory.SelectedItem?.ToString() ?? "All";
+                LoadLaboratoryData("", "Admitted", gender);
+                LoadPatientInfo();
+                this.Show();
+            };
+            assignForm.Show();
+        }
+
+        private void LoadPatientInfo() { }
 
         private void LaboratoryManagement_Load(object sender, EventArgs e)
         {
+            LoadLaboratoryData("", "Admitted", "All");
+        }
 
+        private void txt_laboratory_search_TextChanged(object sender, EventArgs e)
+        {
+            if (txt_laboratory_search.Text != "Search by Patient ID or Name")
+            {
+                string gender = cb_laboratory.SelectedItem?.ToString() ?? "All";
+                LoadLaboratoryData(txt_laboratory_search.Text, "Admitted", gender);
+            }
         }
     }
 }

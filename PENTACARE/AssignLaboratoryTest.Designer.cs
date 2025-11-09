@@ -48,7 +48,7 @@
             lbl_assign_patientname.BackColor = Color.White;
             lbl_assign_patientname.Font = new Font("Century Gothic", 20F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lbl_assign_patientname.ForeColor = Color.MidnightBlue;
-            lbl_assign_patientname.Location = new Point(633, 234);
+            lbl_assign_patientname.Location = new Point(631, 220);
             lbl_assign_patientname.Margin = new Padding(2, 0, 2, 0);
             lbl_assign_patientname.Name = "lbl_assign_patientname";
             lbl_assign_patientname.Size = new Size(118, 40);
@@ -60,7 +60,7 @@
             lbl_assign_room.AutoSize = true;
             lbl_assign_room.BackColor = Color.White;
             lbl_assign_room.Font = new Font("Century Gothic", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lbl_assign_room.Location = new Point(426, 281);
+            lbl_assign_room.Location = new Point(432, 270);
             lbl_assign_room.Margin = new Padding(2, 0, 2, 0);
             lbl_assign_room.Name = "lbl_assign_room";
             lbl_assign_room.Size = new Size(70, 23);
@@ -73,7 +73,7 @@
             lbl_assign_doctorname.BackColor = Color.White;
             lbl_assign_doctorname.Font = new Font("Century Gothic", 20F, FontStyle.Bold);
             lbl_assign_doctorname.ForeColor = Color.MidnightBlue;
-            lbl_assign_doctorname.Location = new Point(1416, 234);
+            lbl_assign_doctorname.Location = new Point(1426, 220);
             lbl_assign_doctorname.Margin = new Padding(2, 0, 2, 0);
             lbl_assign_doctorname.Name = "lbl_assign_doctorname";
             lbl_assign_doctorname.Size = new Size(118, 40);
@@ -86,7 +86,7 @@
             lbl_assign_specialty.BackColor = Color.White;
             lbl_assign_specialty.Font = new Font("Century Gothic", 16F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lbl_assign_specialty.ForeColor = Color.Black;
-            lbl_assign_specialty.Location = new Point(1118, 280);
+            lbl_assign_specialty.Location = new Point(1117, 261);
             lbl_assign_specialty.Margin = new Padding(2, 0, 2, 0);
             lbl_assign_specialty.Name = "lbl_assign_specialty";
             lbl_assign_specialty.Size = new Size(94, 32);
@@ -99,7 +99,7 @@
             cb_labtest.Font = new Font("Century Gothic", 20F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cb_labtest.FormattingEnabled = true;
             cb_labtest.Location = new Point(701, 439);
-            cb_labtest.Margin = new Padding(2, 2, 2, 2);
+            cb_labtest.Margin = new Padding(2);
             cb_labtest.Name = "cb_labtest";
             cb_labtest.Size = new Size(1003, 48);
             cb_labtest.TabIndex = 12;
@@ -108,7 +108,7 @@
             // 
             dtp_assign.CalendarFont = new Font("Century Gothic", 20F, FontStyle.Regular, GraphicsUnit.Point, 0);
             dtp_assign.Location = new Point(701, 556);
-            dtp_assign.Margin = new Padding(2, 2, 2, 2);
+            dtp_assign.Margin = new Padding(2);
             dtp_assign.Name = "dtp_assign";
             dtp_assign.Size = new Size(1003, 27);
             dtp_assign.TabIndex = 13;
@@ -119,7 +119,7 @@
             txt_assign_fee.BorderStyle = BorderStyle.FixedSingle;
             txt_assign_fee.Font = new Font("Century Gothic", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txt_assign_fee.Location = new Point(701, 649);
-            txt_assign_fee.Margin = new Padding(2, 2, 2, 2);
+            txt_assign_fee.Margin = new Padding(2);
             txt_assign_fee.Name = "txt_assign_fee";
             txt_assign_fee.ReadOnly = true;
             txt_assign_fee.Size = new Size(1003, 57);
@@ -130,7 +130,7 @@
             txt_assign_remarks.BorderStyle = BorderStyle.FixedSingle;
             txt_assign_remarks.Font = new Font("Century Gothic", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
             txt_assign_remarks.Location = new Point(701, 751);
-            txt_assign_remarks.Margin = new Padding(2, 2, 2, 2);
+            txt_assign_remarks.Margin = new Padding(2);
             txt_assign_remarks.Name = "txt_assign_remarks";
             txt_assign_remarks.Size = new Size(1003, 57);
             txt_assign_remarks.TabIndex = 15;
@@ -139,7 +139,7 @@
             // 
             btn_assign_save.BackColor = Color.Transparent;
             btn_assign_save.Location = new Point(139, 913);
-            btn_assign_save.Margin = new Padding(2, 2, 2, 2);
+            btn_assign_save.Margin = new Padding(2);
             btn_assign_save.Name = "btn_assign_save";
             btn_assign_save.Size = new Size(249, 75);
             btn_assign_save.TabIndex = 16;
@@ -149,7 +149,7 @@
             // 
             btn_assign_clear.BackColor = Color.Transparent;
             btn_assign_clear.Location = new Point(452, 913);
-            btn_assign_clear.Margin = new Padding(2, 2, 2, 2);
+            btn_assign_clear.Margin = new Padding(2);
             btn_assign_clear.Name = "btn_assign_clear";
             btn_assign_clear.Size = new Size(234, 75);
             btn_assign_clear.TabIndex = 17;
@@ -159,7 +159,7 @@
             // 
             btn_assign_back.BackColor = Color.Transparent;
             btn_assign_back.Location = new Point(1551, 913);
-            btn_assign_back.Margin = new Padding(2, 2, 2, 2);
+            btn_assign_back.Margin = new Padding(2);
             btn_assign_back.Name = "btn_assign_back";
             btn_assign_back.Size = new Size(216, 75);
             btn_assign_back.TabIndex = 18;
@@ -183,9 +183,12 @@
             Controls.Add(lbl_assign_doctorname);
             Controls.Add(lbl_assign_room);
             Controls.Add(lbl_assign_patientname);
-            Margin = new Padding(2, 2, 2, 2);
+            Margin = new Padding(2);
+            MaximumSize = new Size(1920, 1080);
+            MinimumSize = new Size(1918, 1018);
             Name = "AssignLaboratoryTest";
             WindowState = FormWindowState.Maximized;
+            Load += AssignLaboratoryTest_Load;
             ResumeLayout(false);
             PerformLayout();
         }

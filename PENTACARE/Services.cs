@@ -60,7 +60,8 @@ namespace PENTACARE
                 string query = "SELECT ServiceID as 'Service ID', " +
                                 "Service_Name as 'Service Name', " +
                                 "Service_Fee as 'Service Fee', " +
-                                "Service_Type as 'Service Type' " +
+                                "Service_Type as 'Service Type', " +
+                                "Status as 'Status' " +
                                 "FROM other_services";
 
                 MySqlCommand cmd = new MySqlCommand(query, sqlconn);
@@ -92,7 +93,7 @@ namespace PENTACARE
                 {
                     con.Open();
 
-                    string query = "SELECT ServiceID AS 'Service ID', " + "Service_Name AS 'Service Name', " + "Service_Fee AS 'Service Fee', " + "Service_Type AS 'Service Type' " + "FROM other_services";
+                    string query = "SELECT ServiceID AS 'Service ID', " + "Service_Name AS 'Service Name', " + "Service_Fee AS 'Service Fee', " + "Service_Type AS 'Service Type', " + "Status AS 'Status' " + "FROM other_services";
 
                     if (!string.IsNullOrEmpty(serviceName))
                     {
@@ -138,13 +139,14 @@ namespace PENTACARE
                 string serviceName = dgvService.CurrentRow.Cells["Service Name"].Value.ToString();
                 string serviceFee = dgvService.CurrentRow.Cells["Service Fee"].Value.ToString();
                 string serviceType = dgvService.CurrentRow.Cells["Service Type"].Value.ToString();
+                string serviceStatus = dgvService.CurrentRow.Cells["Status"].Value.ToString();
 
                 string dbconnect = "server=127.0.0.1; database=pentacare; username=root; password=;";
                 using (MySqlConnection con = new MySqlConnection(dbconnect))
                 {
                     con.Open();
 
-                    string query = "UPDATE other_services SET Service_Name = @name, Service_Fee = @fee, Service_Type = @type WHERE ServiceID = @id";
+                    string query = "UPDATE other_services SET Service_Name = @name, Service_Fee = @fee, Service_Type = @type, Status = @status WHERE ServiceID = @id";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, con))
                     {
@@ -152,6 +154,7 @@ namespace PENTACARE
                         cmd.Parameters.AddWithValue("@name", serviceName);
                         cmd.Parameters.AddWithValue("@fee", serviceFee);
                         cmd.Parameters.AddWithValue("@type", serviceType);
+                        cmd.Parameters.AddWithValue("@status", serviceStatus);
 
                         int rowsAffected = cmd.ExecuteNonQuery();
 
@@ -224,5 +227,45 @@ namespace PENTACARE
                 MessageBox.Show("Error deleting record: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void cbType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FilterData();
+        }
+
+        void FilterData()
+        {
+            string conString = "server=127.0.0.1; database=pentacare; username=root; password=;";
+
+            using (MySqlConnection con = new MySqlConnection(conString))
+
+                try
+                {
+                    con.Open();
+
+                    string sql = "SELECT ServiceID AS 'Service ID', " +
+                                 "Service_Name AS 'Service Name', " +
+                                 "Service_Fee AS 'Service Fee', " +
+                                 "Service_Type AS 'Service Type', " +
+                                 "Status AS 'Status' " +
+                                 "FROM other_services";
+
+                    if (!string.IsNullOrEmpty(cbType.Text) && cbType.Text != "All")
+                    {
+                        sql += " WHERE Service_Type = '" + cbType.Text + "'";
+                    }
+
+                    MySqlDataAdapter da = new MySqlDataAdapter(sql, con);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    dgvService.DataSource = dt;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error filtering data: " + ex.Message);
+                }
+        }
     }
+
 }

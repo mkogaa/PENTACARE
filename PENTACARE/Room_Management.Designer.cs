@@ -86,6 +86,7 @@
             dgvRoom.RowHeadersWidth = 51;
             dgvRoom.Size = new Size(1535, 455);
             dgvRoom.TabIndex = 3;
+            dgvRoom.CellClick += dgvRoom_CellClick;
             dgvRoom.CellDoubleClick += dgvRoom_CellDoubleClick;
             dgvRoom.DoubleClick += dgvRoom_DoubleClick;
             // 

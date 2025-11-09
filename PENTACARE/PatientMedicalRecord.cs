@@ -14,11 +14,13 @@ namespace USERS_WINDOW
     public partial class PatientMedicalRecord : Form
     {
         private int patientID;
+        private MedicalRecords medrec;
 
-        public PatientMedicalRecord(int id)
+        public PatientMedicalRecord(MedicalRecords medrecs, int id)
         {
             InitializeComponent();
             patientID = id;
+            medrec = medrecs;
             LoadPatientDetails();
             LoadPatientRecords();
             SetTextBoxesReadOnly(true);
@@ -29,7 +31,7 @@ namespace USERS_WINDOW
 
         private void LoadPatientDetails()
         {
-            string query = "SELECT * FROM patient_medrec WHERE PatientID = @id";
+            string query = "SELECT * FROM patient WHERE PatientID = @id";
 
             using (MySqlConnection conn = new MySqlConnection(MedicalRecords.DBConnection.connString))
             {
@@ -42,10 +44,10 @@ namespace USERS_WINDOW
                 if (reader.Read())
                 {
                     txtPID.Text = reader["patientID"].ToString();
-                    txtPName.Text = reader["Patient_Name"].ToString();
+                    txtPName.Text = reader["Name"].ToString();
                     txtAge.Text = reader["Age"].ToString();
                     txtGender.Text = reader["Gender"].ToString();
-                    txtContact.Text = reader["Contact_No."].ToString();
+                    txtContact.Text = reader["Contact_No"].ToString();
                     txtAddress.Text = reader["Address"].ToString();
                 }
             }
@@ -136,8 +138,7 @@ namespace USERS_WINDOW
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            MedicalRecords medicalrecords = new MedicalRecords();
-            medicalrecords.Show();
+            medrec.Show();
             this.Hide();
         }
 

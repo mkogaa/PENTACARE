@@ -13,13 +13,48 @@ namespace PENTACARE
 {
     public partial class AddRoom : Form
     {
+        private int roomID;
+
         public AddRoom()
         {
             InitializeComponent();
 
             this.WindowState = FormWindowState.Maximized;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+        }
 
+        public AddRoom(int roomID)
+        {
+            InitializeComponent();
+            this.roomID = roomID;
+            LoadRoomData(roomID);
+        }
+
+        private void LoadRoomData(int roomID)
+        {
+            string dbconnect = "server=127.0.0.1; database=pentacare; username=root; password=;";
+            using (MySqlConnection conn = new MySqlConnection(dbconnect))
+            {
+                conn.Open();
+                string query = "SELECT * FROM room WHERE RoomID=@RoomID";
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@RoomID", roomID);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            txt_RoomNo.Text = reader["Room_No"].ToString();
+                            cb_RoomType.Text = reader["Room_Type"].ToString();
+                            txt_Rate.Text = reader["Room_Rate"].ToString();
+                            txt_beds.Text = reader["Bed"].ToString();
+                            cb_Status.Text = reader["Status"].ToString();
+
+                            btn_addRoom.Text = "Update Room";
+                        }
+                    }
+                }
+            }
         }
 
         private void AddRoom_Load(object sender, EventArgs e)
@@ -84,34 +119,56 @@ namespace PENTACARE
             {
                 sqlconn.Open();
 
-                string insertRoom = "INSERT INTO room (Room_No, Room_Type, Room_Rate, Bed, Status) " +
-                                "VALUES (@RoomNo, @RoomType, @RoomRate, @BedCount, @Status)";
-                using (MySqlCommand cmd = new MySqlCommand(insertRoom, sqlconn))
+                if (roomID > 0)
                 {
-                    cmd.Parameters.AddWithValue("@RoomNo", roomNumber);
-                    cmd.Parameters.AddWithValue("@RoomType", roomType);
-                    cmd.Parameters.AddWithValue("@RoomRate", roomRate);
-                    cmd.Parameters.AddWithValue("@BedCount", bedCount);
-                    cmd.Parameters.AddWithValue("@Status", roomStatus);
 
-                    cmd.ExecuteNonQuery();
-
-                    long newRoomID = cmd.LastInsertedId;
-
-                    for (int i = 1; i <= bedCount; i++)
+                    string updateRoom = "UPDATE room SET Room_No=@RoomNo, Room_Type=@RoomType, Room_Rate=@RoomRate, " +
+                                        "Bed=@BedCount, Status=@Status WHERE RoomID=@RoomID";
+                    using (MySqlCommand cmd = new MySqlCommand(updateRoom, sqlconn))
                     {
-                        string insertBed = "INSERT INTO bed (RoomID, Bed_No, Status) VALUES (@RoomID, @BedNo, 'Available')";
-                        using (MySqlCommand bedCmd = new MySqlCommand(insertBed, sqlconn))
+                        cmd.Parameters.AddWithValue("@RoomNo", roomNumber);
+                        cmd.Parameters.AddWithValue("@RoomType", roomType);
+                        cmd.Parameters.AddWithValue("@RoomRate", roomRate);
+                        cmd.Parameters.AddWithValue("@BedCount", bedCount);
+                        cmd.Parameters.AddWithValue("@Status", roomStatus);
+                        cmd.Parameters.AddWithValue("@RoomID", roomID);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    MessageBox.Show("Room updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+
+                    string insertRoom = "INSERT INTO room (Room_No, Room_Type, Room_Rate, Bed, Status) " +
+                                        "VALUES (@RoomNo, @RoomType, @RoomRate, @BedCount, @Status)";
+                    using (MySqlCommand cmd = new MySqlCommand(insertRoom, sqlconn))
+                    {
+                        cmd.Parameters.AddWithValue("@RoomNo", roomNumber);
+                        cmd.Parameters.AddWithValue("@RoomType", roomType);
+                        cmd.Parameters.AddWithValue("@RoomRate", roomRate);
+                        cmd.Parameters.AddWithValue("@BedCount", bedCount);
+                        cmd.Parameters.AddWithValue("@Status", roomStatus);
+                        cmd.ExecuteNonQuery();
+
+                        long newRoomID = cmd.LastInsertedId;
+
+                        for (int i = 1; i <= bedCount; i++)
                         {
-                            bedCmd.Parameters.AddWithValue("@RoomID", newRoomID);
-                            bedCmd.Parameters.AddWithValue("@BedNo", "Bed " + i);
-                            bedCmd.ExecuteNonQuery();
+                            string insertBed = "INSERT INTO bed (RoomID, Bed_No, Status) VALUES (@RoomID, @BedNo, 'Available')";
+                            using (MySqlCommand bedCmd = new MySqlCommand(insertBed, sqlconn))
+                            {
+                                bedCmd.Parameters.AddWithValue("@RoomID", newRoomID);
+                                bedCmd.Parameters.AddWithValue("@BedNo", "Bed " + i);
+                                bedCmd.ExecuteNonQuery();
+                            }
                         }
                     }
-                }
 
-                MessageBox.Show("Room and beds added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Room and beds added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
+
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -151,6 +208,13 @@ namespace PENTACARE
                     MessageBox.Show("Error loading room rate: " + ex.Message);
                 }
             }
+        }
+
+        private void btn_back_Click(object sender, EventArgs e)
+        {
+            Room_Management roomManagement = new Room_Management();
+            roomManagement.Show();
+            this.Hide();
         }
     }
 }

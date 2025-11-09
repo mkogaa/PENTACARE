@@ -44,7 +44,7 @@ namespace USERS_WINDOW
             // 
             txt_patient_search.BorderStyle = BorderStyle.None;
             txt_patient_search.Font = new Font("Century Gothic", 20F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txt_patient_search.Location = new Point(128, 243);
+            txt_patient_search.Location = new Point(128, 233);
             txt_patient_search.Margin = new Padding(2);
             txt_patient_search.Multiline = true;
             txt_patient_search.Name = "txt_patient_search";
@@ -56,11 +56,11 @@ namespace USERS_WINDOW
             // 
             dgv_patient.BackgroundColor = Color.White;
             dgv_patient.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv_patient.Location = new Point(118, 367);
+            dgv_patient.Location = new Point(115, 348);
             dgv_patient.Margin = new Padding(2);
             dgv_patient.Name = "dgv_patient";
             dgv_patient.RowHeadersWidth = 62;
-            dgv_patient.Size = new Size(1666, 492);
+            dgv_patient.Size = new Size(1689, 492);
             dgv_patient.TabIndex = 1;
             dgv_patient.CellContentClick += dgv_patient_CellContentClick;
             // 
@@ -71,10 +71,10 @@ namespace USERS_WINDOW
             cb_patient_filter.Font = new Font("Century Gothic", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cb_patient_filter.FormattingEnabled = true;
             cb_patient_filter.Items.AddRange(new object[] { "Discharged", "Admitted" });
-            cb_patient_filter.Location = new Point(1485, 260);
+            cb_patient_filter.Location = new Point(1495, 249);
             cb_patient_filter.Margin = new Padding(2);
             cb_patient_filter.Name = "cb_patient_filter";
-            cb_patient_filter.Size = new Size(299, 41);
+            cb_patient_filter.Size = new Size(309, 41);
             cb_patient_filter.TabIndex = 6;
             // 
             // btn_patient_back
@@ -99,7 +99,10 @@ namespace USERS_WINDOW
             Controls.Add(dgv_patient);
             Controls.Add(txt_patient_search);
             Margin = new Padding(2);
+            MaximumSize = new Size(1920, 1080);
+            MinimumSize = new Size(1918, 1018);
             Name = "PatientManagement";
+            StartPosition = FormStartPosition.CenterScreen;
             WindowState = FormWindowState.Maximized;
             Load += PatientManagement_Load;
             ((System.ComponentModel.ISupportInitialize)dgv_patient).EndInit();

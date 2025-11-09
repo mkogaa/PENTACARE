@@ -91,14 +91,23 @@ namespace PENTACARE
             {
                 sqlconn.Open();
 
-                sqlcommand.CommandText = "UPDATE room_type SET RoomType_Rate = @newFee WHERE Room_Type = @type";
-                
-                sqlcommand.Parameters.AddWithValue("@newFee", newFee);
-                sqlcommand.Parameters.AddWithValue("@type", selectedRoomType);
-                sqlcommand.CommandType = CommandType.Text;
-                sqlcommand.Connection = sqlconn;
+                string updateRoomTypeQuery = "UPDATE room_type SET RoomType_Rate = @newFee WHERE Room_Type = @type";
+                using (MySqlCommand cmd1 = new MySqlCommand(updateRoomTypeQuery, sqlconn))
+                {
+                    cmd1.Parameters.AddWithValue("@newFee", newFee);
+                    cmd1.Parameters.AddWithValue("@type", selectedRoomType);
+                    cmd1.ExecuteNonQuery();
+                }
 
-                sqlcommand.ExecuteNonQuery();
+                string updateRoomQuery = "UPDATE room SET Room_Rate = @newFee WHERE Room_Type = @type";
+                using (MySqlCommand cmd2 = new MySqlCommand(updateRoomQuery, sqlconn))
+                {
+                    cmd2.Parameters.AddWithValue("@newFee", newFee);
+                    cmd2.Parameters.AddWithValue("@type", selectedRoomType);
+                    cmd2.ExecuteNonQuery();
+                }
+
+
 
                 MessageBox.Show("Room fee updated successfully!");
                 txt_CurrentFee.Text = newFee.ToString();
@@ -149,6 +158,18 @@ namespace PENTACARE
                     sqlconn.Close();
                 }
             }
+        }
+
+        private void btn_back_Click(object sender, EventArgs e)
+        {
+            Room_Type room_Type = new Room_Type();
+            room_Type.Show();
+            this.Hide();
+        }
+
+        private void btn_clear_Paint(object sender, PaintEventArgs e)
+        {
+            cb_roomType.SelectedIndex = -1;
         }
     }
 }

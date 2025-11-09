@@ -22,9 +22,25 @@ namespace USERS_WINDOW
             string password = txt_login_password.Text.Trim();
             string userType = cb_login.SelectedItem?.ToString();
 
-            if (string.IsNullOrEmpty(usernameOrEmail) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrWhiteSpace(usernameOrEmail) && string.IsNullOrWhiteSpace(password))
             {
-                MessageBox.Show("Please enter both fields.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please enter your email and password.", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            else if (string.IsNullOrWhiteSpace(usernameOrEmail))
+            {
+                MessageBox.Show("Please enter your email.", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            else if (string.IsNullOrWhiteSpace(password))
+            {
+                MessageBox.Show("Please enter your password.", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(userType))
+            {
+                MessageBox.Show("Please select your user type (Admin or Doctor).", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -50,17 +66,28 @@ namespace USERS_WINDOW
 
                 if (dr.Read())
                 {
-                    MessageBox.Show($"Welcome {userType}!", "Login Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    int doctorID = 0;
+                    string doctorName = "";
+
+                    if (userType == "Doctor")
+                    {
+                        doctorID = Convert.ToInt32(dr["DoctorID"]);
+                        doctorName = dr["Doctor_Name"].ToString();
+                        MessageBox.Show($"Welcome, {doctorName}!", "Login Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Welcome, {userType}!", "Login Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
+                    dr.Close();
 
                     if (userType == "Admin")
                     {
-                        PatientManagement pm = new PatientManagement();
-                        pm.Show();
+
                     }
                     else if (userType == "Doctor")
                     {
-                        int doctorID = Convert.ToInt32(dr["DoctorID"]);
-                        string doctorName = dr["Doctor_Name"].ToString();
                         UserDashboard userdashboard = new UserDashboard(doctorID);
                         userdashboard.Show();
                     }
@@ -69,14 +96,17 @@ namespace USERS_WINDOW
                 }
                 else
                 {
-                    MessageBox.Show("Invalid credentials. Please try again.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    dr.Close();
+                    MessageBox.Show("Invalid credentials. Please check your username/email and password.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
-                dr.Close();
+            }
+            catch (MySqlException sqlEx)
+            {
+                MessageBox.Show("MySQL connection failed:\n" + sqlEx.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Database error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("An unexpected error occurred:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -86,21 +116,22 @@ namespace USERS_WINDOW
 
         private void Login_Load(object sender, EventArgs e)
         {
-
         }
 
-        private void btn_signup_CLick(object sender, EventArgs e)
+        private void btn_login_cancel_Click(object sender, EventArgs e)
         {
-            CreateAccount ca = new CreateAccount();
-            ca.Show();
-            this.Hide();
+            Application.Exit();
         }
 
-        private void btn_signup_Click_1(object sender, EventArgs e)
+        private void Login_KeyDown(object sender, KeyEventArgs e)
         {
-            CreateAccount ca = new CreateAccount();
-            ca.Show();
-            this.Hide();
+            if (e.KeyCode == Keys.Enter) 
+            {
+                cb_login.SelectedIndex = 1;
+                txt_login_email.Text = "daniel.ramos@pentacare.com";
+                txt_login_password.Text = "ortho456";
+            }
+                
         }
     }
 }

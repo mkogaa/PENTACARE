@@ -59,7 +59,7 @@
             // btn_services
             // 
             btn_services.BackColor = Color.Transparent;
-            btn_services.Location = new Point(1455, 448);
+            btn_services.Location = new Point(1464, 421);
             btn_services.Name = "btn_services";
             btn_services.Size = new Size(106, 74);
             btn_services.TabIndex = 1;
@@ -107,7 +107,7 @@
             // btn_patient
             // 
             btn_patient.BackColor = Color.Transparent;
-            btn_patient.Location = new Point(1450, 322);
+            btn_patient.Location = new Point(1459, 295);
             btn_patient.Name = "btn_patient";
             btn_patient.Size = new Size(106, 74);
             btn_patient.TabIndex = 2;
@@ -116,7 +116,7 @@
             // btn_doctor
             // 
             btn_doctor.BackColor = Color.Transparent;
-            btn_doctor.Location = new Point(1696, 321);
+            btn_doctor.Location = new Point(1705, 294);
             btn_doctor.Name = "btn_doctor";
             btn_doctor.Size = new Size(106, 74);
             btn_doctor.TabIndex = 3;
@@ -125,7 +125,7 @@
             // btn_rooms
             // 
             btn_rooms.BackColor = Color.Transparent;
-            btn_rooms.Location = new Point(1698, 446);
+            btn_rooms.Location = new Point(1707, 419);
             btn_rooms.Name = "btn_rooms";
             btn_rooms.Size = new Size(106, 74);
             btn_rooms.TabIndex = 5;

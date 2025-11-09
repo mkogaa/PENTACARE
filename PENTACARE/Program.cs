@@ -16,7 +16,7 @@ namespace PENTACARE
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2); // <-- ensures per-monitor scaling
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Dashboard());
+            Application.Run(new Login());
         }
     }
 }

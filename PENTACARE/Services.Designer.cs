@@ -36,6 +36,8 @@
             txtSearch = new TextBox();
             btn_updateS = new Panel();
             btn_deleteS = new Panel();
+            label2 = new Label();
+            cbType = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)dgvService).BeginInit();
             SuspendLayout();
             // 
@@ -105,6 +107,28 @@
             btn_deleteS.TabIndex = 2;
             btn_deleteS.Click += btn_deleteS_Click;
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.BackColor = Color.Transparent;
+            label2.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label2.ForeColor = Color.SteelBlue;
+            label2.Location = new Point(1452, 176);
+            label2.Name = "label2";
+            label2.Size = new Size(194, 25);
+            label2.TabIndex = 5;
+            label2.Text = "Filter by Service Type";
+            // 
+            // cbType
+            // 
+            cbType.FormattingEnabled = true;
+            cbType.Items.AddRange(new object[] { "All", "Room / Add-on", "Food & Beverage", "Facility", "Maintenance", "Entertainment", "Supplies", "Room Service", "Facility", "Support Service" });
+            cbType.Location = new Point(1482, 228);
+            cbType.Name = "cbType";
+            cbType.Size = new Size(278, 28);
+            cbType.TabIndex = 6;
+            cbType.SelectedIndexChanged += cbType_SelectedIndexChanged;
+            // 
             // Services
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -112,6 +136,8 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(cbType);
+            Controls.Add(label2);
             Controls.Add(btn_deleteS);
             Controls.Add(btn_updateS);
             Controls.Add(txtSearch);
@@ -136,5 +162,7 @@
         private TextBox txtSearch;
         private Panel btn_updateS;
         private Panel btn_deleteS;
+        private Label label2;
+        private ComboBox cbType;
     }
 }

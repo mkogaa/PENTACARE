@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Asn1.Cmp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -42,10 +43,11 @@ namespace PENTACARE
             {
                 string query = "SELECT LabID as 'Laboratory ID', " +
                                 "Lab_Name as 'Laboratory Name', " +
-                                "Lab_Description as 'Laboratory Description', " +
+                                "Lab_Description as 'Description', " +
                                 "Lab_Fee as 'Laboratory Fee', " +
                                 "Lab_Category as 'Category', " +
-                                "Estimated_Time as 'Laboratory Time' " +
+                                "Estimated_Time as 'Laboratory Time', " +
+                                "Status as 'Status' " +
                                 "FROM lab_services";
 
                 MySqlCommand cmd = new MySqlCommand(query, sqlconn);
@@ -96,7 +98,7 @@ namespace PENTACARE
                 {
                     con.Open();
 
-                    string query = "SELECT LabID AS 'Laboratory ID', " + "Lab_Name AS 'Laboratory Name', " + "Lab_Description AS 'Laboratory Description', " + "Lab_Fee AS 'Laboratory Fee', " + "Lab_Category AS 'Category', " + "Estimated_Time AS 'Laboratory Time' " + "FROM lab_services";
+                    string query = "SELECT LabID AS 'Laboratory ID', " + "Lab_Name AS 'Laboratory Name', " + "Lab_Description AS 'Description', " + "Lab_Fee AS 'Laboratory Fee', " + "Lab_Category AS 'Category', " + "Estimated_Time AS 'Laboratory Time', " + "Status AS 'Status' " + "FROM lab_services";
 
                     if (!string.IsNullOrEmpty(labName))
                     {
@@ -144,13 +146,14 @@ namespace PENTACARE
                 string labFee = dgvLaboratory.CurrentRow.Cells["Laboratory Fee"].Value.ToString();
                 string labCategory = dgvLaboratory.CurrentRow.Cells["Category"].Value.ToString();
                 string labTime = dgvLaboratory.CurrentRow.Cells["Laboratory Time"].Value.ToString();
+                string labStatus = dgvLaboratory.CurrentRow.Cells["Status"].Value.ToString();
 
                 string dbconnect = "server=127.0.0.1; database=pentacare; username=root; password=;";
                 using (MySqlConnection con = new MySqlConnection(dbconnect))
                 {
                     con.Open();
 
-                    string query = "UPDATE lab_services SET Lab_Name = @name, Lab_Description = @description, Lab_Fee = @fee, Lab_Category = @category, Estimated_Time = @time WHERE LabID = @id";
+                    string query = "UPDATE lab_services SET Lab_Name = @name, Lab_Description = @description, Lab_Fee = @fee, Lab_Category = @category, Estimated_Time = @time, Status = @status WHERE LabID = @id";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, con))
                     {
@@ -160,6 +163,7 @@ namespace PENTACARE
                         cmd.Parameters.AddWithValue("@fee", labFee);
                         cmd.Parameters.AddWithValue("@category", labCategory);
                         cmd.Parameters.AddWithValue("@time", labTime);
+                        cmd.Parameters.AddWithValue("@status", labStatus);
 
                         int rowsAffected = cmd.ExecuteNonQuery();
 
@@ -238,6 +242,52 @@ namespace PENTACARE
             {
                 MessageBox.Show("Error deleting record: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void cbCategory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FilterData();
+        }
+
+        void FilterData()
+        {
+            string conString = "server=127.0.0.1; database=pentacare; username=root; password=;";
+
+            using (MySqlConnection con = new MySqlConnection(conString))
+
+                try
+                {
+                    con.Open();
+
+                    string sql = "SELECT LabID AS 'Laboratory ID', " +
+                                 "Lab_Name AS 'Laboratory Name', " +
+                                 "Lab_Description AS 'Description', " +
+                                 "Lab_Fee AS 'Laboratory Fee', " +
+                                 "Lab_Category AS 'Category', " +
+                                 "Estimated_Time AS 'Laboratory Time', " +
+                                 "Status AS 'Status' " +
+                                 "FROM lab_services";
+
+                    if (!string.IsNullOrEmpty(cbCategory.Text) && cbCategory.Text != "All")
+                    {
+                        sql += " WHERE Lab_Category = '" + cbCategory.Text + "'";
+                    }
+
+                    MySqlDataAdapter da = new MySqlDataAdapter(sql, con);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    dgvLaboratory.DataSource = dt;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error filtering data: " + ex.Message);
+                }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

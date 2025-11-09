@@ -60,6 +60,7 @@ namespace PENTACARE
 
         private void btn_assign_Click(object sender, EventArgs e)
         {
+
             if (string.IsNullOrWhiteSpace(txt_patientID.Text))
             {
                 MessageBox.Show("Please enter or select a valid patient.", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -87,6 +88,27 @@ namespace PENTACARE
                 {
                     sqlconn.Open();
 
+                    string roomStatusQuery = "SELECT Status FROM room WHERE RoomID = @RoomID";
+                    using (MySqlCommand statusCmd = new MySqlCommand(roomStatusQuery, sqlconn))
+                    {
+                        statusCmd.Parameters.AddWithValue("@RoomID", selectedRoomID);
+                        object result = statusCmd.ExecuteScalar();
+
+                        if (result == null)
+                        {
+                            MessageBox.Show("Room not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                        string currentStatus = result.ToString().Trim().ToLower();
+
+                        if (currentStatus != "available")
+                        {
+                            MessageBox.Show("Cannot assign a patient to a room that is not available.", "Assignment Blocked", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+                    }
+
                     string checkQuery = "SELECT COUNT(*) FROM room_assign WHERE PatientID = @PatientID AND Status = 'Occupied'";
                     using (MySqlCommand checkCmd = new MySqlCommand(checkQuery, sqlconn))
                     {
@@ -99,8 +121,7 @@ namespace PENTACARE
                         }
                     }
 
-                    string insertQuery = @"INSERT INTO room_assign 
-                                   (PatientID, RoomID, BedID, Room_Type, Room_Fee, Admission_Date, Expected_Discharge, Remarks, Status)
+                    string insertQuery = @"INSERT INTO room_assign (PatientID, RoomID, BedID, Room_Type, Room_Fee, Admission_Date, Expected_Discharge, Remarks, Status)
                                    VALUES (@PatientID, @RoomID, @BedID, @RoomType, @RoomFee, @AdmissionDate, @ExpectedDischarge, @Remarks, @Status)";
                     using (MySqlCommand insertCmd = new MySqlCommand(insertQuery, sqlconn))
                     {
@@ -197,6 +218,28 @@ namespace PENTACARE
                 try
                 {
                     sqlconn.Open();
+
+                    string roomQuery = "SELECT Status FROM room WHERE RoomID = @RoomID";
+                    using (MySqlCommand roomCmd = new MySqlCommand(roomQuery, sqlconn))
+                    {
+                        roomCmd.Parameters.AddWithValue("@RoomID", selectedRoomID);
+                        object result = roomCmd.ExecuteScalar();
+
+                        if (result == null)
+                        {
+                            MessageBox.Show("Room not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                        string status = result.ToString().Trim().ToLower();
+                        if (status == "inactive")
+                        {
+                            MessageBox.Show("Cannot assign patients to an inactive room.", "Blocked", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            cb_bed.DataSource = null; 
+                            return;
+                        }
+                    }
+
                     string query = "SELECT BedID, Bed_No FROM bed WHERE RoomID = @RoomID AND Status = 'Available'";
                     using (MySqlCommand cmd = new MySqlCommand(query, sqlconn))
                     {

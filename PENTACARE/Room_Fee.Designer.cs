@@ -33,6 +33,8 @@
             txt_CurrentFee = new TextBox();
             txt_NewFee = new TextBox();
             btn_saveFee = new Panel();
+            btn_clear = new Panel();
+            btn_back = new Panel();
             SuspendLayout();
             // 
             // cb_roomType
@@ -67,6 +69,24 @@
             btn_saveFee.TabIndex = 3;
             btn_saveFee.Click += btn_saveFee_Click;
             // 
+            // btn_clear
+            // 
+            btn_clear.BackColor = Color.Transparent;
+            btn_clear.Location = new Point(530, 803);
+            btn_clear.Name = "btn_clear";
+            btn_clear.Size = new Size(216, 54);
+            btn_clear.TabIndex = 4;
+            btn_clear.Paint += btn_clear_Paint;
+            // 
+            // btn_back
+            // 
+            btn_back.BackColor = Color.Transparent;
+            btn_back.Location = new Point(1579, 803);
+            btn_back.Name = "btn_back";
+            btn_back.Size = new Size(216, 54);
+            btn_back.TabIndex = 5;
+            btn_back.Click += btn_back_Click;
+            // 
             // Room_Fee
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -74,6 +94,8 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(btn_back);
+            Controls.Add(btn_clear);
             Controls.Add(btn_saveFee);
             Controls.Add(txt_NewFee);
             Controls.Add(txt_CurrentFee);
@@ -91,5 +113,7 @@
         private TextBox txt_CurrentFee;
         private TextBox txt_NewFee;
         private Panel btn_saveFee;
+        private Panel btn_clear;
+        private Panel btn_back;
     }
 }

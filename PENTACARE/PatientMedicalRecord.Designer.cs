@@ -56,7 +56,7 @@
             txtBP.BackColor = Color.White;
             txtBP.BorderStyle = BorderStyle.None;
             txtBP.Font = new Font("Century Gothic", 9F);
-            txtBP.Location = new Point(1020, 396);
+            txtBP.Location = new Point(1020, 380);
             txtBP.Name = "txtBP";
             txtBP.Size = new Size(122, 19);
             txtBP.TabIndex = 0;
@@ -66,7 +66,7 @@
             txtHR.BackColor = Color.White;
             txtHR.BorderStyle = BorderStyle.None;
             txtHR.Font = new Font("Century Gothic", 9F);
-            txtHR.Location = new Point(1293, 396);
+            txtHR.Location = new Point(1296, 380);
             txtHR.Name = "txtHR";
             txtHR.Size = new Size(122, 19);
             txtHR.TabIndex = 1;
@@ -76,7 +76,7 @@
             txtTemp.BackColor = Color.White;
             txtTemp.BorderStyle = BorderStyle.None;
             txtTemp.Font = new Font("Century Gothic", 9F);
-            txtTemp.Location = new Point(1590, 396);
+            txtTemp.Location = new Point(1600, 380);
             txtTemp.Name = "txtTemp";
             txtTemp.Size = new Size(122, 19);
             txtTemp.TabIndex = 2;
@@ -86,7 +86,7 @@
             txtAllergies.BackColor = Color.White;
             txtAllergies.BorderStyle = BorderStyle.None;
             txtAllergies.Font = new Font("Century Gothic", 9F);
-            txtAllergies.Location = new Point(1064, 476);
+            txtAllergies.Location = new Point(1066, 456);
             txtAllergies.Name = "txtAllergies";
             txtAllergies.Size = new Size(696, 19);
             txtAllergies.TabIndex = 3;
@@ -96,7 +96,7 @@
             txtDN.BackColor = Color.White;
             txtDN.BorderStyle = BorderStyle.None;
             txtDN.Font = new Font("Century Gothic", 9F);
-            txtDN.Location = new Point(1164, 589);
+            txtDN.Location = new Point(1173, 567);
             txtDN.Name = "txtDN";
             txtDN.Size = new Size(596, 19);
             txtDN.TabIndex = 4;
@@ -106,7 +106,7 @@
             txtDiagnosis.BackColor = Color.White;
             txtDiagnosis.BorderStyle = BorderStyle.None;
             txtDiagnosis.Font = new Font("Century Gothic", 9F);
-            txtDiagnosis.Location = new Point(1060, 535);
+            txtDiagnosis.Location = new Point(1069, 516);
             txtDiagnosis.Name = "txtDiagnosis";
             txtDiagnosis.Size = new Size(700, 19);
             txtDiagnosis.TabIndex = 5;
@@ -116,7 +116,7 @@
             txtTreatment.BackColor = Color.White;
             txtTreatment.BorderStyle = BorderStyle.None;
             txtTreatment.Font = new Font("Century Gothic", 9F);
-            txtTreatment.Location = new Point(1153, 646);
+            txtTreatment.Location = new Point(1161, 622);
             txtTreatment.Name = "txtTreatment";
             txtTreatment.Size = new Size(607, 19);
             txtTreatment.TabIndex = 6;
@@ -126,7 +126,7 @@
             txtMedication.BackColor = Color.White;
             txtMedication.BorderStyle = BorderStyle.None;
             txtMedication.Font = new Font("Century Gothic", 9F);
-            txtMedication.Location = new Point(1258, 704);
+            txtMedication.Location = new Point(1267, 677);
             txtMedication.Name = "txtMedication";
             txtMedication.Size = new Size(502, 19);
             txtMedication.TabIndex = 7;
@@ -136,7 +136,7 @@
             txtExamFindings.BackColor = Color.White;
             txtExamFindings.BorderStyle = BorderStyle.None;
             txtExamFindings.Font = new Font("Century Gothic", 9F);
-            txtExamFindings.Location = new Point(1135, 759);
+            txtExamFindings.Location = new Point(1144, 735);
             txtExamFindings.Name = "txtExamFindings";
             txtExamFindings.Size = new Size(625, 19);
             txtExamFindings.TabIndex = 8;
@@ -147,7 +147,7 @@
             txtRecordDate.BorderStyle = BorderStyle.None;
             txtRecordDate.Font = new Font("Century Gothic", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtRecordDate.ForeColor = Color.Black;
-            txtRecordDate.Location = new Point(303, 600);
+            txtRecordDate.Location = new Point(303, 580);
             txtRecordDate.Name = "txtRecordDate";
             txtRecordDate.Size = new Size(281, 29);
             txtRecordDate.TabIndex = 9;
@@ -158,7 +158,7 @@
             txtPName.BorderStyle = BorderStyle.None;
             txtPName.Font = new Font("Century Gothic", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtPName.ForeColor = Color.FromArgb(0, 22, 122);
-            txtPName.Location = new Point(427, 269);
+            txtPName.Location = new Point(430, 255);
             txtPName.Name = "txtPName";
             txtPName.Size = new Size(360, 37);
             txtPName.TabIndex = 10;
@@ -170,7 +170,7 @@
             txtPID.BorderStyle = BorderStyle.None;
             txtPID.Font = new Font("Century Gothic", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtPID.ForeColor = Color.Black;
-            txtPID.Location = new Point(331, 312);
+            txtPID.Location = new Point(331, 298);
             txtPID.Name = "txtPID";
             txtPID.Size = new Size(122, 29);
             txtPID.TabIndex = 11;
@@ -183,7 +183,7 @@
             btnClose.FlatStyle = FlatStyle.Flat;
             btnClose.Font = new Font("Century Gothic", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnClose.ForeColor = SystemColors.ButtonFace;
-            btnClose.Location = new Point(1657, 894);
+            btnClose.Location = new Point(1676, 853);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(174, 61);
             btnClose.TabIndex = 17;
@@ -197,7 +197,7 @@
             txtAge.BorderStyle = BorderStyle.None;
             txtAge.Font = new Font("Century Gothic", 13.8F);
             txtAge.ForeColor = Color.Black;
-            txtAge.Location = new Point(182, 408);
+            txtAge.Location = new Point(182, 389);
             txtAge.Name = "txtAge";
             txtAge.Size = new Size(122, 29);
             txtAge.TabIndex = 18;
@@ -210,7 +210,7 @@
             txtContact.BorderStyle = BorderStyle.None;
             txtContact.Font = new Font("Century Gothic", 13.8F);
             txtContact.ForeColor = Color.Black;
-            txtContact.Location = new Point(307, 490);
+            txtContact.Location = new Point(307, 473);
             txtContact.Name = "txtContact";
             txtContact.Size = new Size(241, 29);
             txtContact.TabIndex = 19;
@@ -222,7 +222,7 @@
             txtAddress.BorderStyle = BorderStyle.None;
             txtAddress.Font = new Font("Century Gothic", 13.8F);
             txtAddress.ForeColor = Color.Black;
-            txtAddress.Location = new Point(226, 537);
+            txtAddress.Location = new Point(226, 518);
             txtAddress.Name = "txtAddress";
             txtAddress.Size = new Size(417, 29);
             txtAddress.TabIndex = 20;
@@ -235,7 +235,7 @@
             txtGender.BorderStyle = BorderStyle.None;
             txtGender.Font = new Font("Century Gothic", 13.8F);
             txtGender.ForeColor = Color.Black;
-            txtGender.Location = new Point(227, 451);
+            txtGender.Location = new Point(226, 433);
             txtGender.Name = "txtGender";
             txtGender.Size = new Size(122, 29);
             txtGender.TabIndex = 21;
@@ -246,7 +246,7 @@
             dgvPRecord.BackgroundColor = SystemColors.ActiveCaption;
             dgvPRecord.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvPRecord.GridColor = SystemColors.HotTrack;
-            dgvPRecord.Location = new Point(65, 658);
+            dgvPRecord.Location = new Point(73, 627);
             dgvPRecord.Name = "dgvPRecord";
             dgvPRecord.RowHeadersWidth = 51;
             dgvPRecord.Size = new Size(691, 202);
@@ -259,7 +259,7 @@
             txtRecordNo.BackColor = Color.Transparent;
             txtRecordNo.Font = new Font("Century Gothic", 30F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtRecordNo.ForeColor = Color.White;
-            txtRecordNo.Location = new Point(1384, 246);
+            txtRecordNo.Location = new Point(1382, 233);
             txtRecordNo.Name = "txtRecordNo";
             txtRecordNo.Size = new Size(81, 59);
             txtRecordNo.TabIndex = 23;
@@ -267,8 +267,7 @@
             // 
             // PatientMedicalRecord
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
@@ -292,7 +291,9 @@
             Controls.Add(txtHR);
             Controls.Add(txtBP);
             Name = "PatientMedicalRecord";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
+            WindowState = FormWindowState.Maximized;
             Load += PatientMedicalRecord_Load;
             ((System.ComponentModel.ISupportInitialize)dgvPRecord).EndInit();
             ResumeLayout(false);

@@ -15,12 +15,15 @@ namespace USERS_WINDOW
 {
     public partial class NewRecords : Form
     {
+        private int doctorID;
         private int patientID;
         private int existingPatientId = 0;
+        private MedicalRecords medrec;
 
-        public NewRecords()
+        public NewRecords(MedicalRecords medrecs)
         {
             InitializeComponent();
+            medrec = medrecs;
 
             txtPName.Enabled = true;
             txtAge.Enabled = true;
@@ -29,11 +32,14 @@ namespace USERS_WINDOW
             txtAddress.Enabled = true;
         }
 
-        public NewRecords(int patientId, string name, string age, string gender, string contact, string address)
+        public NewRecords(MedicalRecords medrecs,int doctorID, int patientId, string name, string age, string gender, string contact, string address)
         {
             InitializeComponent();
+            medrec = medrecs;
 
+            this.doctorID = doctorID;
             this.patientID = patientId;
+
             txtPName.Text = name;
             txtAge.Text = age;
             txtGender.Text = gender;
@@ -45,13 +51,14 @@ namespace USERS_WINDOW
             txtGender.Enabled = false;
             txtContact.Enabled = false;
             txtAddress.Enabled = false;
+
+            txtRecordDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
         }
 
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            MedicalRecords medicalrecords = new MedicalRecords();
-            medicalrecords.Show();
+            medrec.Show();
             this.Hide();
         }
 
@@ -95,70 +102,40 @@ namespace USERS_WINDOW
             {
                 conn.Open();
 
-                long patientId = 0;
+                string insertRecord = @"INSERT INTO medical_records 
+                    (DoctorID, PatientID, BP, HR, Temp, Allergies, Diagnosis, DiagnosisNotes, ExamFindings, Treatment, Medication, RecordDate)
+                    VALUES (@doctorID, @pid, @bp, @hr, @temp, @allergies, @diagnosis, @dn, @exam, @treatment, @medication, NOW())";
 
-                string checkQuery = "SELECT PatientID FROM patient_medrec WHERE Patient_Name = @name AND Age = @age AND Gender = @gender AND `Contact_No.` = @contact LIMIT 1";
-                MySqlCommand checkCmd = new MySqlCommand(checkQuery, conn);
-                checkCmd.Parameters.AddWithValue("@name", txtPName.Text);
-                checkCmd.Parameters.AddWithValue("@age", txtAge.Text);
-                checkCmd.Parameters.AddWithValue("@gender", txtGender.Text);
-                checkCmd.Parameters.AddWithValue("@contact", txtContact.Text);
+                MySqlCommand cmd = new MySqlCommand(insertRecord, conn);
+                cmd.Parameters.AddWithValue("@doctorID", doctorID);
+                cmd.Parameters.AddWithValue("@pid", patientID);
+                cmd.Parameters.AddWithValue("@bp", txtBP.Text);
+                cmd.Parameters.AddWithValue("@hr", txtHR.Text);
+                cmd.Parameters.AddWithValue("@temp", txtTemp.Text);
+                cmd.Parameters.AddWithValue("@allergies", txtAllergies.Text);
+                cmd.Parameters.AddWithValue("@diagnosis", txtDiagnosis.Text);
+                cmd.Parameters.AddWithValue("@dn", txtDN.Text);
+                cmd.Parameters.AddWithValue("@exam", txtExamFindings.Text);
+                cmd.Parameters.AddWithValue("@treatment", txtTreatment.Text);
+                cmd.Parameters.AddWithValue("@medication", txtMedication.Text);
 
-                object result = checkCmd.ExecuteScalar();
+                cmd.ExecuteNonQuery();
 
-                if (result != null)
-                {
-                    patientId = Convert.ToInt64(result);
-                }
-                else
-                {
-                    string insertPatient = "INSERT INTO patient_medrec (Patient_Name, Age, Gender, `Contact_No.`, `Address`) " +
-                                            "VALUES (@name, @age, @gender, @contact, @address)";
-                    MySqlCommand cmdPatient = new MySqlCommand(insertPatient, conn);
-                    cmdPatient.Parameters.AddWithValue("@name", txtPName.Text);
-                    cmdPatient.Parameters.AddWithValue("@age", txtAge.Text);
-                    cmdPatient.Parameters.AddWithValue("@gender", txtGender.Text);
-                    cmdPatient.Parameters.AddWithValue("@contact", txtContact.Text);
-                    cmdPatient.Parameters.AddWithValue("@address", txtAddress.Text);
-                    cmdPatient.ExecuteNonQuery();
-
-                    patientId = cmdPatient.LastInsertedId;
-
-                }
-                string insertRecord = "INSERT INTO medical_records (PatientID, BP, HR, Temp, Allergies, Diagnosis, Treatment, Medication, RecordDate) " +
-                                       "VALUES (@pid, @bp, @hr, @temp, @allergies, @diagnosis, @treatment, @medication, NOW())";
-                MySqlCommand cmdRecord = new MySqlCommand(insertRecord, conn);
-                cmdRecord.Parameters.AddWithValue("@pid", patientId);
-                cmdRecord.Parameters.AddWithValue("@bp", txtBP.Text);
-                cmdRecord.Parameters.AddWithValue("@hr", txtHR.Text);
-                cmdRecord.Parameters.AddWithValue("@temp", txtTemp.Text);
-                cmdRecord.Parameters.AddWithValue("@allergies", txtAllergies.Text);
-                cmdRecord.Parameters.AddWithValue("@diagnosis", txtDiagnosis.Text);
-                cmdRecord.Parameters.AddWithValue("@treatment", txtTreatment.Text);
-                cmdRecord.Parameters.AddWithValue("@medication", txtMedication.Text);
-                cmdRecord.ExecuteNonQuery();
-
-                MessageBox.Show($"Record saved successfully!\nPatient ID: {patientId}",
-                                "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Record saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-
-            txtPName.Text = "";
-            txtAge.Text = "";
-            txtGender.Text = "";
-            txtContact.Text = "";
-            txtAddress.Text = "";
             txtBP.Text = "";
             txtHR.Text = "";
             txtTemp.Text = "";
             txtAllergies.Text = "";
             txtDiagnosis.Text = "";
+            txtDN.Text = "";
+            txtExamFindings.Text = "";
             txtTreatment.Text = "";
             txtMedication.Text = "";
 
-            txtPName.Focus();
-
+            txtBP.Focus();
             this.DialogResult = DialogResult.OK;
-            this.Close();
+            this.Hide();
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using PENTACARE;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using System.Windows.Forms;
 
 namespace PentaCare
 {
-    
+
 
     public partial class DoctorandRecords : Form
     {
@@ -123,7 +124,7 @@ namespace PentaCare
             dataGridView1.Columns.Add(btn);
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
 
-            
+
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -299,7 +300,7 @@ namespace PentaCare
                 MessageBox.Show("Error: " + ex.Message);
                 conn.Close();
             }
-           
+
         }
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
@@ -384,6 +385,13 @@ namespace PentaCare
         private void removeBtn_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void btn_back_Click(object sender, EventArgs e)
+        {
+            Dashboard dashboard = new Dashboard();
+            dashboard.Show();
+            this.Hide();
         }
     }
 }

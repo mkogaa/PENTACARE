@@ -27,28 +27,27 @@ namespace PentaCare
         private void assignBtn_Click(object sender, EventArgs e)
         {
 
-            string ID = pID.Text;
-            string Name = pName.Text;
-            string doc = doctor.Text;
+            string ID = pID.Text;        // PatientID
+            string Name = pName.Text;    // Patient Name
+            string doc = doctor.Text;    // Doctor Name
 
-
-            string dbconnect = "server= 127.0.0.1; database=pentacare; uid=root; ";
+            string dbconnect = "server=127.0.0.1; database=pentacare; uid=root;";
             MySqlConnection conn = new MySqlConnection(dbconnect);
             MySqlCommand sqlcmd = new MySqlCommand();
 
-
-
             conn.Open();
 
-            sqlcmd.CommandText = $"UPDATE patient SET DoctorID = (SELECT DoctorID FROM doctor WHERE Doctor_Name = " +
-                $"'{doc}') WHERE PatientID = '{ID}'";
-
-
-
+            // ✅ 1. Assign DoctorID to the Patient table
+            sqlcmd.CommandText = $"UPDATE patient " +
+                                 $"SET DoctorID = (SELECT DoctorID FROM doctor WHERE Doctor_Name = '{doc}') " +
+                                 $"WHERE PatientID = '{ID}'";
             sqlcmd.CommandType = CommandType.Text;
             sqlcmd.Connection = conn;
+            sqlcmd.ExecuteNonQuery();
 
-
+            // ✅ 2. Insert record into doctor_patient (so one doctor can have multiple patients)
+            sqlcmd.CommandText = $"INSERT INTO doctor_patient (DoctorID, PatientID) " +
+                                 $"SELECT DoctorID, '{ID}' FROM doctor WHERE Doctor_Name = '{doc}'";
             sqlcmd.ExecuteNonQuery();
 
             conn.Close();

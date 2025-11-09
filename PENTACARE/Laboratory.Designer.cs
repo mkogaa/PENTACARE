@@ -36,6 +36,8 @@
             label1 = new Label();
             btn_updateL = new Panel();
             btn_deleteL = new Panel();
+            label2 = new Label();
+            cbCategory = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)dgvLaboratory).BeginInit();
             SuspendLayout();
             // 
@@ -70,7 +72,7 @@
             // txtSearch
             // 
             txtSearch.BorderStyle = BorderStyle.None;
-            txtSearch.Location = new Point(138, 245);
+            txtSearch.Location = new Point(161, 245);
             txtSearch.Name = "txtSearch";
             txtSearch.Size = new Size(1091, 20);
             txtSearch.TabIndex = 6;
@@ -87,6 +89,7 @@
             label1.Size = new Size(249, 25);
             label1.TabIndex = 5;
             label1.Text = "Search by Laboratory Name";
+            label1.Click += label1_Click;
             // 
             // btn_updateL
             // 
@@ -107,6 +110,29 @@
             btn_deleteL.TabIndex = 3;
             btn_deleteL.Click += btn_deleteL_Click;
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.BackColor = Color.Transparent;
+            label2.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label2.ForeColor = Color.SteelBlue;
+            label2.Location = new Point(1512, 185);
+            label2.Name = "label2";
+            label2.Size = new Size(164, 25);
+            label2.TabIndex = 7;
+            label2.Text = "Filter by Category";
+            // 
+            // cbCategory
+            // 
+            cbCategory.FlatStyle = FlatStyle.Flat;
+            cbCategory.FormattingEnabled = true;
+            cbCategory.Items.AddRange(new object[] { "All", "Laboratory Test", "Imaging", "Cardiology" });
+            cbCategory.Location = new Point(1534, 245);
+            cbCategory.Name = "cbCategory";
+            cbCategory.Size = new Size(266, 28);
+            cbCategory.TabIndex = 8;
+            cbCategory.SelectedIndexChanged += cbCategory_SelectedIndexChanged;
+            // 
             // Laboratory
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -114,6 +140,8 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(cbCategory);
+            Controls.Add(label2);
             Controls.Add(btn_deleteL);
             Controls.Add(btn_updateL);
             Controls.Add(txtSearch);
@@ -138,5 +166,7 @@
         private Label label1;
         private Panel btn_updateL;
         private Panel btn_deleteL;
+        private Label label2;
+        private ComboBox cbCategory;
     }
 }

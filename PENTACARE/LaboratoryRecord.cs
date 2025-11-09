@@ -19,8 +19,6 @@ namespace USERS_WINDOW
             InitializeComponent();
             currentPatientID = patientID;
 
-
-            btn_record_assigntest.Click += btn_record_assigntest_Click_1;
             btn_record_printreport.Click += btn_record_printreport_Click;
             btn_record_back.Click += btn_record_back_Click;
             btn_record_complete.Click += btn_record_complete_Click;
@@ -239,7 +237,7 @@ namespace USERS_WINDOW
 
         private void btn_record_back_Click(object sender, EventArgs e)
         {
-            this.Close();
+            this.Hide();
         }
 
         private void btn_record_complete_Click(object sender, EventArgs e)

@@ -21,7 +21,6 @@ namespace PENTACARE
             this.WindowState = FormWindowState.Maximized;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 
-
             dgvRoom.CellDoubleClick += dgvRoom_CellDoubleClick;
         }
 
@@ -65,10 +64,55 @@ namespace PENTACARE
                     adapter.Fill(dt);
 
                     dgvRoom.DataSource = dt;
+
+                    AddButtonColumns();
+                    UpdateStatusButtonTextAndColor();
+
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error loading records: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void AddButtonColumns()
+        {
+            if (dgvRoom.Columns["btnEdit"] == null)
+            {
+                DataGridViewButtonColumn editBtn = new DataGridViewButtonColumn();
+                editBtn.HeaderText = "Edit";
+                editBtn.Text = "Edit";
+                editBtn.UseColumnTextForButtonValue = true;
+                editBtn.Name = "btnEdit";
+                dgvRoom.Columns.Add(editBtn);
+            }
+
+            if (dgvRoom.Columns["btnStatus"] == null)
+            {
+                DataGridViewButtonColumn statusBtn = new DataGridViewButtonColumn();
+                statusBtn.HeaderText = "Action";
+                statusBtn.Name = "btnStatus";
+                statusBtn.UseColumnTextForButtonValue = false;
+                dgvRoom.Columns.Add(statusBtn);
+            }
+        }
+
+        private void UpdateStatusButtonTextAndColor()
+        {
+            foreach (DataGridViewRow row in dgvRoom.Rows)
+            {
+                string status = row.Cells["Status"].Value?.ToString();
+
+                if (status == "Inactive")
+                {
+                    row.Cells["btnStatus"].Value = "Reactivate";
+                    row.Cells["btnStatus"].Style.BackColor = Color.SkyBlue;
+                }
+                else
+                {
+                    row.Cells["btnStatus"].Value = "Deactivate";
+                    row.Cells["btnStatus"].Style.BackColor = Color.DarkBlue;
                 }
             }
         }
@@ -142,6 +186,8 @@ namespace PENTACARE
                 int roomID = Convert.ToInt32(row.Cells["Room ID"].Value);
                 string roomType = row.Cells["Room Type"].Value?.ToString() ?? "";
 
+
+
                 View_RoomRec viewForm = new View_RoomRec(roomID, this);
                 this.Hide();
                 viewForm.Show();
@@ -158,7 +204,7 @@ namespace PENTACARE
             string dbconnect = "server=127.0.0.1; database=pentacare; username=root; password=;";
             MySqlConnection conn = new MySqlConnection(dbconnect);
 
-            
+
             string query = "SELECT RoomID AS 'Room ID', Room_No AS 'Room Number', Room_Type AS 'Room Type', Room_Rate AS 'Room Rate', Status AS 'Status' " +
                            "FROM room WHERE RoomID LIKE '%" + txt_searchRoom.Text + "%' " +
                            "OR Room_No LIKE '%" + txt_searchRoom.Text + "%' " +
@@ -210,6 +256,46 @@ namespace PENTACARE
             Dashboard db = new Dashboard();
             db.Show();
             this.Hide();
+        }
+
+        private void dgvRoom_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+
+            DataGridViewRow row = dgvRoom.Rows[e.RowIndex];
+            int roomID = Convert.ToInt32(row.Cells["Room ID"].Value);
+
+            if (dgvRoom.Columns[e.ColumnIndex].Name == "btnEdit")
+            {
+                AddRoom ad = new AddRoom(roomID);
+                ad.WindowState = FormWindowState.Maximized;
+                ad.Show();
+                this.Hide();
+            }
+
+            if (dgvRoom.Columns[e.ColumnIndex].Name == "btnStatus")
+            {
+                string currentStatus = row.Cells["Status"].Value?.ToString();
+                string newStatus = (currentStatus == "Inactive") ? "Available" : "Inactive";
+
+                row.Cells["Status"].Value = newStatus;
+                row.Cells["btnStatus"].Value = (newStatus == "Inactive") ? "Reactivate" : "Deactivate";
+                row.Cells["btnStatus"].Style.BackColor = (newStatus == "Inactive") ? Color.SkyBlue : Color.DarkBlue;
+
+                string dbconnect = "server=127.0.0.1; database=pentacare; username=root; password=;";
+                using (MySqlConnection conn = new MySqlConnection(dbconnect))
+                {
+                    conn.Open();
+                    string query = "UPDATE room SET Status=@status WHERE RoomID=@roomID";
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@status", newStatus);
+                        cmd.Parameters.AddWithValue("@roomID", roomID);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        
         }
     }
 }

@@ -73,11 +73,18 @@ namespace PENTACARE
                 return;
             }
 
+            if (cbStatus.SelectedIndex == -1)
+            {
+                MessageBox.Show("Please select the status.");
+                return;
+            }
+
             string serviceName = txt_LabName.Text;
             string serviceDescription = txt_Description.Text;
             string serviceType = cbCategory.SelectedItem.ToString();
             double serviceFee = double.Parse(txt_Fee.Text);
             string serviceTime = txt_ETime.Text;
+            string serviceStatus = cbStatus.SelectedItem.ToString();
 
             string dbconnect = "server=127.0.0.1; database=pentacare; username=root; password=;";
             MySqlConnection sqlconn = new MySqlConnection(dbconnect);
@@ -87,8 +94,21 @@ namespace PENTACARE
             {
                 sqlconn.Open();
 
-                sqlcommand.CommandText = $"INSERT INTO lab_services (Lab_Name, Lab_Description, Lab_Fee, Lab_Category, Estimated_Time) " +
-                                 $"VALUES ('{serviceName}', '{serviceDescription}', '{serviceFee}', '{serviceType}', '{serviceTime}')";
+                string checkQuery = "SELECT COUNT(*) FROM lab_services WHERE LOWER(Lab_Name) = LOWER(@serviceName)";
+                using (MySqlCommand checkCmd = new MySqlCommand(checkQuery, sqlconn))
+                {
+                    checkCmd.Parameters.AddWithValue("@serviceName", serviceName);
+                    int count = Convert.ToInt32(checkCmd.ExecuteScalar());
+
+                    if (count > 0)
+                    {
+                        MessageBox.Show("This service already exists!", "Duplicate Entry", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                }
+
+                sqlcommand.CommandText = $"INSERT INTO lab_services (Lab_Name, Lab_Description, Lab_Fee, Lab_Category, Estimated_Time, Status) " +
+                                 $"VALUES ('{serviceName}', '{serviceDescription}', '{serviceFee}', '{serviceType}', '{serviceTime}', '{serviceStatus}')";
                 sqlcommand.CommandType = CommandType.Text;
                 sqlcommand.Connection = sqlconn;
 
@@ -109,6 +129,16 @@ namespace PENTACARE
         private void btn_saveLab_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void btn_clear_Click(object sender, EventArgs e)
+        {
+            txt_LabName.Clear();
+            txt_Description.Clear();
+            txt_Fee.Clear();
+            txt_ETime.Clear();
+            cbCategory.SelectedIndex = -1;
+            cbStatus.SelectedIndex = -1;
         }
     }
 }

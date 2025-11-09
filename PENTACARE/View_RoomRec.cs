@@ -71,7 +71,7 @@ namespace PENTACARE
                         else
                         {
                             MessageBox.Show("No patient assigned to this room.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            
+
                         }
                     }
                 }
@@ -85,7 +85,12 @@ namespace PENTACARE
         private void btn_backk_Click(object sender, EventArgs e)
         {
             parentForm.Show();
-            this.Close();
+            this.Hide();
+        }
+
+        private void btn_backk_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

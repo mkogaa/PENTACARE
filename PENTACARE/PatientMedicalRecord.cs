@@ -15,12 +15,13 @@ namespace USERS_WINDOW
     {
         private int patientID;
         private MedicalRecords medrec;
+        private Form parentForm;
 
-        public PatientMedicalRecord(MedicalRecords medrecs, int id)
+        public PatientMedicalRecord(Form parent, int id)
         {
             InitializeComponent();
+            parentForm = parent;
             patientID = id;
-            medrec = medrecs;
             LoadPatientDetails();
             LoadPatientRecords();
             SetTextBoxesReadOnly(true);
@@ -138,7 +139,7 @@ namespace USERS_WINDOW
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            medrec.Show();
+            parentForm.Show(); 
             this.Hide();
         }
 

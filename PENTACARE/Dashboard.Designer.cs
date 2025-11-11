@@ -43,6 +43,9 @@
             lbl_available = new Label();
             lbl_doctors = new Label();
             dgvRecentAct = new DataGridView();
+            viewInfo = new Panel();
+            panel1 = new Panel();
+            btn_Records = new Panel();
             ((System.ComponentModel.ISupportInitialize)dgvRecentAct).BeginInit();
             SuspendLayout();
             // 
@@ -189,12 +192,43 @@
             dgvRecentAct.Size = new Size(800, 205);
             dgvRecentAct.TabIndex = 11;
             // 
+            // viewInfo
+            // 
+            viewInfo.BackColor = Color.Transparent;
+            viewInfo.Location = new Point(1361, 72);
+            viewInfo.Name = "viewInfo";
+            viewInfo.Size = new Size(471, 135);
+            viewInfo.TabIndex = 12;
+            viewInfo.Click += viewInfo_Click;
+            // 
+            // panel1
+            // 
+            panel1.BackColor = Color.Transparent;
+            panel1.Location = new Point(176, 852);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(206, 48);
+            panel1.TabIndex = 13;
+            panel1.Click += panel1_Click;
+            // 
+            // btn_Records
+            // 
+            btn_Records.BackColor = Color.Transparent;
+            btn_Records.BackgroundImageLayout = ImageLayout.Stretch;
+            btn_Records.Location = new Point(176, 698);
+            btn_Records.Name = "btn_Records";
+            btn_Records.Size = new Size(215, 37);
+            btn_Records.TabIndex = 2;
+            btn_Records.Click += btn_Records_Click;
+            // 
             // Dashboard
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(btn_Records);
+            Controls.Add(panel1);
+            Controls.Add(viewInfo);
             Controls.Add(dgvRecentAct);
             Controls.Add(lbl_doctors);
             Controls.Add(lbl_available);
@@ -233,5 +267,8 @@
         private Label lbl_available;
         private Label lbl_doctors;
         private DataGridView dgvRecentAct;
+        private Panel viewInfo;
+        private Panel panel1;
+        private Panel btn_Records;
     }
 }

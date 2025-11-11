@@ -29,37 +29,10 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BillingMain));
-            btn_roomfee = new Panel();
-            btn_labfee = new Panel();
-            btn_servicefee = new Panel();
             btn_backB = new Panel();
+            dgvBilling = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)dgvBilling).BeginInit();
             SuspendLayout();
-            // 
-            // btn_roomfee
-            // 
-            btn_roomfee.BackColor = Color.Transparent;
-            btn_roomfee.Location = new Point(487, 868);
-            btn_roomfee.Name = "btn_roomfee";
-            btn_roomfee.Size = new Size(187, 45);
-            btn_roomfee.TabIndex = 0;
-            // 
-            // btn_labfee
-            // 
-            btn_labfee.BackColor = Color.Transparent;
-            btn_labfee.Location = new Point(751, 868);
-            btn_labfee.Name = "btn_labfee";
-            btn_labfee.Size = new Size(180, 45);
-            btn_labfee.TabIndex = 1;
-            btn_labfee.Click += btn_labfee_Click;
-            // 
-            // btn_servicefee
-            // 
-            btn_servicefee.BackColor = Color.Transparent;
-            btn_servicefee.Location = new Point(1002, 868);
-            btn_servicefee.Name = "btn_servicefee";
-            btn_servicefee.Size = new Size(216, 45);
-            btn_servicefee.TabIndex = 1;
-            btn_servicefee.Click += btn_servicefee_Click;
             // 
             // btn_backB
             // 
@@ -70,6 +43,16 @@
             btn_backB.TabIndex = 2;
             btn_backB.Click += btn_backB_Click;
             // 
+            // dgvBilling
+            // 
+            dgvBilling.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvBilling.Location = new Point(183, 420);
+            dgvBilling.Name = "dgvBilling";
+            dgvBilling.RowHeadersWidth = 51;
+            dgvBilling.Size = new Size(1561, 355);
+            dgvBilling.TabIndex = 3;
+            dgvBilling.CellContentDoubleClick += dgvBilling_CellContentDoubleClick;
+            // 
             // BillingMain
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -77,20 +60,17 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(dgvBilling);
             Controls.Add(btn_backB);
-            Controls.Add(btn_servicefee);
-            Controls.Add(btn_labfee);
-            Controls.Add(btn_roomfee);
             Name = "BillingMain";
             Text = "BillingMain";
+            Load += BillingMain_Load;
+            ((System.ComponentModel.ISupportInitialize)dgvBilling).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
-
-        private Panel btn_roomfee;
-        private Panel btn_labfee;
-        private Panel btn_servicefee;
         private Panel btn_backB;
+        private DataGridView dgvBilling;
     }
 }

@@ -112,7 +112,7 @@
             cmbGender.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbGender.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbGender.FormattingEnabled = true;
-            cmbGender.Items.AddRange(new object[] { "All", "Male", "Female", "Others" });
+            cmbGender.Items.AddRange(new object[] { "All", "Male", "Female" });
             cmbGender.Location = new Point(1044, 238);
             cmbGender.Name = "cmbGender";
             cmbGender.Size = new Size(311, 36);
@@ -124,7 +124,7 @@
             cmbStatus.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbStatus.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbStatus.FormattingEnabled = true;
-            cmbStatus.Items.AddRange(new object[] { "All", "Admitted", "Under Observation", "Discharged" });
+            cmbStatus.Items.AddRange(new object[] { "All", "Admitted", "Under Observation" });
             cmbStatus.Location = new Point(1449, 238);
             cmbStatus.Name = "cmbStatus";
             cmbStatus.Size = new Size(326, 36);

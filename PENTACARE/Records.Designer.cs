@@ -29,22 +29,22 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Records));
-            dataGridView1 = new DataGridView();
+            dgvMedRec = new DataGridView();
             backBtn = new Panel();
             filterGender = new ComboBox();
             textBox1 = new TextBox();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvMedRec).BeginInit();
             SuspendLayout();
             // 
-            // dataGridView1
+            // dgvMedRec
             // 
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(95, 348);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(1713, 485);
-            dataGridView1.TabIndex = 0;
-            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
+            dgvMedRec.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvMedRec.Location = new Point(95, 348);
+            dgvMedRec.Name = "dgvMedRec";
+            dgvMedRec.RowHeadersWidth = 51;
+            dgvMedRec.Size = new Size(1713, 485);
+            dgvMedRec.TabIndex = 0;
+            dgvMedRec.CellClick += dgvMedRec_CellClick;
             // 
             // backBtn
             // 
@@ -60,7 +60,7 @@
             filterGender.DropDownStyle = ComboBoxStyle.DropDownList;
             filterGender.FormattingEnabled = true;
             filterGender.Items.AddRange(new object[] { "All", "Male", "Female", "Other" });
-            filterGender.Location = new Point(1362, 266);
+            filterGender.Location = new Point(1476, 253);
             filterGender.Name = "filterGender";
             filterGender.Size = new Size(296, 28);
             filterGender.TabIndex = 2;
@@ -70,10 +70,10 @@
             // 
             textBox1.BorderStyle = BorderStyle.None;
             textBox1.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            textBox1.Location = new Point(127, 248);
+            textBox1.Location = new Point(79, 244);
             textBox1.Name = "textBox1";
             textBox1.PlaceholderText = "Search by PatientID, Name...";
-            textBox1.Size = new Size(670, 40);
+            textBox1.Size = new Size(1105, 40);
             textBox1.TabIndex = 3;
             textBox1.TextChanged += textBox1_TextChanged;
             // 
@@ -86,20 +86,19 @@
             Controls.Add(textBox1);
             Controls.Add(filterGender);
             Controls.Add(backBtn);
-            Controls.Add(dataGridView1);
+            Controls.Add(dgvMedRec);
             Name = "Records";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Records";
-            WindowState = FormWindowState.Maximized;
             Load += Records_Load;
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvMedRec).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private DataGridView dataGridView1;
+        private DataGridView dgvMedRec;
         private Panel backBtn;
         private ComboBox filterGender;
         private TextBox textBox1;

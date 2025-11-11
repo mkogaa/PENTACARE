@@ -189,7 +189,7 @@ WHERE dp.DoctorID = @DoctorID
                 try
                 {
                     int patientID = Convert.ToInt32(dgv_laboratory.Rows[e.RowIndex].Cells["PatientID"].Value);
-                    LaboratoryRecord recordForm = new LaboratoryRecord(patientID);
+                    LaboratoryRecord recordForm = new LaboratoryRecord(patientID, doctorID);
                     recordForm.ShowDialog();
                 }
                 catch (Exception ex)
@@ -219,10 +219,27 @@ WHERE dp.DoctorID = @DoctorID
             try
             {
                 con.Open();
-                string query = "UPDATE patient SET Status = 'Discharged' WHERE PatientID = @id";
+                string query = "UPDATE patient SET Status = 'Discharged', Discharge_Date = @date WHERE PatientID = @id";
+
                 cmd = new MySqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@id", patientID);
+                cmd.Parameters.AddWithValue("@date", DateTime.Now);
+
                 cmd.ExecuteNonQuery();
+
+                string bedQuery = "SELECT BedID FROM patient WHERE PatientID = @id";
+                cmd = new MySqlCommand(bedQuery, con);
+                cmd.Parameters.AddWithValue("@id", patientID);
+                object bedIDObj = cmd.ExecuteScalar();
+
+                if (bedIDObj != null)
+                {
+                    int bedID = Convert.ToInt32(bedIDObj);
+                    string freeBedQuery = "UPDATE bed SET Status = 'Available' WHERE BedID = @bedID";
+                    cmd = new MySqlCommand(freeBedQuery, con);
+                    cmd.Parameters.AddWithValue("@bedID", bedID);
+                    cmd.ExecuteNonQuery();
+                }
 
                 MessageBox.Show("Patient successfully discharged.");
             }
@@ -255,7 +272,7 @@ WHERE dp.DoctorID = @DoctorID
 
             int currentPatientID = Convert.ToInt32(dgv_laboratory.SelectedRows[0].Cells["PatientID"].Value);
 
-            AssignLaboratoryTest assignForm = new AssignLaboratoryTest(currentPatientID);
+            AssignLaboratoryTest assignForm = new AssignLaboratoryTest(currentPatientID,doctorID);
             assignForm.FormClosed += (s, args) =>
             {
                 string gender = cb_laboratory.SelectedItem?.ToString() ?? "All";

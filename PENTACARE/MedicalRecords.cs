@@ -59,25 +59,27 @@ namespace USERS_WINDOW
 
         private void LoadRecords()
         {
-            try
+            string query = @"SELECT p.PatientID, p.Name, p.Age, p.Gender, p.Contact_No, p.Address
+                     FROM patient p
+                     INNER JOIN doctor_patient dp ON p.PatientID = dp.PatientID
+                     WHERE dp.DoctorID = @DoctorID
+                     ORDER BY p.Name;";
+
+            using (MySqlConnection conn = new MySqlConnection(DBConnection.connString))
             {
-                string query = @"SELECT p.PatientID, p.Name, p.Age, p.Gender, p.Contact_No, p.Address
-                 FROM patient p
-                 INNER JOIN doctor_patient dp ON p.PatientID = dp.PatientID
-                 WHERE dp.DoctorID = @DoctorID
-                 ORDER BY p.Name;";
+                conn.Open();
 
-
-                using (MySqlConnection conn = new MySqlConnection(DBConnection.connString))
+                if (conn.State == ConnectionState.Open)
                 {
-                    conn.Open();
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@DoctorID", doctorID);
 
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        dgvRecords.Rows.Clear(); 
+                    MySqlDataReader reader = cmd.ExecuteReader();
 
+                    dgvRecords.Rows.Clear();
+
+                    if (reader.HasRows)
+                    {
                         while (reader.Read())
                         {
                             dgvRecords.Rows.Add(
@@ -88,21 +90,23 @@ namespace USERS_WINDOW
                                 reader["Contact_No"],
                                 reader["Address"],
                                 "View Details",
-                                "Add Record"  
+                                "Add Record"
                             );
                         }
                     }
-                }
+                    else
+                    {
+                        MessageBox.Show("No patient records found.");
+                    }
 
-                dgvRecords.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                dgvRecords.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                    reader.Close();
+                    conn.Close();
+                }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error loading patients: " + ex.Message);
-            }
+
+            dgvRecords.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvRecords.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
         }
-        
 
         private void InitializeDGV()
         {
@@ -159,66 +163,69 @@ namespace USERS_WINDOW
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            dashboardForm.Show();  // ✅ show the existing dashboard
-            this.Close();
+            dashboardForm.Show();  
+            this.Hide();
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             string search = txtSearch.Text.Trim();
-            string filter = txtFilter.SelectedItem?.ToString() ?? "Name";
+            string filter = txtFilter.SelectedItem != null ? txtFilter.SelectedItem.ToString() : "Name";
 
-            try
+            using (MySqlConnection conn = new MySqlConnection(DBConnection.connString))
             {
-                using (MySqlConnection conn = new MySqlConnection(DBConnection.connString))
+                conn.Open();
+
+                string query = @"SELECT p.PatientID, p.Name, p.Age, p.Gender, p.Contact_No, p.Address
+                         FROM patient p
+                         INNER JOIN doctor_patient dp ON p.PatientID = dp.PatientID
+                         WHERE dp.DoctorID = @DoctorID";
+
+                if (search != "")
                 {
-                    conn.Open();
+                    if (filter == "Name")
+                        query += " AND p.Name LIKE @search";
+                    else if (filter == "ID")
+                        query += " AND p.PatientID LIKE @search";
+                    else if (filter == "Age")
+                        query += " AND p.Age LIKE @search";
+                    else if (filter == "Address")
+                        query += " AND p.Address LIKE @search";
+                }
 
-                    string query = @"SELECT p.PatientID, p.Name, p.Age, p.Gender, p.Contact_No, p.Address
-                             FROM patient p
-                             INNER JOIN doctor_patient dp ON p.PatientID = dp.PatientID
-                             WHERE dp.DoctorID = @DoctorID";
+                query += " ORDER BY p.Name;";
 
-                    if (!string.IsNullOrEmpty(search))
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@DoctorID", doctorID);
+                cmd.Parameters.AddWithValue("@search", "%" + search + "%");
+
+                MySqlDataReader reader = cmd.ExecuteReader();
+
+                dgvRecords.Rows.Clear();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
                     {
-                        if (filter == "Name")
-                            query += " AND p.Name LIKE @search";
-                        else if (filter == "ID")
-                            query += " AND p.PatientID LIKE @search";
-                        else if (filter == "Age")
-                            query += " AND p.Age LIKE @search";
-                        else if (filter == "Address")
-                            query += " AND p.Address LIKE @search";
-                    }
-
-                    query += " ORDER BY p.Patient_Name;";
-
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@DoctorID", doctorID);
-                    cmd.Parameters.AddWithValue("@search", "%" + search + "%");
-
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        dgvRecords.Rows.Clear();
-                        while (reader.Read())
-                        {
-                            dgvRecords.Rows.Add(
-                                reader["PatientID"],
-                                reader["Name"],
-                                reader["Age"],
-                                reader["Gender"],
-                                reader["Contact_No"],
-                                reader["Address"],
-                                "View Details",
-                                "Add Record"
-                            );
-                        }
+                        dgvRecords.Rows.Add(
+                            reader["PatientID"],
+                            reader["Name"],
+                            reader["Age"],
+                            reader["Gender"],
+                            reader["Contact_No"],
+                            reader["Address"],
+                            "View Details",
+                            "Add Record"
+                        );
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error searching patients: " + ex.Message);
+                else
+                {
+                    MessageBox.Show("No records found.");
+                }
+
+                reader.Close();
+                conn.Close();
             }
         }
 

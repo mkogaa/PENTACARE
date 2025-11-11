@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using PENTACARE;
 using System.Data;
+using System.Data.SqlTypes;
 
 namespace PentaCare
 {
@@ -27,8 +28,8 @@ namespace PentaCare
 
             dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            dataGridView1.AllowUserToAddRows = false;
-            dataGridView1.RowHeadersVisible = false;
+            //dataGridView1.AllowUserToAddRows = false;
+            //dataGridView1.RowHeadersVisible = false;
 
             dataGridView1.EnableHeadersVisualStyles = false;
             dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.DarkBlue;
@@ -44,10 +45,11 @@ namespace PentaCare
 
             conn.Open();
 
-            sqlcmd.CommandText = "SELECT p.PatientID, p.Name, p.Gender, r.Room_No, d.Doctor_Name, d.Specialty, p.Status, p.Admission_Date " +
-                     "FROM patient AS p " +
-                     "LEFT JOIN room AS r ON p.RoomID = r.RoomID " +
-                     "LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID";
+            sqlcmd.CommandText = "SELECT p.PatientID, p.Name, p.Gender, r.Room_No, d.Doctor_Name, d.Specialty, p.Status, DATE_FORMAT(p.Admission_Date, '%Y-%m-%d') AS Admission_Date " +
+                "FROM patient AS p LEFT JOIN room AS r ON p.RoomID = r.RoomID " +
+                "LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID " +
+                "WHERE p.Status = 'Admitted' OR p.Status = 'Under Observation'";
+
 
             sqlcmd.CommandType = CommandType.Text;
             sqlcmd.Connection = conn;
@@ -73,18 +75,11 @@ namespace PentaCare
         {
             if (dataGridView1.Columns[e.ColumnIndex].Name == "Action" && e.RowIndex >= 0)
             {
-                // Get the selected row data
                 DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
                 string patientID = row.Cells["PatientID"].Value.ToString();
-                string patientName = row.Cells["Name"].Value.ToString();
-                string roomNo = row.Cells["Room_No"].Value.ToString();
-                string doctorName = row.Cells["Doctor_Name"].Value.ToString();
-                string doctorSpecialty = row.Cells["Specialty"].Value.ToString();
 
-
-                // Open new form and pass data
-                PatientLabRecord labForm = new PatientLabRecord(patientID, patientName, roomNo, doctorName, doctorSpecialty);
-                labForm.Show();  // Or .ShowDialog() if you want it modal
+                LabMed labMed = new LabMed(patientID,this);
+                labMed.Show();
                 this.Hide();
             }
         }
@@ -120,11 +115,12 @@ namespace PentaCare
                 {
                     conn.Open();
 
+                    // Filter only admitted patients and also search by ID or Name
                     string query = "SELECT p.PatientID, p.Name, p.Gender, r.Room_No, d.Doctor_Name, p.Status, p.Admission_Date " +
                                    "FROM patient AS p " +
                                    "LEFT JOIN room AS r ON p.RoomID = r.RoomID " +
                                    "LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID " +
-                                   "WHERE p.PatientID LIKE @search OR p.Name LIKE @search";
+                                   "WHERE p.Status = 'Admitted' AND (p.PatientID LIKE @search OR p.Name LIKE @search)";
 
                     using (MySqlCommand sqlcmd = new MySqlCommand(query, conn))
                     {
@@ -134,8 +130,7 @@ namespace PentaCare
                         DataSet sqlDS = new DataSet();
                         sqlDA.Fill(sqlDS, "recordsfetch");
 
-                        dataGridView1.DataSource = sqlDS;
-                        dataGridView1.DataMember = "recordsfetch";
+                        dataGridView1.DataSource = sqlDS.Tables["recordsfetch"];
 
                         if (!dataGridView1.Columns.Contains("Action"))
                         {
@@ -148,10 +143,11 @@ namespace PentaCare
                             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
                         }
 
+                        // Ensure the Action button is the last column
+                        dataGridView1.Columns["Action"].DisplayIndex = dataGridView1.Columns.Count - 1;
+
                         if (dataGridView1.Columns.Contains("Gender"))
-                        {
                             dataGridView1.Columns["Gender"].Visible = false;
-                        }
                     }
                 }
                 catch (Exception ex)
@@ -159,6 +155,7 @@ namespace PentaCare
                     MessageBox.Show("Error: " + ex.Message);
                 }
             }
+
         }
 
         private void addPatient_Click(object sender, EventArgs e)
@@ -194,6 +191,20 @@ namespace PentaCare
                         MySqlCommand cmd = new MySqlCommand(query, conn);
                         cmd.Parameters.AddWithValue("@PatientID", patientID);
                         cmd.ExecuteNonQuery();
+
+                        string getBedQuery = "SELECT BedID FROM patient WHERE PatientID = @PatientID";
+                        MySqlCommand getBedCmd = new MySqlCommand(getBedQuery, conn);
+                        getBedCmd.Parameters.AddWithValue("@PatientID", patientID);
+                        object bedIDObj = getBedCmd.ExecuteScalar();
+
+                        if (bedIDObj != null)
+                        {
+                            int bedID = Convert.ToInt32(bedIDObj);
+                            string updateBedQuery = "UPDATE bed SET Status = 'Available' WHERE BedID = @BedID";
+                            MySqlCommand updateBedCmd = new MySqlCommand(updateBedQuery, conn);
+                            updateBedCmd.Parameters.AddWithValue("@BedID", bedID);
+                            updateBedCmd.ExecuteNonQuery();
+                        }
 
                         MessageBox.Show($"{name} has been discharged successfully.");
 
@@ -381,53 +392,58 @@ namespace PentaCare
         private void cmbGender_SelectedIndexChanged(object sender, EventArgs e)
         {
             string dbconnect = "server=127.0.0.1; database=pentacare; uid=root;";
-            MySqlConnection conn = new MySqlConnection(dbconnect);
-
-            try
+            using (MySqlConnection conn = new MySqlConnection(dbconnect))
             {
-                conn.Open();
-
-                string query = "SELECT p.PatientID, p.Name, p.Gender, r.Room_No, d.Doctor_Name, p.Status, p.Admission_Date " +
-                               "FROM patient AS p " +
-                               "LEFT JOIN room AS r ON p.RoomID = r.RoomID " +
-                               "LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID";
-
-                // Filter by gender
-                string selectedGender = cmbGender.SelectedItem.ToString();
-                if (selectedGender != "All")
+                try
                 {
-                    query += " WHERE p.Gender = '" + selectedGender + "'";
+                    conn.Open();
+
+                    string query = "SELECT p.PatientID, p.Name, p.Gender, r.Room_No, d.Doctor_Name, d.Specialty, p.Status, " +
+                                   "DATE_FORMAT(p.Admission_Date, '%Y-%m-%d') AS Admission_Date " +
+                                   "FROM patient AS p " +
+                                   "LEFT JOIN room AS r ON p.RoomID = r.RoomID " +
+                                   "LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID " +
+                                   "WHERE (p.Status = 'Admitted' OR p.Status = 'Under Observation')";
+
+                    string selectedGender = cmbGender.SelectedItem?.ToString() ?? "All";
+                    if (selectedGender != "All")
+                    {
+                        query += " AND p.Gender = @Gender";
+                    }
+
+                    using (MySqlCommand sqlcmd = new MySqlCommand(query, conn))
+                    {
+                        if (selectedGender != "All")
+                            sqlcmd.Parameters.AddWithValue("@Gender", selectedGender);
+
+                        MySqlDataAdapter sqlDA = new MySqlDataAdapter(sqlcmd);
+                        DataSet sqlDS = new DataSet();
+                        sqlDA.Fill(sqlDS, "recordsfetch");
+
+                        dataGridView1.DataSource = sqlDS.Tables["recordsfetch"];
+
+                        if (dataGridView1.Columns.Contains("Gender"))
+                            dataGridView1.Columns["Gender"].Visible = false;
+
+                        if (!dataGridView1.Columns.Contains("Action"))
+                        {
+                            DataGridViewButtonColumn btn = new DataGridViewButtonColumn();
+                            btn.Name = "Action";
+                            btn.HeaderText = "Action";
+                            btn.Text = "View Lab Result";
+                            btn.UseColumnTextForButtonValue = true;
+                            dataGridView1.Columns.Add(btn);
+                        }
+
+                        dataGridView1.Columns["Action"].DisplayIndex = dataGridView1.Columns.Count - 1;
+                    }
                 }
-
-                MySqlDataAdapter sqlDA = new MySqlDataAdapter(query, conn);
-                sqlDS = new DataSet();
-                sqlDA.Fill(sqlDS, "recordsfetch");
-
-                dataGridView1.DataSource = sqlDS;
-                dataGridView1.DataMember = "recordsfetch";
-
-                if (dataGridView1.Columns.Contains("Gender"))
-                    dataGridView1.Columns["Gender"].Visible = false;
-
-                // Add button column only if it doesn't exist
-                if (!dataGridView1.Columns.Contains("Action"))
+                catch (Exception ex)
                 {
-                    DataGridViewButtonColumn btn = new DataGridViewButtonColumn();
-                    btn.Name = "Action";
-                    btn.HeaderText = "Action";
-                    btn.Text = "View Lab Result";
-                    btn.UseColumnTextForButtonValue = true;
-                    dataGridView1.Columns.Add(btn);
+                    MessageBox.Show("Error: " + ex.Message);
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message);
-            }
-            finally
-            {
-                conn.Close();
-            }
+
 
 
         }
@@ -435,55 +451,59 @@ namespace PentaCare
         private void cmbStatus_SelectedIndexChanged(object sender, EventArgs e)
         {
             string dbconnect = "server=127.0.0.1; database=pentacare; uid=root;";
-            MySqlConnection conn = new MySqlConnection(dbconnect);
-
-            try
+            using (MySqlConnection conn = new MySqlConnection(dbconnect))
             {
-                conn.Open();
-
-                string query = "SELECT p.PatientID, p.Name, p.Gender, r.Room_No, d.Doctor_Name, p.Status, p.Admission_Date " +
-                               "FROM patient AS p " +
-                               "LEFT JOIN room AS r ON p.RoomID = r.RoomID " +
-                               "LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID";
-
-                // Filter by gender
-                string selectedStatus = cmbStatus.SelectedItem.ToString();
-                if (selectedStatus != "All")
+                try
                 {
-                    query += " WHERE p.Status = '" + selectedStatus + "'";
+                    conn.Open();
+
+                    string query = "SELECT p.PatientID, p.Name, p.Gender, r.Room_No, d.Doctor_Name, d.Specialty, p.Status, DATE_FORMAT(p.Admission_Date, '%Y-%m-%d') AS Admission_Date " +
+                                   "FROM patient AS p LEFT JOIN room AS r ON p.RoomID = r.RoomID " +
+                                   "LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID " +
+                                   "WHERE (p.Status = 'Admitted' OR p.Status = 'Under Observation')";
+
+                    // ✅ Optional filter by status (only if combo box isn't set to "All")
+                    string selectedStatus = cmbStatus.SelectedItem?.ToString() ?? "All";
+                    if (selectedStatus != "All")
+                    {
+                        query += " AND p.Status = @Status";
+                    }
+
+                    using (MySqlCommand sqlcmd = new MySqlCommand(query, conn))
+                    {
+                        if (selectedStatus != "All")
+                            sqlcmd.Parameters.AddWithValue("@Status", selectedStatus);
+
+                        MySqlDataAdapter sqlDA = new MySqlDataAdapter(sqlcmd);
+                        DataSet sqlDS = new DataSet();
+                        sqlDA.Fill(sqlDS, "recordsfetch");
+
+                        dataGridView1.DataSource = sqlDS.Tables["recordsfetch"];
+
+                        if (dataGridView1.Columns.Contains("Gender"))
+                            dataGridView1.Columns["Gender"].Visible = false;
+
+                        // ✅ Add button column only if not yet added
+                        if (!dataGridView1.Columns.Contains("Action"))
+                        {
+                            DataGridViewButtonColumn btn = new DataGridViewButtonColumn();
+                            btn.Name = "Action";
+                            btn.HeaderText = "Action";
+                            btn.Text = "View Lab Result";
+                            btn.UseColumnTextForButtonValue = true;
+                            dataGridView1.Columns.Add(btn);
+                        }
+
+                        // ✅ Make sure Action button is last column
+                        dataGridView1.Columns["Action"].DisplayIndex = dataGridView1.Columns.Count - 1;
+                    }
                 }
-
-                MySqlDataAdapter sqlDA = new MySqlDataAdapter(query, conn);
-                sqlDS = new DataSet();
-                sqlDA.Fill(sqlDS, "recordsfetch");
-
-                dataGridView1.DataSource = sqlDS;
-                dataGridView1.DataMember = "recordsfetch";
-
-                if (dataGridView1.Columns.Contains("Gender"))
-                    dataGridView1.Columns["Gender"].Visible = false;
-
-                // Add button column only if it doesn't exist
-                if (!dataGridView1.Columns.Contains("Action"))
+                catch (Exception ex)
                 {
-                    DataGridViewButtonColumn btn = new DataGridViewButtonColumn();
-                    btn.Name = "Action";
-                    btn.HeaderText = "Action";
-                    btn.Text = "View Lab Result";
-                    btn.UseColumnTextForButtonValue = true;
-                    dataGridView1.Columns.Add(btn);
+                    MessageBox.Show("Error: " + ex.Message);
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message);
-            }
-            finally
-            {
-                conn.Close();
             }
         }
-
         private void btn_backPM_Click(object sender, EventArgs e)
         {
             Dashboard dashboard = new Dashboard();

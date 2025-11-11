@@ -22,15 +22,6 @@ namespace USERS_WINDOW
             doctorID = id;
         }
 
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnEdit_Click(object sender, EventArgs e)
-        {
-        }
-
         private void btnBack_Click(object sender, EventArgs e)
         {
             UserDashboard dashboard = new UserDashboard(doctorID);
@@ -47,14 +38,17 @@ namespace USERS_WINDOW
 
         private void UserInfo_Load(object sender, EventArgs e)
         {
-            try
-            {
+            if (con.State == ConnectionState.Closed)
                 con.Open();
-                string query = "SELECT DoctorID, Doctor_Name, Username, Email, Contact_No, Specialty FROM doctor WHERE DoctorID=@id";
-                MySqlCommand cmd = new MySqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@id", doctorID);
 
-                MySqlDataReader dr = cmd.ExecuteReader();
+            string query = "SELECT DoctorID, Doctor_Name, Username, Email, Contact_No, Specialty FROM doctor WHERE DoctorID=@id";
+            MySqlCommand cmd = new MySqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@id", doctorID);
+
+            MySqlDataReader dr = cmd.ExecuteReader();
+
+            if (dr.HasRows)
+            {
                 if (dr.Read())
                 {
                     userName.Text = dr["Doctor_Name"].ToString();
@@ -64,17 +58,14 @@ namespace USERS_WINDOW
                     userContact.Text = dr["Contact_No"].ToString();
                     userSpecialty.Text = dr["Specialty"].ToString();
                 }
-                dr.Close();
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("Error loading profile: " + ex.Message);
+                MessageBox.Show("No profile found for this doctor.");
             }
-            finally
-            {
-                con.Close();
-            }
+
+            dr.Close();
+            con.Close();
         }
     }
-    
 }

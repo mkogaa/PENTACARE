@@ -32,25 +32,32 @@ namespace PentaCare
             string doc = doctor.Text;    // Doctor Name
 
             string dbconnect = "server=127.0.0.1; database=pentacare; uid=root;";
-            MySqlConnection conn = new MySqlConnection(dbconnect);
-            MySqlCommand sqlcmd = new MySqlCommand();
+            using (MySqlConnection conn = new MySqlConnection(dbconnect))
+            {
+                MySqlCommand sqlcmd = new MySqlCommand();
+                conn.Open();
 
-            conn.Open();
+                // ✅ 1. Assign DoctorID to the Patient table
+                sqlcmd.CommandText = $"UPDATE patient " +
+                                     $"SET DoctorID = (SELECT DoctorID FROM doctor WHERE Doctor_Name = '{doc}') " +
+                                     $"WHERE PatientID = '{ID}'";
+                sqlcmd.CommandType = CommandType.Text;
+                sqlcmd.Connection = conn;
+                sqlcmd.ExecuteNonQuery();
 
-            // ✅ 1. Assign DoctorID to the Patient table
-            sqlcmd.CommandText = $"UPDATE patient " +
-                                 $"SET DoctorID = (SELECT DoctorID FROM doctor WHERE Doctor_Name = '{doc}') " +
-                                 $"WHERE PatientID = '{ID}'";
-            sqlcmd.CommandType = CommandType.Text;
-            sqlcmd.Connection = conn;
-            sqlcmd.ExecuteNonQuery();
+                // ✅ 2. Insert record into doctor_patient (so one doctor can have multiple patients)
+                sqlcmd.CommandText = $"INSERT INTO doctor_patient (DoctorID, PatientID) " +
+                                     $"SELECT DoctorID, '{ID}' FROM doctor WHERE Doctor_Name = '{doc}'";
+                sqlcmd.ExecuteNonQuery();
 
-            // ✅ 2. Insert record into doctor_patient (so one doctor can have multiple patients)
-            sqlcmd.CommandText = $"INSERT INTO doctor_patient (DoctorID, PatientID) " +
-                                 $"SELECT DoctorID, '{ID}' FROM doctor WHERE Doctor_Name = '{doc}'";
-            sqlcmd.ExecuteNonQuery();
+                // ✅ 3. Automatically update status if "Under Observation"
+                sqlcmd.CommandText = $"UPDATE patient " +
+                                     $"SET Status = 'Admitted' " +
+                                     $"WHERE PatientID = '{ID}' AND Status = 'Under Observation'";
+                sqlcmd.ExecuteNonQuery();
 
-            conn.Close();
+                conn.Close();
+            }
 
             MessageBox.Show("Doctor assigned to Patient Successfully!");
         }

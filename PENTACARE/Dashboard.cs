@@ -1,6 +1,8 @@
 using MySql.Data.MySqlClient;
 using PentaCare;
 using System.Data;
+using USERS_WINDOW;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace PENTACARE
 {
@@ -113,6 +115,7 @@ namespace PENTACARE
             ShowTotalDoctors();
 
             LoadRecentPatients();
+
         }
 
 
@@ -257,5 +260,38 @@ namespace PENTACARE
             }
         }
 
+        private void viewInfo_Click(object sender, EventArgs e)
+        {
+            AdminInfo admin = new AdminInfo();
+            admin.Show();
+            this.Hide();
+        }
+
+        private void panel1_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show(
+            "Are you sure you want to logout?",
+            "Confirm Logout",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question
+             );
+
+            if (result == DialogResult.Yes)
+            {
+                // Show the login form
+                Login loginForm = new Login();
+                loginForm.Show();
+
+                // Close or hide the current dashboard
+                this.Hide(); // or this.Hide();
+            }
+        }
+
+        private void btn_Records_Click(object sender, EventArgs e)
+        {
+            Reports_Monitoring rm = new Reports_Monitoring();
+            rm.Show();
+            this.Hide();
+        }
     }
 }

@@ -43,7 +43,7 @@
             // 
             txt_ca_name.BorderStyle = BorderStyle.None;
             txt_ca_name.Font = new Font("Century Gothic", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txt_ca_name.Location = new Point(718, 292);
+            txt_ca_name.Location = new Point(730, 274);
             txt_ca_name.Margin = new Padding(2);
             txt_ca_name.Name = "txt_ca_name";
             txt_ca_name.Size = new Size(790, 37);
@@ -53,7 +53,7 @@
             // 
             txt_ca_specialty.BorderStyle = BorderStyle.None;
             txt_ca_specialty.Font = new Font("Century Gothic", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txt_ca_specialty.Location = new Point(718, 377);
+            txt_ca_specialty.Location = new Point(730, 365);
             txt_ca_specialty.Margin = new Padding(2);
             txt_ca_specialty.Name = "txt_ca_specialty";
             txt_ca_specialty.Size = new Size(790, 37);
@@ -63,7 +63,7 @@
             // 
             txt_ca_contact.BorderStyle = BorderStyle.None;
             txt_ca_contact.Font = new Font("Century Gothic", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txt_ca_contact.Location = new Point(718, 458);
+            txt_ca_contact.Location = new Point(730, 444);
             txt_ca_contact.Margin = new Padding(2);
             txt_ca_contact.Name = "txt_ca_contact";
             txt_ca_contact.Size = new Size(790, 37);
@@ -74,7 +74,7 @@
             // 
             txt_ca_email.BorderStyle = BorderStyle.None;
             txt_ca_email.Font = new Font("Century Gothic", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txt_ca_email.Location = new Point(718, 541);
+            txt_ca_email.Location = new Point(730, 523);
             txt_ca_email.Margin = new Padding(2);
             txt_ca_email.Name = "txt_ca_email";
             txt_ca_email.Size = new Size(790, 37);
@@ -85,7 +85,7 @@
             // 
             txt_ca_username.BorderStyle = BorderStyle.None;
             txt_ca_username.Font = new Font("Century Gothic", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txt_ca_username.Location = new Point(718, 622);
+            txt_ca_username.Location = new Point(730, 602);
             txt_ca_username.Margin = new Padding(2);
             txt_ca_username.Name = "txt_ca_username";
             txt_ca_username.Size = new Size(790, 37);
@@ -95,7 +95,7 @@
             // 
             txt_ca_password.BorderStyle = BorderStyle.None;
             txt_ca_password.Font = new Font("Century Gothic", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txt_ca_password.Location = new Point(718, 711);
+            txt_ca_password.Location = new Point(730, 684);
             txt_ca_password.Margin = new Padding(2);
             txt_ca_password.Name = "txt_ca_password";
             txt_ca_password.Size = new Size(790, 37);

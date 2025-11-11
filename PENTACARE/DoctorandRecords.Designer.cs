@@ -39,6 +39,7 @@
             searchTxt = new TextBox();
             btnSearch = new Panel();
             btn_back = new Panel();
+            comboBox1 = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)docRecords).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
@@ -142,6 +143,19 @@
             btn_back.TabIndex = 3;
             btn_back.Click += btn_back_Click;
             // 
+            // comboBox1
+            // 
+            comboBox1.BackColor = Color.White;
+            comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox1.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Items.AddRange(new object[] { "All" });
+            comboBox1.Location = new Point(1375, 790);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(318, 39);
+            comboBox1.TabIndex = 9;
+            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
+            // 
             // DoctorandRecords
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -149,6 +163,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(comboBox1);
             Controls.Add(btn_back);
             Controls.Add(btnSearch);
             Controls.Add(searchTxt);
@@ -181,5 +196,6 @@
         private TextBox searchTxt;
         private Panel btnSearch;
         private Panel btn_back;
+        private ComboBox comboBox1;
     }
 }

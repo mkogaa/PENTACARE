@@ -13,11 +13,13 @@ namespace USERS_WINDOW
         MySqlCommand cmd;
         DataTable dt;
         int currentPatientID;
+        private int doctorID;
 
-        public LaboratoryRecord(int patientID)
+        public LaboratoryRecord(int patientID, int doctorID)
         {
             InitializeComponent();
             currentPatientID = patientID;
+            doctorID = doctorID;
 
             btn_record_printreport.Click += btn_record_printreport_Click;
             btn_record_back.Click += btn_record_back_Click;
@@ -225,7 +227,7 @@ namespace USERS_WINDOW
 
         private void btn_record_assigntest_Click_1(object sender, EventArgs e)
         {
-            AssignLaboratoryTest assignForm = new AssignLaboratoryTest(currentPatientID);
+            AssignLaboratoryTest assignForm = new AssignLaboratoryTest(currentPatientID, doctorID);
             assignForm.FormClosed += (s, args) =>
             {
                 LoadLabRecords("", cb_record.Text);

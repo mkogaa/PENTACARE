@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using PentaCare;
 
 namespace USERS_WINDOW
 {
@@ -54,8 +55,8 @@ namespace USERS_WINDOW
 
         private void btn_ca_cancel_Click(object sender, EventArgs e)
         {
-            Login login = new Login();
-            login.Show();
+            DoctorandRecords doc = new DoctorandRecords();
+            doc.Show();
             this.Hide();
         }
 

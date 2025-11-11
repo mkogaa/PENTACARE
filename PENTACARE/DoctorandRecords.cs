@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using USERS_WINDOW;
 
 namespace PentaCare
 {
@@ -23,7 +24,8 @@ namespace PentaCare
         public DoctorandRecords()
         {
             InitializeComponent();
-
+            LoadDoctors();
+            LoadPatients();
             this.WindowState = FormWindowState.Maximized;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 
@@ -41,8 +43,8 @@ namespace PentaCare
             docRecords.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             docRecords.ScrollBars = ScrollBars.Both;
 
-            docRecords.AllowUserToAddRows = false;
-            docRecords.RowHeadersVisible = false;
+            //docRecords.AllowUserToAddRows = false;
+            //docRecords.RowHeadersVisible = false;
 
             docRecords.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
@@ -102,7 +104,7 @@ namespace PentaCare
 
             connect.Open();
 
-            cmd.CommandText = $"SELECT  p.Name, r.Room_No, d.Doctor_Name, p.Status " +
+            cmd.CommandText = $"SELECT  p.PatientID, p.Name, r.Room_No, d.Doctor_Name, p.Status " +
                 $"FROM patient as p LEFT JOIN room AS r ON p.RoomID = r.RoomID " +
                 $"LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID";
             cmd.CommandType = CommandType.Text;
@@ -113,6 +115,7 @@ namespace PentaCare
 
             dataGridView1.DataSource = set;
             dataGridView1.DataMember = "patientfetch";
+            dataGridView1.Columns["PatientID"].Visible = false;
 
             connect.Close();
 
@@ -132,12 +135,10 @@ namespace PentaCare
             if (dataGridView1.Columns[e.ColumnIndex].Name == "Action" && e.RowIndex >= 0)
             {
                 DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
-                string patientName = row.Cells["Name"].Value.ToString();
-                string doctorName = row.Cells["Doctor_Name"].Value.ToString();
+                string patientID = row.Cells["PatientID"].Value.ToString();
 
-
-                ViewPatient patient = new ViewPatient(patientName, doctorName);
-                patient.Show();
+                LabMed labMed = new LabMed(patientID, this);
+                labMed.Show();
                 this.Hide();
             }
         }
@@ -150,7 +151,7 @@ namespace PentaCare
 
         private void addDocBtn_Click_1(object sender, EventArgs e)
         {
-            AddDoctors addDoc = new AddDoctors();
+            CreateAccount addDoc = new CreateAccount();
             addDoc.Show();
             this.Hide();
         }
@@ -392,6 +393,103 @@ namespace PentaCare
             Dashboard dashboard = new Dashboard();
             dashboard.Show();
             this.Hide();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string selectedDoctor = comboBox1.Text;
+
+            string con = "server=127.0.0.1; database=pentacare; uid=root;";
+            using (MySqlConnection connect = new MySqlConnection(con))
+            {
+                connect.Open();
+                string query = @"SELECT p.PatientID, p.Name, r.Room_No, d.Doctor_Name, p.Status
+                         FROM patient AS p
+                         LEFT JOIN room AS r ON p.RoomID = r.RoomID
+                         LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID";
+
+                // ✅ Apply filter only if not "All"
+                if (selectedDoctor != "All")
+                {
+                    query += " WHERE d.Doctor_Name = @doctorName";
+                }
+
+                MySqlCommand cmd = new MySqlCommand(query, connect);
+
+                if (selectedDoctor != "All")
+                {
+                    cmd.Parameters.AddWithValue("@doctorName", selectedDoctor);
+                }
+
+                MySqlDataAdapter patient = new MySqlDataAdapter(cmd);
+                DataSet set = new DataSet();
+                patient.Fill(set, "patientfetch");
+
+                dataGridView1.DataSource = set;
+                dataGridView1.DataMember = "patientfetch";
+                dataGridView1.Columns["PatientID"].Visible = false;
+            }
+        }
+        private void LoadDoctors()
+        {
+            string selectedDoctor = comboBox1.Text;
+
+            string con = "server=127.0.0.1; database=pentacare; uid=root;";
+            using (MySqlConnection connect = new MySqlConnection(con))
+            {
+                connect.Open();
+                string query = @"SELECT p.PatientID, p.Name, r.Room_No, d.Doctor_Name, p.Status
+                         FROM patient AS p
+                         LEFT JOIN room AS r ON p.RoomID = r.RoomID
+                         LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID";
+
+                // ✅ Filter only when not "All"
+                if (selectedDoctor != "All")
+                {
+                    query += " WHERE d.Doctor_Name = @doctorName";
+                }
+
+                MySqlCommand cmd = new MySqlCommand(query, connect);
+
+                if (selectedDoctor != "All")
+                {
+                    cmd.Parameters.AddWithValue("@doctorName", selectedDoctor);
+                }
+
+                MySqlDataAdapter patient = new MySqlDataAdapter(cmd);
+                DataSet set = new DataSet();
+                patient.Fill(set, "patientfetch");
+
+                dataGridView1.DataSource = set;
+                dataGridView1.DataMember = "patientfetch";
+                dataGridView1.Columns["PatientID"].Visible = false;
+            }
+        }
+        private void LoadPatients(string doctorName = "All")
+        {
+            string con = "server=127.0.0.1; database=pentacare; uid=root;";
+            using (MySqlConnection connect = new MySqlConnection(con))
+            {
+                connect.Open();
+                string query = "SELECT DoctorID, Doctor_Name FROM doctor WHERE Doctor_Name != ''";
+                MySqlCommand cmd = new MySqlCommand(query, connect);
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                // ✅ Add "All" option at the top
+                DataRow allRow = dt.NewRow();
+                allRow["DoctorID"] = 0; // placeholder
+                allRow["Doctor_Name"] = "All";
+                dt.Rows.InsertAt(allRow, 0);
+
+                comboBox1.DisplayMember = "Doctor_Name";
+                comboBox1.ValueMember = "DoctorID";
+                comboBox1.DataSource = dt;
+
+                // ✅ Default selection to "All"
+                comboBox1.SelectedIndex = 0;
+            }
         }
     }
 }

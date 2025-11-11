@@ -126,9 +126,9 @@
             btnViewProfile.FlatStyle = FlatStyle.Flat;
             btnViewProfile.Font = new Font("Century Gothic", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnViewProfile.ForeColor = Color.MidnightBlue;
-            btnViewProfile.Location = new Point(286, 278);
+            btnViewProfile.Location = new Point(286, 292);
             btnViewProfile.Name = "btnViewProfile";
-            btnViewProfile.Size = new Size(378, 80);
+            btnViewProfile.Size = new Size(378, 72);
             btnViewProfile.TabIndex = 7;
             btnViewProfile.Text = "View Profile";
             btnViewProfile.UseVisualStyleBackColor = false;
@@ -158,7 +158,7 @@
             btnMedRecords.Name = "btnMedRecords";
             btnMedRecords.Size = new Size(379, 81);
             btnMedRecords.TabIndex = 9;
-            btnMedRecords.Text = "Medical Records";
+            btnMedRecords.Text = "Active Patient Records";
             btnMedRecords.UseVisualStyleBackColor = false;
             btnMedRecords.Click += btnMedRecords_Click;
             // 
@@ -299,7 +299,7 @@
             btnRecords.Name = "btnRecords";
             btnRecords.Size = new Size(377, 83);
             btnRecords.TabIndex = 20;
-            btnRecords.Text = "Records";
+            btnRecords.Text = "Medical Records";
             btnRecords.UseVisualStyleBackColor = false;
             btnRecords.Click += btnRecords_Click;
             // 

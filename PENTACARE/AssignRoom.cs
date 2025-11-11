@@ -137,11 +137,12 @@ namespace PENTACARE
                         insertCmd.ExecuteNonQuery();
                     }
 
-                    string updatePatient = "UPDATE patient SET RoomID = @RoomID, Status = 'Admitted' WHERE PatientID = @PatientID";
+                    string updatePatient = "UPDATE patient SET RoomID = @RoomID, BedID = @BedID, Status = 'Admitted' WHERE PatientID = @PatientID";
                     using (MySqlCommand updatePatientCmd = new MySqlCommand(updatePatient, sqlconn))
                     {
                         updatePatientCmd.Parameters.AddWithValue("@RoomID", selectedRoomID);
                         updatePatientCmd.Parameters.AddWithValue("@PatientID", txt_patientID.Text);
+                        updatePatientCmd.Parameters.AddWithValue("@BedID", bedID);
                         updatePatientCmd.ExecuteNonQuery();
                     }
 

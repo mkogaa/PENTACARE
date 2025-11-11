@@ -13,11 +13,14 @@ namespace USERS_WINDOW
         private MySqlCommand cmd;
         private MySqlDataAdapter da;
         private DataTable dt;
+        private int doctorID;
 
-        public AssignLaboratoryTest(int patientID)
+
+        public AssignLaboratoryTest(int patientID, int loggedDocorID)
         {
             InitializeComponent();
             currentPatientID = patientID;
+            doctorID = loggedDocorID;
 
             LoadLabTests();
             SetupFormStyle();
@@ -156,7 +159,7 @@ namespace USERS_WINDOW
                 cmd = new MySqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@patientID", currentPatientID);
                 cmd.Parameters.AddWithValue("@labID", cb_labtest.SelectedValue);
-                cmd.Parameters.AddWithValue("@doctorID", 1); 
+                cmd.Parameters.AddWithValue("@doctorID", doctorID); 
                 cmd.Parameters.AddWithValue("@dateOrdered", dtp_assign.Value.Date);
                 cmd.Parameters.AddWithValue("@fee", Convert.ToDecimal(txt_assign_fee.Text));
                 cmd.Parameters.AddWithValue("@result", txt_assign_remarks.Text);

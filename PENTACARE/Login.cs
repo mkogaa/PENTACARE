@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using PENTACARE;
 
 namespace USERS_WINDOW
 {
@@ -51,7 +52,7 @@ namespace USERS_WINDOW
 
                 if (userType == "Admin")
                 {
-                    query = "SELECT * FROM admin WHERE Username=@user AND Password=@pass";
+                    query = "SELECT * FROM admin WHERE (Username=@user OR email=@user) AND Password=@pass";
                 }
                 else if (userType == "Doctor")
                 {
@@ -68,12 +69,19 @@ namespace USERS_WINDOW
                 {
                     int doctorID = 0;
                     string doctorName = "";
+                    int adminID = 0;
+                    string adminName = "";
 
                     if (userType == "Doctor")
                     {
                         doctorID = Convert.ToInt32(dr["DoctorID"]);
                         doctorName = dr["Doctor_Name"].ToString();
                         MessageBox.Show($"Welcome, {doctorName}!", "Login Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else if (userType == "Admin")
+                    {
+                        adminName = dr["Username"].ToString();
+                        MessageBox.Show($"Welcome, {adminName}!", "Login Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
@@ -84,7 +92,9 @@ namespace USERS_WINDOW
 
                     if (userType == "Admin")
                     {
-
+                        Dashboard dashboard = new Dashboard();
+                        dashboard.Show();
+                        this.Hide();
                     }
                     else if (userType == "Doctor")
                     {

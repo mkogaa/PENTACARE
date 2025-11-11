@@ -38,7 +38,6 @@ namespace PENTACARE
             dgvRoom.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dgvRoom.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
 
-
             cb_status.Items.Add("All");
             cb_status.Items.Add("Available");
             cb_status.Items.Add("Occupied");
@@ -75,6 +74,8 @@ namespace PENTACARE
                 }
             }
         }
+
+
 
         private void AddButtonColumns()
         {
@@ -214,6 +215,9 @@ namespace PENTACARE
             DataTable dt = new DataTable();
             da.Fill(dt);
             dgvRoom.DataSource = dt;
+
+            AddButtonColumns();
+            UpdateStatusButtonTextAndColor();
         }
 
         private void cb_status_SelectedIndexChanged(object sender, EventArgs e)
@@ -248,6 +252,9 @@ namespace PENTACARE
                 DataTable dt = new DataTable();
                 da.Fill(dt);
                 dgvRoom.DataSource = dt;
+
+                AddButtonColumns();
+                UpdateStatusButtonTextAndColor();
             }
         }
 
@@ -295,8 +302,23 @@ namespace PENTACARE
                     }
                 }
             }
-        
         }
+
+        public void FreeBed(int bedID)
+        {
+            string dbconnect = "server=127.0.0.1; database=pentacare; username=root; password=;";
+            using (MySqlConnection conn = new MySqlConnection(dbconnect))
+            {
+                conn.Open();
+                string query = "UPDATE bed SET Status = 'Available' WHERE BedID = @BedID";
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@BedID", bedID);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
     }
 }
 

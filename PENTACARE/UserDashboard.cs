@@ -55,29 +55,53 @@ namespace USERS_WINDOW
         }
         private void LoadDashboardData()
         {
+
             try
             {
                 con.Open();
 
-                MySqlCommand cmdPatients = new MySqlCommand("SELECT COUNT(*) FROM patient", con);
+                // Total patients assigned to this doctor
+                MySqlCommand cmdPatients = new MySqlCommand(
+                    @"SELECT COUNT(*) 
+              FROM patient p
+              INNER JOIN doctor_patient dp ON p.PatientID = dp.PatientID
+              WHERE dp.DoctorID = @DoctorID", con);
+                cmdPatients.Parameters.AddWithValue("@DoctorID", doctorID);
                 txtTP.Text = cmdPatients.ExecuteScalar().ToString();
 
-                MySqlCommand cmdRecords = new MySqlCommand("SELECT COUNT(*) FROM medical_records", con);
+                // Total medical records for this doctor's patients
+                MySqlCommand cmdRecords = new MySqlCommand(
+                    @"SELECT COUNT(*) 
+              FROM medical_records mr
+              INNER JOIN patient p ON mr.PatientID = p.PatientID
+              INNER JOIN doctor_patient dp ON p.PatientID = dp.PatientID
+              WHERE dp.DoctorID = @DoctorID", con);
+                cmdRecords.Parameters.AddWithValue("@DoctorID", doctorID);
                 txtTMR.Text = cmdRecords.ExecuteScalar().ToString();
 
-                MySqlCommand cmdTotalLab = new MySqlCommand("SELECT COUNT(*) FROM patient_labrec", con);
+                // Total lab tests for this doctor's patients
+                MySqlCommand cmdTotalLab = new MySqlCommand(
+                    @"SELECT COUNT(*) 
+              FROM patient_labrec pl
+              INNER JOIN patient p ON pl.PatientID = p.PatientID
+              INNER JOIN doctor_patient dp ON p.PatientID = dp.PatientID
+              WHERE dp.DoctorID = @DoctorID", con);
+                cmdTotalLab.Parameters.AddWithValue("@DoctorID", doctorID);
                 txtTLT.Text = cmdTotalLab.ExecuteScalar().ToString();
 
-                MySqlCommand cmdPendingLab = new MySqlCommand("SELECT COUNT(*) FROM patient_labrec WHERE Status = 'Pending'", con);
+                // Pending lab tests for this doctor's patients
+                MySqlCommand cmdPendingLab = new MySqlCommand(
+                    @"SELECT COUNT(*) 
+              FROM patient_labrec pl
+              INNER JOIN patient p ON pl.PatientID = p.PatientID
+              INNER JOIN doctor_patient dp ON p.PatientID = dp.PatientID
+              WHERE dp.DoctorID = @DoctorID AND pl.Status = 'Pending'", con);
+                cmdPendingLab.Parameters.AddWithValue("@DoctorID", doctorID);
                 txtPLT.Text = cmdPendingLab.ExecuteScalar().ToString();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error loading dashboard data:\n" + ex.Message);
-            }
-            finally
-            {
-                con.Close();
             }
             string recentQuery = @"
                 SELECT 

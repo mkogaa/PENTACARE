@@ -69,7 +69,6 @@ namespace PENTACARE
                 {
                     conn.Open();
 
-                    // Create data table for billing items
                     billingTable = new DataTable();
 
                     billingTable.Columns.Add("Item");
@@ -78,17 +77,13 @@ namespace PENTACARE
 
                     decimal totalAmount = 0;
 
-                    // Calculate number of days stayed
                     int daysStayed = CalculateDaysStayed();
 
-
-                    // 1. Add room charges (daily rate × number of days)
                     decimal totalRoomFee = roomFee * daysStayed;
                     billingTable.Rows.Add("Room", $"{roomType} Room ({daysStayed} days  ₱{roomFee:N2}/day)", totalRoomFee);
                     totalAmount += totalRoomFee;
                     lblRFee.Text = "₱" + totalRoomFee.ToString("N2");
 
-                    // 2. Add medicine charges
                     string medicineQuery = @"SELECT mr.Medication, m.Price 
                                            FROM medical_records mr 
                                            JOIN medicines m ON mr.Medication = m.Medicine_Name 
@@ -109,7 +104,6 @@ namespace PENTACARE
                         }
                     }
 
-                    // 3. Add lab services (only completed ones)
                     string labSQuery = @"SELECT ls.Lab_Name, pl.Fee, pl.Status, pl.Date_Ordered
                                       FROM patient_labrec pl 
                                       JOIN lab_services ls ON pl.LabID = ls.LabID 
@@ -133,7 +127,6 @@ namespace PENTACARE
                         }
                     }
 
-                    // 4. Add other services (daily services × number of days)
                     string serviceQuery = @"SELECT os.Service_Name, os.Service_Fee 
                                           FROM other_services os 
                                           WHERE os.Status = 'Available' 
@@ -155,7 +148,6 @@ namespace PENTACARE
                         }
                     }
 
-                    // Setup DataGridView appearance
                     dgvBill.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                     dgvBill.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
                     dgvBill.ReadOnly = true;
@@ -166,13 +158,10 @@ namespace PENTACARE
                     dgvBill.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
                     dgvBill.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
 
-                    // Display in DataGridView
                     dgvBill.DataSource = billingTable;
 
-                    // Format the amount column
                     dgvBill.Columns["Amount"].DefaultCellStyle.Format = "₱#,##0.00";
 
-                    // Show total amount
                     lblTotal.Text = "₱" + totalAmount.ToString("N2");
                 }
             }
@@ -190,7 +179,6 @@ namespace PENTACARE
                 DateTime admitDate = DateTime.Parse(admissionDate);
                 DateTime dischargeDateValue;
 
-                // If discharge date is not set (0000-00-00), use current date
                 if (string.IsNullOrEmpty(dischargeDate) || dischargeDate == "0000-00-00")
                 {
                     dischargeDateValue = DateTime.Now;
@@ -200,18 +188,16 @@ namespace PENTACARE
                     dischargeDateValue = DateTime.Parse(dischargeDate);
                 }
 
-                // Calculate total days (add 1 to include both admission and discharge days)
                 TimeSpan stayDuration = dischargeDateValue - admitDate;
                 int daysStayed = (int)Math.Ceiling(stayDuration.TotalDays + 1);
 
-                // Ensure at least 1 day is charged
                 return Math.Max(1, daysStayed);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error calculating days stayed: " + ex.Message, "Error",
                               MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return 1; // Default to 1 day if there's an error
+                return 1;
             }
         }
 
@@ -227,8 +213,6 @@ namespace PENTACARE
             Add_Charge addChargeForm = new Add_Charge(patientID, billingTable);
             addChargeForm.ShowDialog();
 
-
-            // After returning from Add_Charge, recalculate total
             decimal total = 0;
             foreach (DataRow row in billingTable.Rows)
             {
@@ -251,7 +235,6 @@ namespace PENTACARE
                 {
                     conn.Open();
 
-                    // Combine all billing details into one text summary
                     StringBuilder detailsBuilder = new StringBuilder();
                     decimal totalAmount = 0;
 
@@ -267,7 +250,6 @@ namespace PENTACARE
 
                     string billingDetails = detailsBuilder.ToString();
 
-                    // Insert new single record
                     string insertQuery = @"INSERT INTO billing (PatientID, BillingDetails, TotalAmount)
                                    VALUES (@PatientID, @Details, @Total)";
                     using (MySqlCommand cmd = new MySqlCommand(insertQuery, conn))
@@ -297,6 +279,11 @@ namespace PENTACARE
                 MessageBox.Show("Error saving billing summary: " + ex.Message, "Error",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void lblAD_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

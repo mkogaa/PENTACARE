@@ -46,6 +46,7 @@
             viewInfo = new Panel();
             panel1 = new Panel();
             btn_Records = new Panel();
+            monthCalendar1 = new MonthCalendar();
             ((System.ComponentModel.ISupportInitialize)dgvRecentAct).BeginInit();
             SuspendLayout();
             // 
@@ -220,12 +221,22 @@
             btn_Records.TabIndex = 2;
             btn_Records.Click += btn_Records_Click;
             // 
+            // monthCalendar1
+            // 
+            monthCalendar1.BackColor = Color.DarkBlue;
+            monthCalendar1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            monthCalendar1.ForeColor = Color.White;
+            monthCalendar1.Location = new Point(1474, 658);
+            monthCalendar1.Name = "monthCalendar1";
+            monthCalendar1.TabIndex = 20;
+            // 
             // Dashboard
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(monthCalendar1);
             Controls.Add(btn_Records);
             Controls.Add(panel1);
             Controls.Add(viewInfo);
@@ -270,5 +281,6 @@
         private Panel viewInfo;
         private Panel panel1;
         private Panel btn_Records;
+        private MonthCalendar monthCalendar1;
     }
 }

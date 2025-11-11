@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using PentaCare;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,7 +24,7 @@ namespace PENTACARE
 
         private void dgv_rPatient_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            
+
         }
 
 
@@ -43,9 +44,11 @@ namespace PENTACARE
             dgv_Record.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
 
             rb_PH.Checked = true;
+
+            txtSearch.TextChanged += txtSearch_TextChanged;
         }
 
-        private void LoadPatientRecords()
+        private void LoadPatientRecords(string search = "")
         {
             string dbconnect = "server=127.0.0.1; database=pentacare; username=root; password=;";
             using (MySqlConnection sqlconn = new MySqlConnection(dbconnect))
@@ -60,8 +63,17 @@ namespace PENTACARE
                                "DATE_FORMAT(Discharge_Date, '%M %d, %Y') as 'Discharge Date' " +
                                "FROM patient WHERE Status = 'Discharged'";
 
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    query += " AND Name LIKE @search";
+                }
+
 
                 MySqlCommand cmd = new MySqlCommand(query, sqlconn);
+
+                if (!string.IsNullOrWhiteSpace(search))
+                    cmd.Parameters.AddWithValue("@search", "%" + search + "%");
+
                 MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
 
@@ -81,7 +93,7 @@ namespace PENTACARE
             }
         }
 
-        private void LoadDoctorRecords()
+        private void LoadDoctorRecords(string search = "")
         {
             string dbconnect = "server=127.0.0.1; database=pentacare; username=root; password=;";
             using (MySqlConnection sqlconn = new MySqlConnection(dbconnect))
@@ -90,10 +102,18 @@ namespace PENTACARE
                                "Doctor_Name as 'Doctor Name', " +
                                "Specialty as 'Doctor Specialty', " +
                                "Contact_No as 'Contact Number' " +
-                               "FROM doctor";
+                               "FROM doctor WHERE 1";
 
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    query += " AND Doctor_Name LIKE @search";
+                }
 
                 MySqlCommand cmd = new MySqlCommand(query, sqlconn);
+
+                if (!string.IsNullOrWhiteSpace(search))
+                    cmd.Parameters.AddWithValue("@search", "%" + search + "%");
+
                 MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
 
@@ -113,7 +133,7 @@ namespace PENTACARE
             }
         }
 
-        private void LoadBillingSummary()
+        private void LoadBillingSummary(string search = "")
         {
             string dbconnect = "server=127.0.0.1; database=pentacare; username=root; password=;";
             using (MySqlConnection sqlconn = new MySqlConnection(dbconnect))
@@ -126,7 +146,19 @@ namespace PENTACARE
                                  INNER JOIN billing b ON p.PatientID = b.PatientID
                                  WHERE p.Billing_Status = 'Paid'";
 
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    query += " AND p.Name LIKE @search";
+                }
+
                 MySqlCommand cmd = new MySqlCommand(query, sqlconn);
+
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    cmd.Parameters.AddWithValue("@search", "%" + search + "%");
+                }
+
+
                 MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
 
@@ -203,5 +235,58 @@ namespace PENTACARE
                 }
             }
         }
+
+        private void txtSearch_TextAlignChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            string searchText = txtSearch.Text.Trim();
+
+            if (rb_PH.Checked)
+            {
+                LoadPatientRecords(searchText);
+            }
+            else if (rb_PR.Checked)
+            {
+                LoadDoctorRecords(searchText);
+            }
+            else if (rb_BS.Checked)
+            {
+                LoadBillingSummary(searchText);
+            }
+        }
+
+        private void btn_AD_Click(object sender, EventArgs e)
+        {
+            AdmissionDischarge ad = new AdmissionDischarge();
+            ad.Show();
+            this.Hide();
+        }
+
+        private void btn_back_Click(object sender, EventArgs e)
+        {
+            Dashboard dashboard = new Dashboard();
+            dashboard.Show();
+            this.Hide();
+        }
+
+        private void panel1_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Record successfully exported!", "PENTACARE", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void panel2_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Record successfully printed!", "PENTACARE", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
+

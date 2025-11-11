@@ -40,6 +40,9 @@
             lblAge = new Label();
             lblRN = new Label();
             lblType = new Label();
+            panel1 = new Panel();
+            panel2 = new Panel();
+            panel3 = new Panel();
             ((System.ComponentModel.ISupportInitialize)dgv_LabRec).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgv_MedRec).BeginInit();
             SuspendLayout();
@@ -47,20 +50,20 @@
             // dgv_LabRec
             // 
             dgv_LabRec.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv_LabRec.Location = new Point(146, 414);
+            dgv_LabRec.Location = new Point(175, 407);
             dgv_LabRec.Name = "dgv_LabRec";
             dgv_LabRec.RowHeadersWidth = 51;
-            dgv_LabRec.Size = new Size(1600, 149);
+            dgv_LabRec.Size = new Size(1600, 127);
             dgv_LabRec.TabIndex = 0;
             dgv_LabRec.CellContentClick += dataGridView1_CellContentClick;
             // 
             // dgv_MedRec
             // 
             dgv_MedRec.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv_MedRec.Location = new Point(146, 651);
+            dgv_MedRec.Location = new Point(175, 634);
             dgv_MedRec.Name = "dgv_MedRec";
             dgv_MedRec.RowHeadersWidth = 51;
-            dgv_MedRec.Size = new Size(1600, 149);
+            dgv_MedRec.Size = new Size(1600, 127);
             dgv_MedRec.TabIndex = 1;
             // 
             // lblPID
@@ -69,7 +72,7 @@
             lblPID.BackColor = Color.Transparent;
             lblPID.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblPID.ForeColor = Color.DarkBlue;
-            lblPID.Location = new Point(379, 195);
+            lblPID.Location = new Point(379, 188);
             lblPID.Name = "lblPID";
             lblPID.Size = new Size(96, 38);
             lblPID.TabIndex = 2;
@@ -81,7 +84,7 @@
             lblRID.BackColor = Color.Transparent;
             lblRID.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblRID.ForeColor = Color.DarkBlue;
-            lblRID.Location = new Point(1388, 195);
+            lblRID.Location = new Point(1388, 188);
             lblRID.Name = "lblRID";
             lblRID.Size = new Size(96, 38);
             lblRID.TabIndex = 3;
@@ -93,7 +96,7 @@
             lblName.BackColor = Color.Transparent;
             lblName.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblName.ForeColor = Color.DarkBlue;
-            lblName.Location = new Point(251, 270);
+            lblName.Location = new Point(255, 258);
             lblName.Name = "lblName";
             lblName.Size = new Size(70, 28);
             lblName.TabIndex = 4;
@@ -105,7 +108,7 @@
             lblGender.BackColor = Color.Transparent;
             lblGender.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblGender.ForeColor = Color.DarkBlue;
-            lblGender.Location = new Point(279, 326);
+            lblGender.Location = new Point(273, 311);
             lblGender.Name = "lblGender";
             lblGender.Size = new Size(70, 28);
             lblGender.TabIndex = 5;
@@ -117,7 +120,7 @@
             lblFee.BackColor = Color.Transparent;
             lblFee.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblFee.ForeColor = Color.DarkBlue;
-            lblFee.Location = new Point(1626, 326);
+            lblFee.Location = new Point(1626, 311);
             lblFee.Name = "lblFee";
             lblFee.Size = new Size(70, 28);
             lblFee.TabIndex = 6;
@@ -129,7 +132,7 @@
             lblAddress.BackColor = Color.Transparent;
             lblAddress.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblAddress.ForeColor = Color.DarkBlue;
-            lblAddress.Location = new Point(762, 270);
+            lblAddress.Location = new Point(744, 258);
             lblAddress.Name = "lblAddress";
             lblAddress.Size = new Size(70, 28);
             lblAddress.TabIndex = 6;
@@ -141,7 +144,7 @@
             lblAge.BackColor = Color.Transparent;
             lblAge.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblAge.ForeColor = Color.DarkBlue;
-            lblAge.Location = new Point(680, 326);
+            lblAge.Location = new Point(665, 311);
             lblAge.Name = "lblAge";
             lblAge.Size = new Size(70, 28);
             lblAge.TabIndex = 7;
@@ -153,7 +156,7 @@
             lblRN.BackColor = Color.Transparent;
             lblRN.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblRN.ForeColor = Color.DarkBlue;
-            lblRN.Location = new Point(1357, 270);
+            lblRN.Location = new Point(1348, 258);
             lblRN.Name = "lblRN";
             lblRN.Size = new Size(70, 28);
             lblRN.TabIndex = 6;
@@ -165,11 +168,38 @@
             lblType.BackColor = Color.Transparent;
             lblType.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblType.ForeColor = Color.DarkBlue;
-            lblType.Location = new Point(1388, 326);
+            lblType.Location = new Point(1379, 311);
             lblType.Name = "lblType";
             lblType.Size = new Size(70, 28);
             lblType.TabIndex = 8;
             lblType.Text = "label7";
+            // 
+            // panel1
+            // 
+            panel1.BackColor = Color.Transparent;
+            panel1.Location = new Point(161, 839);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(166, 57);
+            panel1.TabIndex = 9;
+            panel1.Click += panel1_Click;
+            // 
+            // panel2
+            // 
+            panel2.BackColor = Color.Transparent;
+            panel2.Location = new Point(396, 839);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(166, 57);
+            panel2.TabIndex = 10;
+            panel2.Click += panel2_Click;
+            // 
+            // panel3
+            // 
+            panel3.BackColor = Color.Transparent;
+            panel3.Location = new Point(1626, 849);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(166, 57);
+            panel3.TabIndex = 11;
+            panel3.Click += panel3_Click;
             // 
             // View_PatientRecord
             // 
@@ -178,6 +208,9 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(panel3);
+            Controls.Add(panel2);
+            Controls.Add(panel1);
             Controls.Add(lblType);
             Controls.Add(lblAge);
             Controls.Add(lblAddress);
@@ -211,5 +244,8 @@
         private Label lblAge;
         private Label lblRN;
         private Label lblType;
+        private Panel panel1;
+        private Panel panel2;
+        private Panel panel3;
     }
 }

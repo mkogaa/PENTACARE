@@ -89,7 +89,6 @@ namespace PentaCare
             LEFT JOIN room AS r ON p.RoomID = r.RoomID
             LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID
             LEFT JOIN medical_records AS mr ON p.PatientID = mr.PatientID
-            WHERE p.Status = 'Discharged'
             ORDER BY mr.RecordDate DESC;";
 
             sqlcmd.CommandType = CommandType.Text;
@@ -117,18 +116,9 @@ namespace PentaCare
                 {
                     conn.Open();
 
-                    // Get selected date
-                    DateTime selectedDate = dateTimePicker1.Value.Date;
-                    if (selectedDate == DateTime.MinValue)
-                    {
-                        dataGridView1.DataSource = null;
-                        MessageBox.Show("Please select a discharge date.");
-                        return;
-                    }
-
                     // Determine room prefix based on selected room type
                     string roomTypePrefix = "";
-                    switch (cmbRtype.SelectedItem.ToString())
+                    switch (cmbRtype.SelectedItem?.ToString())
                     {
                         case "Private":
                             roomTypePrefix = "P%";
@@ -140,20 +130,38 @@ namespace PentaCare
                             roomTypePrefix = "W%";
                             break;
                         default:
-                            roomTypePrefix = "%"; // all
+                            roomTypePrefix = "%"; // all rooms
                             break;
                     }
 
-                    string query = "SELECT p.Name, p.Gender, r.Room_No AS `Room Number`, d.Doctor_Name AS `Doctor Name`, d.Specialty, p.Status, NULLIF(p.Admission_Date,'0000-00-00') " +
-                        "AS Admit, NULLIF(p.Discharge_Date,'0000-00-00') AS Discharge, mr.RecordID, mr.BP, mr.HR, mr.Temp, mr.Allergies, mr.Diagnosis, mr.DiagnosisNotes AS `Diagnosis Notes`, " +
-                        "mr.ExamFindings AS `Exam Findings`, mr.Treatment, mr.Medication, NULLIF(mr.RecordDate,'0000-00-00') AS `Record Date` " +
-                        "FROM patient AS p LEFT JOIN room AS r ON p.RoomID = r.RoomID LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID " +
-                        "LEFT JOIN medical_records AS mr ON p.PatientID = mr.PatientID WHERE p.Status = 'Discharged' " +
-                        "AND p.Discharge_Date = @DischargeDate AND r.Room_No LIKE @RoomPrefix ORDER BY mr.RecordDate DESC;";
-
+                    string query = @"
+            SELECT p.Name, 
+                   p.Gender, 
+                   r.Room_No AS `Room Number`, 
+                   d.Doctor_Name AS `Doctor Name`, 
+                   d.Specialty, 
+                   p.Status, 
+                   NULLIF(p.Admission_Date,'0000-00-00') AS Admit, 
+                   NULLIF(p.Discharge_Date,'0000-00-00') AS Discharge, 
+                   mr.RecordID, 
+                   mr.BP, 
+                   mr.HR, 
+                   mr.Temp, 
+                   mr.Allergies, 
+                   mr.Diagnosis, 
+                   mr.DiagnosisNotes AS `Diagnosis Notes`, 
+                   mr.ExamFindings AS `Exam Findings`, 
+                   mr.Treatment, 
+                   mr.Medication, 
+                   NULLIF(mr.RecordDate,'0000-00-00') AS `Record Date`
+            FROM patient AS p
+            LEFT JOIN room AS r ON p.RoomID = r.RoomID
+            LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID
+            LEFT JOIN medical_records AS mr ON p.PatientID = mr.PatientID
+            WHERE r.Room_No LIKE @RoomPrefix
+            ORDER BY mr.RecordDate DESC;";
 
                     MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@DischargeDate", selectedDate.ToString("yyyy-MM-dd"));
                     cmd.Parameters.AddWithValue("@RoomPrefix", roomTypePrefix);
 
                     MySqlDataAdapter da = new MySqlDataAdapter(cmd);
@@ -164,13 +172,13 @@ namespace PentaCare
                     dataGridView1.DataSource = dt;
 
                     // Hide unnecessary columns
-                    if (dataGridView1.Columns["Gender"] != null) dataGridView1.Columns["Gender"].Visible = false;
-                    if (dataGridView1.Columns["Status"] != null) dataGridView1.Columns["Status"].Visible = true;
+                    if (dataGridView1.Columns["Gender"] != null)
+                        dataGridView1.Columns["Gender"].Visible = false;
+                    if (dataGridView1.Columns["Status"] != null)
+                        dataGridView1.Columns["Status"].Visible = false;
 
-                    if (dt.Rows.Count == 0)
-                    {
-                        MessageBox.Show("No discharged patients found for the selected room type and date.");
-                    }
+                    // Show results count
+                    MessageBox.Show($"Found {dt.Rows.Count} patients in {cmbRtype.SelectedItem} rooms.");
                 }
                 catch (Exception ex)
                 {
@@ -208,7 +216,7 @@ namespace PentaCare
                     LEFT JOIN room AS r ON p.RoomID = r.RoomID
                     LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID
                     LEFT JOIN medical_records AS mr ON p.PatientID = mr.PatientID
-                    WHERE p.Discharge_Date = @DischargeDate
+                    WHERE p.Status = 'Discharged'
                     ORDER BY mr.RecordDate DESC";
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@DischargeDate", selectedDate.ToString("yyyy-MM-dd"));
@@ -316,7 +324,6 @@ namespace PentaCare
             LEFT JOIN room AS r ON p.RoomID = r.RoomID
             LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID
             LEFT JOIN medical_records AS mr ON p.PatientID = mr.PatientID
-            WHERE p.Status = 'Discharged'
             ORDER BY mr.RecordDate DESC;";
 
             sqlcmd.CommandType = CommandType.Text;
@@ -336,7 +343,7 @@ namespace PentaCare
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            
+
             string dbconnect = "server=127.0.0.1; database=pentacare; uid=root; Allow Zero Datetime=True; Convert Zero Datetime=True;";
             using (MySqlConnection conn = new MySqlConnection(dbconnect))
             {
@@ -347,32 +354,32 @@ namespace PentaCare
                     string searchText = textBox1.Text.Trim();
 
                     string query = @"
-SELECT p.Name, 
-       p.Gender, 
-       r.Room_No AS `Room Number`, 
-       d.Doctor_Name AS `Doctor Name`, 
-       d.Specialty, 
-       p.Status, 
-       NULLIF(p.Admission_Date,'0000-00-00') AS Admit, 
-       NULLIF(p.Discharge_Date,'0000-00-00') AS Discharge, 
-       mr.RecordID, 
-       mr.BP, 
-       mr.HR, 
-       mr.Temp, 
-       mr.Allergies, 
-       mr.Diagnosis, 
-       mr.DiagnosisNotes AS `Diagnosis Notes`, 
-       mr.ExamFindings AS `Exam Findings`, 
-       mr.Treatment, 
-       mr.Medication, 
-       NULLIF(mr.RecordDate,'0000-00-00') AS `Record Date`
-FROM patient AS p
-LEFT JOIN room AS r ON p.RoomID = r.RoomID
-LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID
-LEFT JOIN medical_records AS mr ON p.PatientID = mr.PatientID
-WHERE p.Status = 'Discharged' 
-  AND (p.PatientID LIKE @Search OR p.Name LIKE @Search)
-ORDER BY mr.RecordDate DESC;";
+                                    SELECT p.Name, 
+                                           p.Gender, 
+                                           r.Room_No AS `Room Number`, 
+                                           d.Doctor_Name AS `Doctor Name`, 
+                                           d.Specialty, 
+                                           p.Status, 
+                                           NULLIF(p.Admission_Date,'0000-00-00') AS Admit, 
+                                           NULLIF(p.Discharge_Date,'0000-00-00') AS Discharge, 
+                                           mr.RecordID, 
+                                           mr.BP, 
+                                           mr.HR, 
+                                           mr.Temp, 
+                                           mr.Allergies, 
+                                           mr.Diagnosis, 
+                                           mr.DiagnosisNotes AS `Diagnosis Notes`, 
+                                           mr.ExamFindings AS `Exam Findings`, 
+                                           mr.Treatment, 
+                                           mr.Medication, 
+                                           NULLIF(mr.RecordDate,'0000-00-00') AS `Record Date`
+                                    FROM patient AS p
+                                    LEFT JOIN room AS r ON p.RoomID = r.RoomID
+                                    LEFT JOIN doctor AS d ON p.DoctorID = d.DoctorID
+                                    LEFT JOIN medical_records AS mr ON p.PatientID = mr.PatientID
+                                    WHERE (p.PatientID LIKE @Search OR p.Name LIKE @Search)
+                                    ORDER BY mr.RecordDate DESC;";
+
 
                     using (MySqlCommand sqlcmd = new MySqlCommand(query, conn))
                     {
@@ -402,6 +409,10 @@ ORDER BY mr.RecordDate DESC;";
             }
         }
 
+        private void panel4_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
 

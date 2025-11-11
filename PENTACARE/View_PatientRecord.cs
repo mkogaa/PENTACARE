@@ -18,6 +18,9 @@ namespace PENTACARE
         {
             InitializeComponent();
             patientID = selectedPatientID;
+
+            this.WindowState = FormWindowState.Maximized;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -62,7 +65,6 @@ namespace PENTACARE
                 }
             }
 
-            dgv_LabRec.Size = new Size(1572, 202);
             dgv_LabRec.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             dgv_LabRec.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgv_LabRec.ScrollBars = ScrollBars.Both;
@@ -153,6 +155,23 @@ namespace PENTACARE
                     }
                 }
             }
+        }
+
+        private void panel3_Click(object sender, EventArgs e)
+        {
+            Reports_Monitoring rm = new Reports_Monitoring();
+            rm.Show();
+            this.Hide();
+        }
+
+        private void panel1_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Record successfully exported!", "PENTACARE", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void panel2_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Record successfully printed!", "PENTACARE", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

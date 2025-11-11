@@ -28,7 +28,7 @@ namespace PENTACARE
         {
             if (cbCType.Items.Count > 0)
             {
-                cbCType.SelectedIndex = 0; // select first type by default
+                cbCType.SelectedIndex = 0;
             }
         }
 
@@ -58,15 +58,12 @@ namespace PENTACARE
 
             if (index >= 0)
             {
-                // Get the unit amount
                 amount = decimal.Parse(serviceName.Substring(index + 1));
-                // Clean up the name
                 serviceName = serviceName.Substring(0, index).Trim();
             }
 
             decimal totalAmount = amount * quantity;
 
-            // Add to billing table with quantity in description
             billingTable.Rows.Add(type, $"{serviceName} ({quantity} {(quantity > 1 ? "days" : "day")})", totalAmount);
 
             MessageBox.Show("Charge added successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -81,7 +78,7 @@ namespace PENTACARE
 
             if (cbService.Items.Count > 0)
             {
-                cbService.SelectedIndex = 0; // triggers cbService_SelectedIndexChanged
+                cbService.SelectedIndex = 0; 
             }
             else
             {
@@ -102,15 +99,14 @@ namespace PENTACARE
             {
                 if (type == "Other Services")
                 {
-                    // Only show these specific services
                     List<string> allowedServices = new List<string>
-            {
-                "Laundry Service",
-                "Television Rental",
-                "Personal Care Kit",
-                "Extra Bed",
-                "Parking Fee"
-            };
+                    {
+                        "Laundry Service",
+                        "Television Rental",
+                        "Personal Care Kit",
+                        "Extra Bed",
+                        "Parking Fee"
+                    };
 
                     string connString = "server=127.0.0.1; database=pentacare; uid=root;";
                     using (MySqlConnection conn = new MySqlConnection(connString))
@@ -136,7 +132,6 @@ namespace PENTACARE
                 }
                 else
                 {
-                    // Existing code for Medicine or Laboratory
                     string connString = "server=127.0.0.1; database=pentacare; uid=root;";
                     using (MySqlConnection conn = new MySqlConnection(connString))
                     {
@@ -205,5 +200,12 @@ namespace PENTACARE
             }
         }
 
+        private void backBtn_Click(object sender, EventArgs e)
+        {
+            //Billing billing = new Billing();
+            //billing.Show();
+            //this.Hide();
+
+        }
     }
 }

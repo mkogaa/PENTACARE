@@ -89,9 +89,8 @@ namespace PentaCare
 
             conn.Open();
 
-
-            sqlcmd.CommandText = $"INSERT INTO patient (Name, Age, Gender, Address, Contact_No, Admission_Date, Status) " +
-                       $"VALUES ('{name}', '{Age}', '{Gender}', '{Address}', '{contact}', '{AdDate}','{Status}') ";
+            sqlcmd.CommandText = $"INSERT INTO patient (Name, Age, Gender, Address, Contact_No, Admission_Date, Status, Billing_Status) " +
+                     $"VALUES ('{name}', {Age}, '{Gender}', '{Address}', '{contact}', '{AdDate}', '{Status}', 'Unpaid')";
 
 
             sqlcmd.CommandType = CommandType.Text;

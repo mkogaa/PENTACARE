@@ -54,7 +54,7 @@ namespace PENTACARE
                             Status,
                             Billing_Status AS 'Billing Status'
                         FROM patient
-                        WHERE Status = 'Discharged' AND Billing_Status = 'Unpaid';
+                        WHERE Status = 'Admitted' AND Billing_Status = 'Unpaid';
                     ";
 
             using (MySqlConnection conn = new MySqlConnection(dbconnect))

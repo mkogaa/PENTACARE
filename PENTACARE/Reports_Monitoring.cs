@@ -113,6 +113,38 @@ namespace PENTACARE
             }
         }
 
+        private void LoadBillingSummary()
+        {
+            string dbconnect = "server=127.0.0.1; database=pentacare; username=root; password=;";
+            using (MySqlConnection sqlconn = new MySqlConnection(dbconnect))
+            {
+                string query = @"SELECT p.PatientID AS 'Patient ID',
+                                        p.Name AS 'Patient Name',
+                                        DATE_FORMAT(p.Discharge_Date, '%M %d, %Y') AS 'Discharge Date',
+                                        b.TotalAmount AS 'Total Amount'
+                                 FROM patient p
+                                 INNER JOIN billing b ON p.PatientID = b.PatientID
+                                 WHERE p.Billing_Status = 'Paid'";
+
+                MySqlCommand cmd = new MySqlCommand(query, sqlconn);
+                MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+
+                try
+                {
+                    sqlconn.Open();
+                    adapter.Fill(dt);
+                    dgv_Record.DataSource = dt;
+
+                    AddButtonColumns();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error loading billing summary: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
         private void AddButtonColumns()
         {
             if (dgv_Record.Columns.Contains("btnView"))
@@ -144,8 +176,8 @@ namespace PENTACARE
 
         private void rb_BS_CheckedChanged(object sender, EventArgs e)
         {
-            if (rb_PH.Checked)
-                LoadPatientRecords();
+            if (rb_BS.Checked)
+                LoadBillingSummary();
         }
 
         private void dgv_Record_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -166,7 +198,8 @@ namespace PENTACARE
                 }
                 else if (rb_BS.Checked)
                 {
-
+                    ViewBill viewbill = new ViewBill(selectedID);
+                    viewbill.ShowDialog();
                 }
             }
         }

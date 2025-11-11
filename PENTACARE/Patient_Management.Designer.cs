@@ -50,6 +50,7 @@
             dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(1463, 351);
             dataGridView1.TabIndex = 0;
+            dataGridView1.VirtualMode = true;
             // 
             // textBox1
             // 
@@ -88,6 +89,7 @@
             dischargeBtn.Size = new Size(235, 76);
             dischargeBtn.TabIndex = 4;
             dischargeBtn.Click += dischargeBtn_Click;
+            dischargeBtn.Paint += dischargeBtn_Paint;
             // 
             // editBtn
             // 

@@ -37,6 +37,12 @@
             lblRID = new Label();
             lblRType = new Label();
             lblRFee = new Label();
+            dgvBill = new DataGridView();
+            lblTotal = new Label();
+            btn_back = new Panel();
+            btn_addCharge = new Panel();
+            btn_saveBill = new Panel();
+            ((System.ComponentModel.ISupportInitialize)dgvBill).BeginInit();
             SuspendLayout();
             // 
             // lblName
@@ -111,6 +117,48 @@
             lblRFee.TabIndex = 7;
             lblRFee.Text = "label1";
             // 
+            // dgvBill
+            // 
+            dgvBill.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvBill.Location = new Point(231, 530);
+            dgvBill.Name = "dgvBill";
+            dgvBill.RowHeadersWidth = 51;
+            dgvBill.Size = new Size(1458, 188);
+            dgvBill.TabIndex = 8;
+            // 
+            // lblTotal
+            // 
+            lblTotal.AutoSize = true;
+            lblTotal.Location = new Point(1498, 804);
+            lblTotal.Name = "lblTotal";
+            lblTotal.Size = new Size(50, 20);
+            lblTotal.TabIndex = 9;
+            lblTotal.Text = "label1";
+            // 
+            // btn_back
+            // 
+            btn_back.Location = new Point(1489, 872);
+            btn_back.Name = "btn_back";
+            btn_back.Size = new Size(250, 125);
+            btn_back.TabIndex = 10;
+            btn_back.Click += btn_back_Click;
+            // 
+            // btn_addCharge
+            // 
+            btn_addCharge.Location = new Point(192, 813);
+            btn_addCharge.Name = "btn_addCharge";
+            btn_addCharge.Size = new Size(250, 125);
+            btn_addCharge.TabIndex = 11;
+            btn_addCharge.Click += btn_addCharge_Click;
+            // 
+            // btn_saveBill
+            // 
+            btn_saveBill.Location = new Point(526, 781);
+            btn_saveBill.Name = "btn_saveBill";
+            btn_saveBill.Size = new Size(250, 125);
+            btn_saveBill.TabIndex = 12;
+            btn_saveBill.Click += btn_saveBill_Click;
+            // 
             // Billing
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -118,6 +166,11 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1902, 1033);
+            Controls.Add(btn_saveBill);
+            Controls.Add(btn_addCharge);
+            Controls.Add(btn_back);
+            Controls.Add(lblTotal);
+            Controls.Add(dgvBill);
             Controls.Add(lblRFee);
             Controls.Add(lblRType);
             Controls.Add(lblRID);
@@ -129,6 +182,8 @@
             Name = "Billing";
             Text = "Billing";
             Load += Billing_Load;
+            Click += Billing_Click;
+            ((System.ComponentModel.ISupportInitialize)dgvBill).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -143,5 +198,10 @@
         private Label lblRID;
         private Label lblRType;
         private Label lblRFee;
+        private DataGridView dgvBill;
+        private Label lblTotal;
+        private Panel btn_back;
+        private Panel btn_addCharge;
+        private Panel btn_saveBill;
     }
 }

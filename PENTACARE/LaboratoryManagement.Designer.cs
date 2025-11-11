@@ -82,6 +82,7 @@
             btn_laboratory_discharge.Size = new Size(240, 72);
             btn_laboratory_discharge.TabIndex = 4;
             btn_laboratory_discharge.Click += btn_laboratory_discharge_Click;
+            btn_laboratory_discharge.Paint += btn_laboratory_discharge_Paint;
             // 
             // cb_laboratory
             // 

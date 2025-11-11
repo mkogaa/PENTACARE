@@ -66,22 +66,22 @@ namespace USERS_WINDOW
                 con.Open();
 
                 string query = @"
-SELECT DISTINCT
-    p.PatientID AS PatientID,
-    p.Name AS FullName,
-    p.Age,
-    p.Gender,
-    p.Address,
-    p.Contact_No AS ContactNo,
-    DATE_FORMAT(NULLIF(p.Admission_Date, '0000-00-00'), '%Y-%m-%d') AS AdmissionDate,
-    IFNULL(r.Room_No, 'N/A') AS RoomNo,
-    p.Status
-FROM doctor_patient dp
-JOIN patient p ON dp.PatientID = p.PatientID
-LEFT JOIN room r ON p.RoomID = r.RoomID
-WHERE dp.DoctorID = @DoctorID
-  AND (p.PatientID LIKE @search OR p.Name LIKE @search)
-";
+                                SELECT DISTINCT
+                                    p.PatientID AS PatientID,
+                                    p.Name AS FullName,
+                                    p.Age,
+                                    p.Gender,
+                                    p.Address,
+                                    p.Contact_No AS ContactNo,
+                                    DATE_FORMAT(NULLIF(p.Admission_Date, '0000-00-00'), '%Y-%m-%d') AS AdmissionDate,
+                                    IFNULL(r.Room_No, 'N/A') AS RoomNo,
+                                    p.Status
+                                FROM doctor_patient dp
+                                JOIN patient p ON dp.PatientID = p.PatientID
+                                LEFT JOIN room r ON p.RoomID = r.RoomID
+                                WHERE dp.DoctorID = @DoctorID
+                                  AND (p.PatientID LIKE @search OR p.Name LIKE @search)
+                                ";
 
                 if (!string.IsNullOrEmpty(statusFilter) && statusFilter != "All")
                     query += " AND p.Status = @status";
@@ -219,14 +219,34 @@ WHERE dp.DoctorID = @DoctorID
             try
             {
                 con.Open();
-                string query = "UPDATE patient SET Status = 'Discharged', Discharge_Date = @date WHERE PatientID = @id";
 
+                // Check Billing_Status first
+                string billingQuery = "SELECT Billing_Status FROM patient WHERE PatientID = @id";
+                cmd = new MySqlCommand(billingQuery, con);
+                cmd.Parameters.AddWithValue("@id", patientID);
+                object billingStatusObj = cmd.ExecuteScalar();
+
+                if (billingStatusObj != null && billingStatusObj.ToString() == "Unpaid")
+                {
+                    MessageBox.Show("Cannot discharge patient because the billing is unpaid.",
+                                    "Discharge Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Confirm discharge
+                DialogResult result = MessageBox.Show("Are you sure you want to discharge this patient?",
+                                                      "Confirm Discharge", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result != DialogResult.Yes)
+                    return;
+
+                // Proceed with discharge
+                string query = "UPDATE patient SET Status = 'Discharged', Discharge_Date = @date WHERE PatientID = @id";
                 cmd = new MySqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@id", patientID);
                 cmd.Parameters.AddWithValue("@date", DateTime.Now);
-
                 cmd.ExecuteNonQuery();
 
+                // Free bed
                 string bedQuery = "SELECT BedID FROM patient WHERE PatientID = @id";
                 cmd = new MySqlCommand(bedQuery, con);
                 cmd.Parameters.AddWithValue("@id", patientID);
@@ -272,7 +292,7 @@ WHERE dp.DoctorID = @DoctorID
 
             int currentPatientID = Convert.ToInt32(dgv_laboratory.SelectedRows[0].Cells["PatientID"].Value);
 
-            AssignLaboratoryTest assignForm = new AssignLaboratoryTest(currentPatientID,doctorID);
+            AssignLaboratoryTest assignForm = new AssignLaboratoryTest(currentPatientID, doctorID);
             assignForm.FormClosed += (s, args) =>
             {
                 string gender = cb_laboratory.SelectedItem?.ToString() ?? "All";
@@ -297,6 +317,11 @@ WHERE dp.DoctorID = @DoctorID
                 string gender = cb_laboratory.SelectedItem?.ToString() ?? "All";
                 LoadLaboratoryData(txt_laboratory_search.Text, "Admitted", gender);
             }
+        }
+
+        private void btn_laboratory_discharge_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

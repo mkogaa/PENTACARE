@@ -78,7 +78,7 @@ namespace PentaCare
                 DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
                 string patientID = row.Cells["PatientID"].Value.ToString();
 
-                LabMed labMed = new LabMed(patientID,this);
+                LabMed labMed = new LabMed(patientID, this);
                 labMed.Show();
                 this.Hide();
             }
@@ -169,29 +169,39 @@ namespace PentaCare
         {
             if (dataGridView1.SelectedRows.Count > 0)
             {
-                // Get selected row
                 DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
-
-                // Retrieve PatientID and Name from the selected row
                 string patientID = selectedRow.Cells["PatientID"].Value.ToString();
                 string name = selectedRow.Cells["Name"].Value.ToString();
 
-                // Ask for confirmation
-                DialogResult result = MessageBox.Show($"Discharge patient: {name}?", "Confirm", MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
+                string dbconnect = "server=127.0.0.1; database=pentacare; uid=root;";
+                using (MySqlConnection conn = new MySqlConnection(dbconnect))
                 {
-                    // Connect to the database
-                    string dbconnect = "server=127.0.0.1; database=pentacare; uid=root;";
-                    using (MySqlConnection conn = new MySqlConnection(dbconnect))
-                    {
-                        conn.Open();
+                    conn.Open();
 
-                        // Update patient status to 'Discharged' and optionally set a Discharge_Date
+                    // Check Billing_Status before discharging
+                    string billingCheckQuery = "SELECT Billing_Status FROM patient WHERE PatientID = @PatientID";
+                    MySqlCommand billingCmd = new MySqlCommand(billingCheckQuery, conn);
+                    billingCmd.Parameters.AddWithValue("@PatientID", patientID);
+
+                    object statusObj = billingCmd.ExecuteScalar();
+                    if (statusObj != null && statusObj.ToString() == "Unpaid")
+                    {
+                        MessageBox.Show($"{name} cannot be discharged because the billing is unpaid.",
+                                        "Discharge Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return; // Stop discharge
+                    }
+
+                    // Confirm discharge
+                    DialogResult result = MessageBox.Show($"Discharge patient: {name}?", "Confirm", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.Yes)
+                    {
+                        // Update patient status and discharge date
                         string query = "UPDATE patient SET Status = 'Discharged', Discharge_Date = CURDATE() WHERE PatientID = @PatientID";
                         MySqlCommand cmd = new MySqlCommand(query, conn);
                         cmd.Parameters.AddWithValue("@PatientID", patientID);
                         cmd.ExecuteNonQuery();
 
+                        // Free up the bed
                         string getBedQuery = "SELECT BedID FROM patient WHERE PatientID = @PatientID";
                         MySqlCommand getBedCmd = new MySqlCommand(getBedQuery, conn);
                         getBedCmd.Parameters.AddWithValue("@PatientID", patientID);
@@ -207,8 +217,6 @@ namespace PentaCare
                         }
 
                         MessageBox.Show($"{name} has been discharged successfully.");
-
-                        // Refresh DataGridView after update
                         RefreshDataGrid();
                     }
                 }
@@ -509,6 +517,11 @@ namespace PentaCare
             Dashboard dashboard = new Dashboard();
             dashboard.Show();
             this.Hide();
+        }
+
+        private void dischargeBtn_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
